@@ -1,3 +1,10 @@
+*.pyc
 *~
+/.eggs
 /.python-version
-/*.pyc
+/build
+/dist
+/pyxasm.egg-info
+/tmp
+/xasm.egg-info
+/xdis.egg-info
