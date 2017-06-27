@@ -30,13 +30,13 @@
   4:          16 LOAD_NAME                 1 (y)
               19 LOAD_CONST                1 (2)
               22 COMPARE_OP                0 (<)
-              25 POP_JUMP_IF_FALSE        36 (to 36)
+              25 POP_JUMP_IF_FALSE        ENDIF:
 
   5:          28 LOAD_CONST                2 ('nope')
               31 PRINT_ITEM
               32 PRINT_NEWLINE
-              33 JUMP_FORWARD              0 (to 36)
 
+ENDIF:
   6:     >>   36 LOAD_CONST                3 ('done')
               39 PRINT_ITEM
               40 PRINT_NEWLINE

@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 from __future__ import print_function
-from copy import copy
 import re
 import xdis
+from xdis.magics import magics
+
 # import xdis.bytecode as Mbytecode
 
 class Instruction(object): # (Mbytecode.Instruction):
@@ -189,6 +190,9 @@ class Assembler(object):
                         if not is_int(operand):
                             backpatch_inst.add(inst)
                     offset += xdis.op_size(inst.opcode, self.opc)
+                else:
+                    raise RuntimeError("Illegal opcode %s in: %s" %
+                                       (opname, line))
                 pass
 
             pass
@@ -197,6 +201,7 @@ class Assembler(object):
         print('backpatch: ', backpatch_inst)
 
         bcode = []
+        print(self.instructions)
         print(self.instructions)
         for inst in self.instructions:
             bcode.append(inst.opcode)
@@ -250,26 +255,43 @@ class Assembler(object):
         co = types.CodeType(*args)
         return co
 
-from xdis.code import Code2 as Code2
-from xdis.opcodes import opcode_27 as opcode27
-from xdis.magics import magics
-
-version = '2.7'
-a = Assembler(Code2, opcode27)
-code = a.asm('tasm.pyasm')
-a.print_instructions()
-print(code)
-
-# a = Assembler(Code2, opcode27)
-# code = a.asm('tasm2.pyasm')
-# a.print_instructions()
-# print(code)
-
+import time
 from struct import pack
-with open('tasm.pyc', 'w') as fp:
-    fp.write(magics[version])
-    import time
-    fp.write(pack('I', int(time.time())))
-    # In Python 3 you need to write out the size mod 2**32 here
-    from xdis.marsh import dumps
-    fp.write(dumps(code))
+
+import click
+@click.command()
+@click.option("--python-version", default='2.7')
+@click.option("--asm-file", default='tasm.pyasm')
+def cli(asm_file, python_version):
+    if python_version in "2.6 2.7".split():
+        from xdis.code import Code2 as Code
+        if python_version == '2.6':
+            from xdis.opcodes import opcode_26 as opc
+        else:
+            from xdis.opcodes import opcode_27 as opc
+
+    else:
+        raise RuntimeError("Python version %s not supported yet" % python_version)
+    a = Assembler(Code, opc)
+
+    code = a.asm(asm_file)
+    a.print_instructions()
+    print(code)
+
+    # a = Assembler(Code2, opcode27)
+    # code = a.asm('tasm2.pyasm')
+    # a.print_instructions()
+    # print(code)
+
+    outfile = 'tasm.pyc'
+    with open(outfile, 'w') as fp:
+        fp.write(magics[python_version])
+        fp.write(pack('I', int(time.time())))
+        # In Python 3 you need to write out the size mod 2**32 here
+        from xdis.marsh import dumps
+        fp.write(dumps(code))
+    print("Wrote %s" % outfile)
+
+if __name__ == '__main__':
+    import sys
+    cli(sys.argv[1:])
