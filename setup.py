@@ -21,7 +21,10 @@ setup(
        packages           = find_packages(),
        py_modules         = py_modules,
        setup_requires     = setup_requires,
-       # scripts            = scripts,
+       entry_points='''
+        [console_scripts]
+        pyxasm=xasm.cli:main
+       ''',
        tests_require      = tests_require,
        url                = web,
        version            = VERSION,
