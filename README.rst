@@ -9,7 +9,7 @@ A Cross-Python bytecode Assembler
 Introduction
 ------------
 
-The Python `xasm` module has routines for assembly, and as a command to
+The Python `xasm` module has routines for assembly, and has a command to
 assemble bytecode for several different versions of Python.
 
 Here are some potential uses:
@@ -89,3 +89,5 @@ See Also
 * https://github.com/rocky/python-xdis : Cross Python version dissasemble
 
 .. _uncompyle6: https://github.com/rocky/python-uncompyle6
+.. _remake: http://bashdb.sf.net/remake
+
