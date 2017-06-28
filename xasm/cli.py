@@ -30,7 +30,6 @@ def main(asm_file, python_version, pyc_file):
     if not pyc_file and asm_file.endswith('.pyasm'):
         pyc_file = asm_file[:-len('.pyasm')] + '.pyc'
 
-    from trepan.api import debug; debug()
     write_pycfile(pyc_file, python_version, code_list)
 
 if __name__ == '__main__':
