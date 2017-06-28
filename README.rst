@@ -17,7 +17,7 @@ Here are some potential uses:
 * Write more efficient bytecode
 * Write an instruction-level optimizing compiler
 * Experiment and learn about Python Bytecode
-* Foil uncompile6_ in being able to disassemble you bytecode
+* Foil uncompyle6_ in being able to disassemble you bytecode
 
 This will support bytecodes from Python version 1.5 to 3.6 or so.
 Currently though only 2.6, 2.7 and 3.4 are planned.
@@ -86,5 +86,6 @@ For usage help  `pyxasm --help`
 
 See Also
 --------
+* https://github.com/rocky/python-xdis : Cross Python version dissasemble
 
-* https://github.com/rocky/python-uncompyle6 : python bytecode deparsing
+.. uncompyle6: https://github.com/rocky/python-uncompyle6
