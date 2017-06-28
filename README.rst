@@ -1,5 +1,5 @@
-pyxasm
-==========
+xasm
+====
 
 *NOTE: this is in an early beta stage*
 
@@ -90,4 +90,3 @@ See Also
 
 .. _uncompyle6: https://github.com/rocky/python-uncompyle6
 .. _remake: http://bashdb.sf.net/remake
-
