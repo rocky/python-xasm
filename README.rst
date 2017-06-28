@@ -77,7 +77,7 @@ Run
 
 ::
 
-     pyxasm  <Python assembler file>
+     pyxasm  --asm-file <Python assembler file>
 
 
 For usage help  `pyxasm --help`
@@ -88,4 +88,4 @@ See Also
 --------
 * https://github.com/rocky/python-xdis : Cross Python version dissasemble
 
-.. uncompyle6: https://github.com/rocky/python-uncompyle6
+.. _uncompyle6: https://github.com/rocky/python-uncompyle6
