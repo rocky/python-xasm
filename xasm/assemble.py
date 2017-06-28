@@ -60,7 +60,10 @@ class Assembler(object):
         self.co_filename = 'unknown'
         self.co_name = 'uknown'
         self.co_firstlineno = 1
-        self.co_lnotab = ''
+        if xdis.PYTHON3:
+            self.co_lnotab = b''
+        else:
+            self.co_lnotab = ''
         self.co_freevars = tuple()
         self.co_cellvars = tuple()
 
@@ -217,7 +220,7 @@ def asm(Code, opc, path):
                         backpatch_inst.add(inst)
                 offset += xdis.op_size(inst.opcode, asm.opc)
             else:
-                raise RuntimeError("Illegal opcode %s in: %s" %
+                raise RuntimeError("Illegal opname %s in: %s" %
                                    (opname, line))
             pass
         pass
@@ -249,7 +252,10 @@ def create_code(asm, label, backpatch_inst):
                 bcode.append(inst.arg)
 
     if xdis.PYTHON3:
-        asm.co_code = bcode
+        co_code = bytearray()
+        for j in bcode:
+            co_code.append(j)
+        asm.co_code = bytes(co_code)
         args = (asm.co_argcount,
                 asm.co_nlocals,
                 asm.co_stacksize,

@@ -16,7 +16,13 @@ def main(asm_file, python_version, pyc_file):
             from xdis.opcodes import opcode_26 as opc
         else:
             from xdis.opcodes import opcode_27 as opc
-
+            pass
+    elif python_version in "3.3 3.4".split():
+        from xdis.code import Code3 as Code
+        if python_version == '3.4':
+            from xdis.opcodes import opcode_33 as opc
+        elif python_version == '3.4':
+            from xdis.opcodes import opcode_34 as opc
     else:
         raise RuntimeError("Python version %s not supported yet" % python_version)
 
