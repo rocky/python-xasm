@@ -26,7 +26,7 @@ def main(asm_file, python_version, pyc_file):
     else:
         raise RuntimeError("Python version %s not supported yet" % python_version)
 
-    code_list = asm(Code, opc, asm_file)
+    code_list, timestamp = asm(Code, opc, asm_file)
     print(code_list)
 
     # a = Assembler(Code2, opcode27)
@@ -36,7 +36,7 @@ def main(asm_file, python_version, pyc_file):
     if not pyc_file and asm_file.endswith('.pyasm'):
         pyc_file = asm_file[:-len('.pyasm')] + '.pyc'
 
-    write_pycfile(pyc_file, python_version, code_list)
+    write_pycfile(pyc_file, python_version, code_list, timestamp)
 
 if __name__ == '__main__':
     import sys

@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
-import re
+import re, types
 import xdis
-import types
 
 # import xdis.bytecode as Mbytecode
 
@@ -92,6 +91,7 @@ def asm(Code, opc, path):
     version = None
     methods = {}
     method_name = None
+    timestamp = 0
 
     asm = None
 
@@ -104,6 +104,11 @@ def asm(Code, opc, path):
             if line.startswith('# Python bytecode '):
                 version = line[len('# Python bytecode '):].strip().split()[0]
                 # FIXME: check against asm.opc.version
+            elif line.startswith('# Timestamp in code: '):
+                text = line[len('# Timestamp in code: '):].strip()
+                time_str = text.split()[0]
+                if is_int(time_str):
+                    timestamp = int(time_str)
             elif line.startswith('# Method Name: '):
                 if asm:
                     co = create_code(asm, label, backpatch_inst)
@@ -226,7 +231,7 @@ def asm(Code, opc, path):
         pass
     if asm:
         code_list.append(create_code(asm, label, backpatch_inst))
-    return code_list
+    return code_list, timestamp
 
 def create_code(asm, label, backpatch_inst):
     print('label: ', label)
