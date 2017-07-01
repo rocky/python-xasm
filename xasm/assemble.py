@@ -39,7 +39,7 @@ def get_opname_operand(fields):
 
         return fields[0], operand
     else:
-        return fields[0], None
+        return fields[0]
 
 class Assembler(object):
     def __init__(self, Code=None, opc=None):
@@ -86,6 +86,7 @@ class Assembler(object):
 
 def asm(path, Code, opc):
     code_list = []
+    lineno_tab = {}
     offset = 0
     label = {}
     backpatch_inst = set([])
@@ -182,6 +183,12 @@ def asm(path, Code, opc):
             match = re.match('^([^\s]+:)$', line)
             if match:
                 label[match.group(1)] = offset
+                continue
+
+            match = re.match('^\s*([\d]+):\s*$', line)
+            if match:
+                line_no = int(match.group(1))
+                lineno_tab[offset] = line_no
                 continue
 
             # Opcode section

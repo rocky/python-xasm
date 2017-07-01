@@ -1,0 +1,53 @@
+# Python bytecode 2.5 (62131)
+# Disassembled from Python 2.6.9 (unknown, Dec 13 2015, 04:24:42)
+# [GCC 5.2.1 20151010]
+# Timestamp in code: 1498553655 (2017-06-27 04:54:15)
+
+# Method Name:       <module>
+# Filename:          exec
+# Argument count:    0
+# Number of locals:  0
+# Stack size:        2
+# Flags:             0x00000040 (NOFREE)
+# First Line:        2
+# Constants:
+#    0: 1
+#    1: 2
+#    2: 'nope'
+#    3: 'done'
+#    4: None
+# Names:
+#    0: x
+#    1: y
+  2:
+                LOAD_CONST                0 (1)
+                STORE_NAME                0 (x)
+
+  3:
+                LOAD_NAME                 0 (x)
+                LOAD_CONST                1 (2)
+                BINARY_MULTIPLY
+                STORE_NAME                1 (y)
+
+  4:
+                LOAD_NAME                 1 (y)
+                LOAD_CONST                1 (2)
+                COMPARE_OP                0 (<)
+                JUMP_IF_FALSE             9 (to 37)
+                POP_TOP
+
+  5:
+                LOAD_CONST                2 ('nope')
+                PRINT_ITEM
+                PRINT_NEWLINE
+                JUMP_FORWARD              1 (to 38)
+L37:
+                POP_TOP
+
+L38:
+  6:
+                LOAD_CONST                3 ('done')
+                PRINT_ITEM
+                PRINT_NEWLINE
+                LOAD_CONST                4 (None)
+                RETURN_VALUE
