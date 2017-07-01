@@ -1,32 +1,18 @@
 #!/usr/bin/env python
 from xasm.assemble import asm
-from xasm.pythonfile import write_pycfile
+from xasm.misc import get_opcode, write_pycfile
 
 import click
 @click.command()
-@click.option("--python-version", default='2.7')
+@click.option("--python-version", default=None)
 @click.option("--asm-file", default='./tasm.pyasm')
 @click.option("--pyc-file", default=None)
 def main(asm_file, python_version, pyc_file):
-    if python_version in "2.5 2.6 2.7".split():
-        from xdis.code import Code2 as Code
-        if python_version == '2.5':
-            from xdis.opcodes import opcode_25 as opc
-        elif python_version == '2.6':
-            from xdis.opcodes import opcode_26 as opc
-        else:
-            from xdis.opcodes import opcode_27 as opc
-            pass
-    elif python_version in "3.3 3.4".split():
-        from xdis.code import Code3 as Code
-        if python_version == '3.4':
-            from xdis.opcodes import opcode_33 as opc
-        elif python_version == '3.4':
-            from xdis.opcodes import opcode_34 as opc
+    if python_version:
+        opc, Code = get_opcode(python_version)
     else:
-        raise RuntimeError("Python version %s not supported yet" % python_version)
-
-    code_list, timestamp = asm(Code, opc, asm_file)
+        opc, Code = None, None
+    code_list, timestamp, python_version = asm(asm_file, Code, opc)
     print(code_list)
 
     # a = Assembler(Code2, opcode27)

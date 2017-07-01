@@ -2,6 +2,7 @@
 from __future__ import print_function
 import re, types
 import xdis
+from xasm.misc import get_opcode
 
 # import xdis.bytecode as Mbytecode
 
@@ -41,7 +42,7 @@ def get_opname_operand(fields):
         return fields[0], None
 
 class Assembler(object):
-    def __init__(self, Code, opc):
+    def __init__(self, Code=None, opc=None):
         self.status = 'unfinished'
         self.Code = Code
         self.opc = opc
@@ -83,7 +84,7 @@ class Assembler(object):
         print(mess)
         self.status = 'errored'
 
-def asm(Code, opc, path):
+def asm(path, Code, opc):
     code_list = []
     offset = 0
     label = {}
@@ -102,8 +103,8 @@ def asm(Code, opc, path):
         i += 1
         if line.startswith('#'):
             if line.startswith('# Python bytecode '):
-                version = line[len('# Python bytecode '):].strip().split()[0]
-                # FIXME: check against asm.opc.version
+                python_version = line[len('# Python bytecode '):].strip().split()[0]
+                opc, Code = get_opcode(python_version)
             elif line.startswith('# Timestamp in code: '):
                 text = line[len('# Timestamp in code: '):].strip()
                 time_str = text.split()[0]
@@ -231,7 +232,8 @@ def asm(Code, opc, path):
         pass
     if asm:
         code_list.append(create_code(asm, label, backpatch_inst))
-    return code_list, timestamp
+    code_list.reverse()
+    return code_list, timestamp, python_version
 
 def create_code(asm, label, backpatch_inst):
     print('label: ', label)

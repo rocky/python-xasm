@@ -2,6 +2,7 @@
 *~
 /.eggs
 /.python-version
+/README.html
 /build
 /dist
 /pyxasm.egg-info
