@@ -1,0 +1,138 @@
+# pydisasm version 3.4.0
+# Python bytecode 2.7 (62211)
+# Disassembled from Python 2.7.13 (default, Jan  2 2017, 05:46:31)
+# [GCC 5.4.0 20160609]
+# Timestamp in code: 1499115120 (2017-07-03 16:52:00)
+
+# Method Name:       gcd
+# Filename:          exec
+# Argument count:    2
+# Number of locals:  2
+# Stack size:        3
+# Flags:             0x00000043 (NOFREE | NEWLOCALS | OPTIMIZED)
+# First Line:        11
+# Constants:
+#    0: ' GCD. We assume positive numbers'
+#    1: 0
+#    2: 1
+#    3: None
+# Names:
+#    0: None
+#    1: gcd
+# Positional arguments:
+#	a, b
+ 15:
+            LOAD_FAST                 0 (a)
+            LOAD_FAST                 1 (b)
+            COMPARE_OP                4 (>)
+            POP_JUMP_IF_FALSE       L28: (to 28)
+
+ 16:
+            LOAD_FAST                 1 (b)
+            LOAD_FAST                 0 (a)
+            ROT_TWO
+            STORE_FAST                0 (a)
+            STORE_FAST                1 (b)
+
+ 17:
+            JUMP_FORWARD            L28: (to 28)
+
+L28:
+  19:
+            LOAD_FAST                 0 (a)
+            LOAD_CONST                1 (0)
+            COMPARE_OP                1 (<=)
+            POP_JUMP_IF_FALSE       L44: (to 44)
+
+ 20:
+            LOAD_CONST                3 (None)
+            RETURN_VALUE
+
+L44:
+  21:
+            LOAD_FAST                 0 (a)
+            LOAD_CONST                2 (1)
+            COMPARE_OP                2 (==)
+            POP_JUMP_IF_TRUE        L68: (to 68)
+            LOAD_FAST                 0 (a)
+            LOAD_FAST                 1 (b)
+            COMPARE_OP                2 (==)
+            POP_JUMP_IF_FALSE       L72: (to 72)
+
+L68:
+  22:
+            LOAD_FAST                 0 (a)
+            RETURN_VALUE
+
+L72:
+  23:
+            LOAD_GLOBAL               1 (gcd)
+            LOAD_FAST                 1 (b)
+            LOAD_FAST                 0 (a)
+            BINARY_SUBTRACT
+            LOAD_FAST                 0 (a)
+            CALL_FUNCTION             2 (2 positional, 0 keyword pair)
+            RETURN_VALUE
+
+
+# Method Name:       <module>
+# Filename:          exec
+# Argument count:    0
+# Number of locals:  0
+# Stack size:        6
+# Flags:             0x00000040 (NOFREE)
+# First Line:        10
+# Constants:
+#    0: "Greatest Common Divisor\n\nSome characterstics of this program used for testing check_args() does\nnot have a 'return' statement.\n\ncheck_args() raises an uncaught exception when given the wrong number\nof parameters.\n\n"
+#    1: <code object gcd at 0x7f4a2ca69830, file "exec", line 11>
+#    2: '__main__'
+#    3: 3
+#    4: 5
+#    5: 'The GCD of %d and %d is %d'
+#    6: None
+#    7: (3, 5)
+# Names:
+#    0: __doc__
+#    1: gcd
+#    2: __name__
+#    3: a
+#    4: b
+ 10:
+            LOAD_CONST                0 ("Greatest Common Divisor\n\nSome characterstics of this program used for testing check_args() does\nnot have a 'return' statement.\n\ncheck_args() raises an uncaught exception when given the wrong number\nof parameters.\n\n")
+            STORE_NAME                0 (__doc__)
+
+ 11:
+            LOAD_CONST                1 (<code object gcd at 0x7f4a2ca69830, file "exec", line 11>)
+            MAKE_FUNCTION             0
+            STORE_NAME                1 (gcd)
+
+ 25:
+            LOAD_NAME                 2 (__name__)
+            LOAD_CONST                2 ('__main__')
+            COMPARE_OP                2 (==)
+            POP_JUMP_IF_FALSE       L69: (to 69)
+
+ 26:
+            LOAD_CONST                7 ((3, 5))
+            UNPACK_SEQUENCE           2
+            STORE_NAME                3 (a)
+            STORE_NAME                4 (b)
+
+ 27:
+            LOAD_CONST                5 ('The GCD of %d and %d is %d')
+            LOAD_NAME                 3 (a)
+            LOAD_NAME                 4 (b)
+            LOAD_NAME                 1 (gcd)
+            LOAD_NAME                 3 (a)
+            LOAD_NAME                 4 (b)
+            CALL_FUNCTION             2 (2 positional, 0 keyword pair)
+            BUILD_TUPLE               3
+            BINARY_MODULO
+            PRINT_ITEM
+            PRINT_NEWLINE
+
+ 28:
+            JUMP_FORWARD              0 (to 69)
+L69:
+            LOAD_CONST                6 (None)
+            RETURN_VALUE

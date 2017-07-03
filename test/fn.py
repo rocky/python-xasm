@@ -1,3 +1,3 @@
 def five():
     return 5
-print five()
+print(five())

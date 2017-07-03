@@ -4,7 +4,7 @@ from xasm.misc import write_pycfile
 
 import click
 @click.command()
-@click.option("--path", default='./tasm.pyasm')
+@click.option("--path", '-i', default='./tasm.pyasm')
 @click.option("--pyc-file", default=None)
 def main(path, pyc_file):
     asm = asm_file(path)

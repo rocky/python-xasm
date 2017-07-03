@@ -1,0 +1,45 @@
+# pydisasm version 3.4.0
+# Python bytecode 2.7 (62211)
+# Disassembled from Python 2.7.13 (default, Jan  2 2017, 05:46:31)
+# [GCC 5.4.0 20160609]
+# Timestamp in code: 1498654474 (2017-06-28 08:54:34)
+
+# Method Name:       five
+# Filename:          exec
+# Argument count:    0
+# Number of locals:  0
+# Stack size:        1
+# Flags:             0x00000043 (NOFREE | NEWLOCALS | OPTIMIZED)
+# First Line:        1
+# Constants:
+#    0: None
+#    1: 5
+  2:
+            LOAD_CONST                1 (5)
+            RETURN_VALUE
+
+
+# Method Name:       <module>
+# Filename:          exec
+# Argument count:    0
+# Number of locals:  0
+# Stack size:        1
+# Flags:             0x00000040 (NOFREE)
+# First Line:        1
+# Constants:
+#    0: <code object five at 0x7f8b4370f7b0, file "exec", line 1>
+#    1: None
+# Names:
+#    0: five
+  1:
+            LOAD_CONST                0 (<code object five at 0x7f8b4370f7b0, file "exec", line 1>)
+            MAKE_FUNCTION             0
+            STORE_NAME                0 (five)
+
+  3:
+            LOAD_NAME                 0 (five)
+            CALL_FUNCTION             0 (0 positional, 0 keyword pair)
+            PRINT_ITEM
+            PRINT_NEWLINE
+            LOAD_CONST                1 (None)
+            RETURN_VALUE

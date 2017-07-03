@@ -135,10 +135,14 @@ def asm_file(path):
                 asm.code.co_filename = line[len('# Filename: '):].strip()
             elif line.startswith('# Argument count: '):
                 argc = line[len('# Argument count: '):].strip().split()[0]
-                asm.code.argc = eval(argc)
+                asm.code.co_argcount = eval(argc)
             elif line.startswith('# Number of locals: '):
                 l_str = line[len('# Number of locals: '):].strip()
-                asm.code.nlocals = int(l_str)
+                asm.code.co_nlocals = int(l_str)
+            elif line.startswith("# Source code size mod 2**32: "):
+                from trepan.api import debug; debug()
+                l_str = line[len("# Source code size mod 2**32: "):-len(' bytes')].strip()
+                asm.size = int(l_str)
             elif line.startswith('# Stack size: '):
                 l_str = line[len('# Stack size: '):].strip()
                 asm.code.co_stacksize = int(l_str)
@@ -182,6 +186,10 @@ def asm_file(path):
                         i -= 1
                         break
                     pass
+            elif line.startswith('# Positional arguments:'):
+                line = lines[i]
+                asm.code.co_varnames = line[1:].strip().split(', ')
+                i += 1
         else:
             if not line.strip():
                 continue
@@ -262,6 +270,9 @@ def create_code(asm, label, backpatch_inst):
         if xdis.op_has_argument(inst.opcode, asm.opc):
             if inst in backpatch_inst:
                 if inst.opcode in asm.JREL_INSTRUCTIONS:
+                    # FIXME: things are different what we had was
+                    # a label rather than an offset.
+                    # Labels are always absolute
                     inst.arg = offset + label[inst.arg]
                 else:
                     inst.arg = label[inst.arg]
@@ -271,7 +282,7 @@ def create_code(asm, label, backpatch_inst):
             else:
                 bcode.append(inst.arg)
 
-    if xdis.PYTHON3:
+    if asm.python_version >= '3.0':
         co_code = bytearray()
         for j in bcode:
             co_code.append(j)
