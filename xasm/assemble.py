@@ -39,43 +39,54 @@ def get_opname_operand(fields):
 
         return fields[0], operand
     else:
-        return fields[0]
+        return fields[0], None
 
 class Assembler(object):
-    def __init__(self, Code=None, opc=None):
+    def __init__(self, python_version):
+        self.opc, self.Code = get_opcode(python_version)
+        self.code_list = []
         self.status = 'unfinished'
-        self.Code = Code
-        self.opc = opc
-        self.instructions = []
-        self.bytecode = []
-        self.co_argcount = 0
-        self.co_kwonlyargcount = 0
-        self.co_nlocals = 0
-        self.co_stacksize = 10
-        self.co_flags = 0
-        self.co_code = []
-        self.co_consts = []
-        self.co_names = []
-        self.co_varnames = []
-        self.co_filename = 'unknown'
-        self.co_name = 'uknown'
-        self.co_firstlineno = 1
-        if xdis.PYTHON3:
-            self.co_lnotab = b''
-        else:
-            self.co_lnotab = ''
-        self.co_freevars = tuple()
-        self.co_cellvars = tuple()
+        self.python_version = python_version
+        self.timestamp = 0
 
-        self.JREL_INSTRUCTIONS    = set(opc.hasjrel)
-        self.JABS_INSTRUCTIONS    = set(opc.hasjabs)
-        self.LOOP_INSTRUCTIONS    = set([opc.opmap['SETUP_LOOP']])
-        self.JUMP_UNCONDITONAL    = set([opc.opmap['JUMP_ABSOLUTE'],
-                                         opc.opmap['JUMP_FORWARD']])
-        self.JUMP_INSTRUCTIONS    = self.JABS_INSTRUCTIONS | self.JREL_INSTRUCTIONS | self.LOOP_INSTRUCTIONS | self.JUMP_UNCONDITONAL
+        self.JREL_INSTRUCTIONS    = set(self.opc.hasjrel)
+        self.JABS_INSTRUCTIONS    = set(self.opc.hasjabs)
+        self.LOOP_INSTRUCTIONS    = set([self.opc.opmap['SETUP_LOOP']])
+        self.JUMP_UNCONDITONAL    = set([self.opc.opmap['JUMP_ABSOLUTE'],
+                                         self.opc.opmap['JUMP_FORWARD']])
+        self.JUMP_INSTRUCTIONS    = (self.JABS_INSTRUCTIONS
+                                     | self.JREL_INSTRUCTIONS
+                                     | self.LOOP_INSTRUCTIONS
+                                     | self.JUMP_UNCONDITONAL)
+        self.code = None
+
+    def code_init(self):
+        if xdis.PYTHON3:
+            co_lnotab = b''
+        else:
+            co_lnotab = ''
+
+        self.code = self.Code(
+            co_argcount=0,
+            co_kwonlyargcount=0,
+            co_nlocals=0,
+            co_stacksize=10,
+            co_flags=0,
+            co_code=[],
+            co_consts=[],
+            co_names=[],
+            co_varnames=[],
+            co_filename = 'unknown',
+            co_name = 'unknown',
+            co_firstlineno=1,
+            co_lnotab=co_lnotab,
+            co_freevars = tuple(),
+            co_cellvars = tuple())
+
+        self.code.instructions = []
 
     def print_instructions(self):
-        for inst in self.instructions:
+        for inst in self.code.instructions:
             if inst.line_no:
                 print()
             print(inst)
@@ -84,17 +95,13 @@ class Assembler(object):
         print(mess)
         self.status = 'errored'
 
-def asm(path, Code, opc):
-    code_list = []
+def asm_file(path):
     lineno_tab = {}
     offset = 0
     label = {}
     backpatch_inst = set([])
-    version = None
     methods = {}
     method_name = None
-    timestamp = 0
-
     asm = None
 
     lines = open(path).readlines()
@@ -105,40 +112,39 @@ def asm(path, Code, opc):
         if line.startswith('#'):
             if line.startswith('# Python bytecode '):
                 python_version = line[len('# Python bytecode '):].strip().split()[0]
-                opc, Code = get_opcode(python_version)
+                asm = Assembler(python_version)
+                asm.code_init()
             elif line.startswith('# Timestamp in code: '):
                 text = line[len('# Timestamp in code: '):].strip()
                 time_str = text.split()[0]
                 if is_int(time_str):
-                    timestamp = int(time_str)
+                    asm.timestamp = int(time_str)
             elif line.startswith('# Method Name: '):
-                if asm:
+                if method_name:
                     co = create_code(asm, label, backpatch_inst)
-                    code_list.append(co)
+                    asm.code_list.append(co)
                     methods[method_name] = co
                     offset = 0
                     label = {}
                     backpatch_inst = set([])
-
-                asm = Assembler(Code, opc)
-                asm.version = version
-                asm.co_name = line[len('# Method Name: '):].strip()
-                method_name = asm.co_name
+                asm.code_init()
+                asm.code.co_name = line[len('# Method Name: '):].strip()
+                method_name = asm.code.co_name
 
             elif line.startswith('# Filename: '):
-                asm.co_filename = line[len('# Filename: '):].strip()
+                asm.code.co_filename = line[len('# Filename: '):].strip()
             elif line.startswith('# Argument count: '):
                 argc = line[len('# Argument count: '):].strip().split()[0]
-                asm.argc = eval(argc)
+                asm.code.argc = eval(argc)
             elif line.startswith('# Number of locals: '):
                 l_str = line[len('# Number of locals: '):].strip()
-                asm.nlocals = int(l_str)
+                asm.code.nlocals = int(l_str)
             elif line.startswith('# Stack size: '):
                 l_str = line[len('# Stack size: '):].strip()
-                asm.co_stacksize = int(l_str)
+                asm.code.co_stacksize = int(l_str)
             elif line.startswith('# Flags: '):
                 flags = line[len('# Flags: '):].strip().split()[0]
-                asm.co_flags = eval(flags)
+                asm.code.co_flags = eval(flags)
             elif line.startswith('# Constants:'):
                 count = 0
                 while i < len(lines):
@@ -152,9 +158,9 @@ def asm(path, Code, opc):
                         match = re.match('<code object (\S+) at', expr)
                         if match:
                             name = match.group(1)
-                            asm.co_consts.append(methods[name])
+                            asm.code.co_consts.append(methods[name])
                         else:
-                            asm.co_consts.append(eval(expr))
+                            asm.code.co_consts.append(eval(expr))
                         count += 1
                     else:
                         i -= 1
@@ -170,7 +176,7 @@ def asm(path, Code, opc):
                     if match:
                         index = int(match.group(1))
                         assert index == count
-                        asm.co_names.append(match.group(2))
+                        asm.code.co_names.append(match.group(2))
                         count += 1
                     else:
                         i -= 1
@@ -216,18 +222,18 @@ def asm(path, Code, opc):
                 else:
                     opname, operand = get_opname_operand(fields)
             else:
-                opname = get_opname_operand(fields)
+                opname, _ = get_opname_operand(fields)
 
-            if opname in opc.opname:
+            if opname in asm.opc.opname:
                 inst = Instruction()
                 inst.opname = opname
-                inst.opcode = opc.opmap[opname]
+                inst.opcode = asm.opc.opmap[opname]
                 if xdis.op_has_argument(inst.opcode, asm.opc):
                     inst.arg = operand
                 else:
                     inst.arg = None
                 inst.line_no = line_no
-                asm.instructions.append(inst)
+                asm.code.instructions.append(inst)
                 if inst.opcode in asm.JUMP_INSTRUCTIONS:
                     if not is_int(operand):
                         backpatch_inst.add(inst)
@@ -238,19 +244,19 @@ def asm(path, Code, opc):
             pass
         pass
     if asm:
-        code_list.append(create_code(asm, label, backpatch_inst))
-    code_list.reverse()
-    return code_list, timestamp, python_version
+        asm.code_list.append(create_code(asm, label, backpatch_inst))
+    asm.code_list.reverse()
+    return asm
 
 def create_code(asm, label, backpatch_inst):
     print('label: ', label)
     print('backpatch: ', backpatch_inst)
 
     bcode = []
-    print(asm.instructions)
+    print(asm.code.instructions)
 
     offset = 0
-    for inst in asm.instructions:
+    for inst in asm.code.instructions:
         bcode.append(inst.opcode)
         offset += xdis.op_size(inst.opcode, asm.opc)
         if xdis.op_has_argument(inst.opcode, asm.opc):
@@ -269,40 +275,41 @@ def create_code(asm, label, backpatch_inst):
         co_code = bytearray()
         for j in bcode:
             co_code.append(j)
-        asm.co_code = bytes(co_code)
-        args = (asm.co_argcount,
-                asm.co_nlocals,
-                asm.co_stacksize,
-                asm.co_kwonlyargcount,
-                asm.co_flags,
-                asm.co_code,
-                tuple(asm.co_consts),
-                tuple(asm.co_names),
-                tuple(asm.co_varnames),
-                asm.co_filename,
-                asm.co_name,
-                asm.co_firstlineno,
-                asm.co_lnotab,
-                asm.co_freevars,
-                asm.co_cellvars)
+        asm.code.co_code = bytes(co_code)
+        args = (asm.code.co_argcount,
+                asm.code.co_nlocals,
+                asm.code.co_stacksize,
+                asm.code.co_kwonlyargcount,
+                asm.code.co_flags,
+                asm.code.co_code,
+                tuple(asm.code.co_consts),
+                tuple(asm.code.co_names),
+                tuple(asm.code.co_varnames),
+                asm.code.co_filename,
+                asm.code.co_name,
+                asm.code.co_firstlineno,
+                asm.code.co_lnotab,
+                asm.code.co_freevars,
+                asm.code.co_cellvars)
     else:
-        asm.co_code = ''.join([chr(j) for j in bcode])
-        args = (asm.co_argcount,
-                asm.co_nlocals,
-                asm.co_stacksize,
-                asm.co_flags,
-                asm.co_code,
-                tuple(asm.co_consts),
-                tuple(asm.co_names),
-                tuple(asm.co_varnames),
-                asm.co_filename,
-                asm.co_name,
-                asm.co_firstlineno,
-                asm.co_lnotab,
-                asm.co_freevars,
-                asm.co_cellvars)
+        asm.code.co_code = ''.join([chr(j) for j in bcode])
+        args = (asm.code.co_argcount,
+                asm.code.co_nlocals,
+                asm.code.co_stacksize,
+                asm.code.co_flags,
+                asm.code.co_code,
+                tuple(asm.code.co_consts),
+                tuple(asm.code.co_names),
+                tuple(asm.code.co_varnames),
+                asm.code.co_filename,
+                asm.code.co_name,
+                asm.code.co_firstlineno,
+                asm.code.co_lnotab,
+                asm.code.co_freevars,
+                asm.code.co_cellvars)
 
     asm.print_instructions()
+    asm.code = None
 
     # print (*args)
     # co = self.Code(*args)
