@@ -194,7 +194,7 @@ def asm_file(path):
             if not line.strip():
                 continue
 
-            match = re.match('^([^\s]+:)$', line)
+            match = re.match('^([^\s]+):$', line)
             if match:
                 label[match.group(1)] = offset
                 continue
@@ -269,13 +269,19 @@ def create_code(asm, label, backpatch_inst):
         offset += xdis.op_size(inst.opcode, asm.opc)
         if xdis.op_has_argument(inst.opcode, asm.opc):
             if inst in backpatch_inst:
-                if inst.opcode in asm.JREL_INSTRUCTIONS:
-                    # FIXME: things are different what we had was
-                    # a label rather than an offset.
-                    # Labels are always absolute
-                    inst.arg = offset + label[inst.arg]
-                else:
-                    inst.arg = label[inst.arg]
+                target = inst.arg
+                int_target = is_int(target)
+                try:
+                    if inst.opcode in asm.JREL_INSTRUCTIONS and int_target:
+                        inst.arg = offset + label[target]
+                    else:
+                        inst.arg = label[target]
+                        pass
+                    pass
+                except KeyError:
+                    raise RuntimeError("Label %s not found. Instruction:\n%s" %
+                                       (target, inst))
+
             if asm.opc.version < 3.6:
                 arg_tup = xdis.util.num2code(inst.arg)
                 bcode += arg_tup
@@ -302,26 +308,14 @@ def create_code(asm, label, backpatch_inst):
                 asm.code.co_lnotab,
                 asm.code.co_freevars,
                 asm.code.co_cellvars)
+        code = types.CodeType(*args)
     else:
         asm.code.co_code = ''.join([chr(j) for j in bcode])
-        args = (asm.code.co_argcount,
-                asm.code.co_nlocals,
-                asm.code.co_stacksize,
-                asm.code.co_flags,
-                asm.code.co_code,
-                tuple(asm.code.co_consts),
-                tuple(asm.code.co_names),
-                tuple(asm.code.co_varnames),
-                asm.code.co_filename,
-                asm.code.co_name,
-                asm.code.co_firstlineno,
-                asm.code.co_lnotab,
-                asm.code.co_freevars,
-                asm.code.co_cellvars)
+        code = asm.code.freeze()
 
     asm.print_instructions()
     asm.code = None
 
     # print (*args)
     # co = self.Code(*args)
-    return types.CodeType(*args)
+    return code

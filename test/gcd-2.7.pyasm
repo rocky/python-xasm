@@ -25,7 +25,7 @@
             LOAD_FAST                 0 (a)
             LOAD_FAST                 1 (b)
             COMPARE_OP                4 (>)
-            POP_JUMP_IF_FALSE       L28: (to 28)
+            POP_JUMP_IF_FALSE        L28 (to 28)
 
  16:
             LOAD_FAST                 1 (b)
@@ -35,14 +35,14 @@
             STORE_FAST                1 (b)
 
  17:
-            JUMP_FORWARD            L28: (to 28)
+            JUMP_FORWARD            L28 (to 28)
 
 L28:
   19:
             LOAD_FAST                 0 (a)
             LOAD_CONST                1 (0)
             COMPARE_OP                1 (<=)
-            POP_JUMP_IF_FALSE       L44: (to 44)
+            POP_JUMP_IF_FALSE       L44 (to 44)
 
  20:
             LOAD_CONST                3 (None)
@@ -53,11 +53,11 @@ L44:
             LOAD_FAST                 0 (a)
             LOAD_CONST                2 (1)
             COMPARE_OP                2 (==)
-            POP_JUMP_IF_TRUE        L68: (to 68)
+            POP_JUMP_IF_TRUE        L68 (to 68)
             LOAD_FAST                 0 (a)
             LOAD_FAST                 1 (b)
             COMPARE_OP                2 (==)
-            POP_JUMP_IF_FALSE       L72: (to 72)
+            POP_JUMP_IF_FALSE       L72 (to 72)
 
 L68:
   22:
@@ -110,7 +110,7 @@ L72:
             LOAD_NAME                 2 (__name__)
             LOAD_CONST                2 ('__main__')
             COMPARE_OP                2 (==)
-            POP_JUMP_IF_FALSE       L69: (to 69)
+            POP_JUMP_IF_FALSE       L69 (to 69)
 
  26:
             LOAD_CONST                7 ((3, 5))
