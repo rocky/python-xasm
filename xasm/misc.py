@@ -18,7 +18,11 @@ def write_pycfile(pyc_file, asm):
             fp.write(pack('I', asm.size))
         from xdis.marsh import dumps
         for co in asm.code_list:
-            fp.write(dumps(co))
+            co_obj = dumps(co, python_version=asm.python_version)
+            if PYTHON3 and asm.python_version < '3.0':
+                co_obj = str.encode(co_obj)
+
+            fp.write(co_obj)
     print("Wrote %s" % pyc_file)
 
 def get_opcode(python_version):

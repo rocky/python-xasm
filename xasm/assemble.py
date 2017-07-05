@@ -60,11 +60,17 @@ class Assembler(object):
                                      | self.JUMP_UNCONDITONAL)
         self.code = None
 
-    def code_init(self):
-        if xdis.PYTHON3:
-            co_lnotab = b''
+    def code_init(self, python_version=None):
+
+        if self.python_version is None and python_version:
+            self.python_version = python_version
+        if self.python_version:
+            if self.python_version >= '3.0':
+                co_lnotab = b''
+            else:
+                co_lnotab = ''
         else:
-            co_lnotab = ''
+            co_lnotab = None
 
         self.code = self.Code(
             co_argcount=0,
@@ -79,7 +85,7 @@ class Assembler(object):
             co_filename = 'unknown',
             co_name = 'unknown',
             co_firstlineno=1,
-            co_lnotab=co_lnotab,
+            co_lnotab = co_lnotab,
             co_freevars = tuple(),
             co_cellvars = tuple())
 
