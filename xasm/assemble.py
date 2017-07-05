@@ -299,9 +299,9 @@ def create_code(asm, label, backpatch_inst):
             co_code.append(j)
         asm.code.co_code = bytes(co_code)
         args = (asm.code.co_argcount,
+                asm.code.co_kwonlyargcount,
                 asm.code.co_nlocals,
                 asm.code.co_stacksize,
-                asm.code.co_kwonlyargcount,
                 asm.code.co_flags,
                 asm.code.co_code,
                 tuple(asm.code.co_consts),
