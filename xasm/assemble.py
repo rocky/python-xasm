@@ -146,7 +146,6 @@ def asm_file(path):
                 l_str = line[len('# Number of locals: '):].strip()
                 asm.code.co_nlocals = int(l_str)
             elif line.startswith("# Source code size mod 2**32: "):
-                from trepan.api import debug; debug()
                 l_str = line[len("# Source code size mod 2**32: "):-len(' bytes')].strip()
                 asm.size = int(l_str)
             elif line.startswith('# Stack size: '):
