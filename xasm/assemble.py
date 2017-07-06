@@ -64,13 +64,13 @@ class Assembler(object):
 
         if self.python_version is None and python_version:
             self.python_version = python_version
-        if self.python_version:
-            if self.python_version >= '3.0':
-                co_lnotab = b''
-            else:
-                co_lnotab = ''
-        else:
-            co_lnotab = None
+        # if self.python_version:
+        #     if self.python_version >= '3.0':
+        #         co_lnotab = b''
+        #     else:
+        #         co_lnotab = ''
+        # else:
+        #     co_lnotab = None
 
         self.code = self.Code(
             co_argcount=0,
@@ -85,7 +85,7 @@ class Assembler(object):
             co_filename = 'unknown',
             co_name = 'unknown',
             co_firstlineno=1,
-            co_lnotab = co_lnotab,
+            co_lnotab = [],
             co_freevars = tuple(),
             co_cellvars = tuple())
 
@@ -102,7 +102,6 @@ class Assembler(object):
         self.status = 'errored'
 
 def asm_file(path):
-    lineno_tab = {}
     offset = 0
     label = {}
     backpatch_inst = set([])
@@ -139,6 +138,11 @@ def asm_file(path):
 
             elif line.startswith('# Filename: '):
                 asm.code.co_filename = line[len('# Filename: '):].strip()
+            elif line.startswith('# First Line: '):
+                s = line[len('# First Line: '):].strip()
+                first_lineno = int(s)
+                asm.code.co_firstlineno = first_lineno
+                asm.code.co_lnotab.append((0, first_lineno))
             elif line.startswith('# Argument count: '):
                 argc = line[len('# Argument count: '):].strip().split()[0]
                 asm.code.co_argcount = eval(argc)
@@ -207,7 +211,7 @@ def asm_file(path):
             match = re.match('^\s*([\d]+):\s*$', line)
             if match:
                 line_no = int(match.group(1))
-                lineno_tab[offset] = line_no
+                asm.code.co_lnotab.append((offset, line_no))
                 continue
 
             # Opcode section
@@ -298,22 +302,7 @@ def create_code(asm, label, backpatch_inst):
         for j in bcode:
             co_code.append(j)
         asm.code.co_code = bytes(co_code)
-        args = (asm.code.co_argcount,
-                asm.code.co_kwonlyargcount,
-                asm.code.co_nlocals,
-                asm.code.co_stacksize,
-                asm.code.co_flags,
-                asm.code.co_code,
-                tuple(asm.code.co_consts),
-                tuple(asm.code.co_names),
-                tuple(asm.code.co_varnames),
-                asm.code.co_filename,
-                asm.code.co_name,
-                asm.code.co_firstlineno,
-                asm.code.co_lnotab,
-                asm.code.co_freevars,
-                asm.code.co_cellvars)
-        code = types.CodeType(*args)
+        code = asm.code.freeze()
     else:
         asm.code.co_code = ''.join([chr(j) for j in bcode])
         code = asm.code.freeze()

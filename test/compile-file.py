@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import sys
+import os, sys
 if len(sys.argv) != 2:
     print("Usage: compile-file.py *byte-compiled-file*")
     sys.exit(1)
@@ -14,8 +14,16 @@ basename = source[:-3]
 # 2.6
 PY_VERSION = sys.version_info[0] + (sys.version_info[1] / 10.0)
 
-bytecode = "%s-%s.pyc" % (basename, PY_VERSION)
+ver_prefix = "%s-%s" % (basename, PY_VERSION)
+bytecode = "%s-good.pyc" % (ver_prefix)
 
 import py_compile
 print("compiling %s to %s" % (source, bytecode))
 py_compile.compile(source, bytecode, 'exec')
+asm_file = "%s.pyasm" % ver_prefix
+cmd = "pydisasm --asm -i %s > %s" % (bytecode, asm_file)
+print(cmd)
+os.system(cmd)
+cmd = "../xasm/cli.py -i %s" % asm_file
+print(cmd)
+os.system(cmd)

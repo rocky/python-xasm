@@ -1,6 +1,6 @@
 # pydisasm version 3.4.0
 # Python bytecode 2.7 (62211)
-# Disassembled from Python 2.7.13 (default, Jan  2 2017, 05:46:31)
+# Disassembled from Python 2.7.13 (default, Jan  2 2017, 05:46:31) 
 # [GCC 5.4.0 20160609]
 # Timestamp in code: 1499115120 (2017-07-03 16:52:00)
 
@@ -25,7 +25,7 @@
             LOAD_FAST                 0 (a)
             LOAD_FAST                 1 (b)
             COMPARE_OP                4 (>)
-            POP_JUMP_IF_FALSE        L28 (to 28)
+            POP_JUMP_IF_FALSE       L28 (to 28)
 
  16:
             LOAD_FAST                 1 (b)
@@ -84,7 +84,7 @@ L72:
 # First Line:        10
 # Constants:
 #    0: "Greatest Common Divisor\n\nSome characterstics of this program used for testing check_args() does\nnot have a 'return' statement.\n\ncheck_args() raises an uncaught exception when given the wrong number\nof parameters.\n\n"
-#    1: <code object gcd at 0x7f4a2ca69830, file "exec", line 11>
+#    1: <code object gcd at 0x7f485bc58ab0, file "exec", line 11>
 #    2: '__main__'
 #    3: 3
 #    4: 5
@@ -102,7 +102,7 @@ L72:
             STORE_NAME                0 (__doc__)
 
  11:
-            LOAD_CONST                1 (<code object gcd at 0x7f4a2ca69830, file "exec", line 11>)
+            LOAD_CONST                1 (<code object gcd at 0x7f485bc58ab0, file "exec", line 11>)
             MAKE_FUNCTION             0
             STORE_NAME                1 (gcd)
 
@@ -132,7 +132,8 @@ L72:
             PRINT_NEWLINE
 
  28:
-            JUMP_FORWARD              0 (to 69)
+            JUMP_FORWARD            L69 (to 69)
 L69:
             LOAD_CONST                6 (None)
             RETURN_VALUE
+

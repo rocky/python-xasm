@@ -2,10 +2,10 @@
 # Python bytecode 2.7 (62211)
 # Disassembled from Python 2.7.13 (default, Jan  2 2017, 05:46:31)
 # [GCC 5.4.0 20160609]
-# Timestamp in code: 1498654474 (2017-06-28 08:54:34)
+# Timestamp in code: 1499113798 (2017-07-03 16:29:58)
 
 # Method Name:       five
-# Filename:          exec
+# Filename:          fn.py
 # Argument count:    0
 # Number of locals:  0
 # Stack size:        1
@@ -27,12 +27,12 @@
 # Flags:             0x00000040 (NOFREE)
 # First Line:        1
 # Constants:
-#    0: <code object five at 0x7f8b4370f7b0, file "exec", line 1>
+#    0: <code object five at 0x7f7e08b9fbb0, file "exec", line 1>
 #    1: None
 # Names:
 #    0: five
   1:
-            LOAD_CONST                0 (<code object five at 0x7f8b4370f7b0, file "exec", line 1>)
+            LOAD_CONST                0 (<code object five at 0x7f7e08b9fbb0, file "exec", line 1>)
             MAKE_FUNCTION             0
             STORE_NAME                0 (five)
 
