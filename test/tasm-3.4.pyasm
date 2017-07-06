@@ -1,0 +1,57 @@
+# pydisasm version 3.4.0
+# Python bytecode 3.4 (3310)
+# Disassembled from Python 3.4.2 (default, May 17 2015, 22:17:04) 
+# [GCC 4.8.2]
+# Timestamp in code: 1499302188 (2017-07-05 20:49:48)
+# Source code size mod 2**32: 58 bytes
+
+# Method Name:       <module>
+# Filename:          exec
+# Argument count:    0
+# Kw-only arguments: 0
+# Number of locals:  0
+# Stack size:        2
+# Flags:             0x00000040 (NOFREE)
+# First Line:        1
+# Constants:
+#    0: 1
+#    1: 2
+#    2: 'nope'
+#    3: 'done'
+#    4: None
+# Names:
+#    0: x
+#    1: y
+#    2: print
+  1:
+            LOAD_CONST                0 (1)
+            STORE_NAME                0 (x)
+
+  2:
+            LOAD_NAME                 0 (x)
+            LOAD_CONST                1 (2)
+            BINARY_MULTIPLY
+            STORE_NAME                1 (y)
+
+  3:
+            LOAD_NAME                 1 (y)
+            LOAD_CONST                1 (2)
+            COMPARE_OP                0 (<)
+            POP_JUMP_IF_FALSE       L41 (to 41)
+
+  4:
+            LOAD_NAME                 2 (print)
+            LOAD_CONST                2 ('nope')
+            CALL_FUNCTION             1 (1 positional, 0 keyword pair)
+            POP_TOP
+            JUMP_FORWARD            L41 (to 41)
+
+L41:
+   5:
+            LOAD_NAME                 2 (print)
+            LOAD_CONST                3 ('done')
+            CALL_FUNCTION             1 (1 positional, 0 keyword pair)
+            POP_TOP
+            LOAD_CONST                4 (None)
+            RETURN_VALUE
+
