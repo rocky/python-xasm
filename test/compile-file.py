@@ -21,9 +21,9 @@ import py_compile
 print("compiling %s to %s" % (source, bytecode))
 py_compile.compile(source, bytecode, 'exec')
 asm_file = "%s.pyasm" % ver_prefix
-cmd = "pydisasm --asm -i %s > %s" % (bytecode, asm_file)
+cmd = "pydisasm --asm %s > %s" % (bytecode, asm_file)
 print(cmd)
 os.system(cmd)
-cmd = "../xasm/cli.py -i %s" % asm_file
+cmd = "../xasm/cli.py %s" % asm_file
 print(cmd)
 os.system(cmd)

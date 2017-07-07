@@ -14,6 +14,7 @@ assemble bytecode for several different versions of Python.
 
 Here are some potential uses:
 
+* Make small patches ot existing Python bytecode when you don't have source
 * Write more efficient bytecode
 * Write an instruction-level optimizing compiler
 * Experiment and learn about Python Bytecode
@@ -56,20 +57,6 @@ This uses setup.py, so it follows the standard Python routine:
 A GNU makefile is also provided so :code:`make install` (possibly as root or
 sudo) will do the steps above.
 
-Testing
--------
-
-::
-
-   make check
-
-A GNU makefile has been added to smooth over setting running the right
-command, and running tests from fastest to slowest.
-
-If you have remake_ installed, you can see the list of all tasks
-including tests via :code:`remake --tasks`.
-
-
 Usage
 -----
 
@@ -77,7 +64,7 @@ Run
 
 ::
 
-     pyxasm  --asm-file <Python assembler file>
+     pyxasm  <Python assembler file>
 
 
 For usage help  `pyxasm --help`
@@ -89,4 +76,3 @@ See Also
 * https://github.com/rocky/python-xdis : Cross Python version dissasemble
 
 .. _uncompyle6: https://github.com/rocky/python-uncompyle6
-.. _remake: http://bashdb.sf.net/remake

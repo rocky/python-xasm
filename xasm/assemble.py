@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
-import re, types
+import re
 import xdis
 from xasm.misc import get_opcode
 
@@ -49,28 +49,23 @@ class Assembler(object):
         self.python_version = python_version
         self.timestamp = 0
 
+        self.CONST_INSTRUCTIONS   = set(self.opc.hasconst)
         self.JREL_INSTRUCTIONS    = set(self.opc.hasjrel)
         self.JABS_INSTRUCTIONS    = set(self.opc.hasjabs)
-        self.LOOP_INSTRUCTIONS    = set([self.opc.opmap['SETUP_LOOP']])
         self.JUMP_UNCONDITONAL    = set([self.opc.opmap['JUMP_ABSOLUTE'],
                                          self.opc.opmap['JUMP_FORWARD']])
+        self.LOOP_INSTRUCTIONS    = set([self.opc.opmap['SETUP_LOOP']])
         self.JUMP_INSTRUCTIONS    = (self.JABS_INSTRUCTIONS
                                      | self.JREL_INSTRUCTIONS
                                      | self.LOOP_INSTRUCTIONS
                                      | self.JUMP_UNCONDITONAL)
+        self.NAME_INSTRUCTIONS    = set(self.opc.hasname)
         self.code = None
 
     def code_init(self, python_version=None):
 
         if self.python_version is None and python_version:
             self.python_version = python_version
-        # if self.python_version:
-        #     if self.python_version >= '3.0':
-        #         co_lnotab = b''
-        #     else:
-        #         co_lnotab = ''
-        # else:
-        #     co_lnotab = None
 
         self.code = self.Code(
             co_argcount=0,
@@ -290,11 +285,31 @@ def create_code(asm, label, backpatch_inst):
                 except KeyError:
                     raise RuntimeError("Label %s not found. Instruction:\n%s" %
                                        (target, inst))
+            elif is_int(inst.arg):
+                pass
+            elif inst.arg.startswith('(') and inst.arg.endswith(')'):
+                operand = inst.arg[1:-1]
+                if inst.opcode in asm.CONST_INSTRUCTIONS:
+                    operand = eval(operand)
+                    inst.arg = len(asm.code.co_consts)
+                    asm.code.co_consts.append(operand)
+                elif inst.opcode in asm.NAME_INSTRUCTIONS:
+                    operand = eval(operand)
+                    inst.arg = len(asm.code.co_names)
+                    asm.code.co_names.append(operand)
+                else:
+                    raise RuntimeError("Can't handle operand %s. Instruction:\n%s" %
+                                       inst.arg, inst)
+            else:
+                raise RuntimeError("Don't understand operand %s expecting int or (..). Instruction:\n%s" %
+                                   inst.arg, inst)
+
 
             if asm.opc.version < 3.6:
                 arg_tup = xdis.util.num2code(inst.arg)
                 bcode += arg_tup
             else:
+                # FIXME: this isn't right
                 bcode.append(inst.arg)
 
     if asm.python_version >= '3.0':

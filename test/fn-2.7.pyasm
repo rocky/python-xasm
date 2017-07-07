@@ -11,11 +11,8 @@
 # Stack size:        1
 # Flags:             0x00000043 (NOFREE | NEWLOCALS | OPTIMIZED)
 # First Line:        1
-# Constants:
-#    0: None
-#    1: 5
   2:
-            LOAD_CONST                1 (5)
+            LOAD_CONST                (5)
             RETURN_VALUE
 
 
@@ -28,7 +25,6 @@
 # First Line:        1
 # Constants:
 #    0: <code object five at 0x7f7e08b9fbb0, file "exec", line 1>
-#    1: None
 # Names:
 #    0: five
   1:
@@ -41,5 +37,5 @@
             CALL_FUNCTION             0 (0 positional, 0 keyword pair)
             PRINT_ITEM
             PRINT_NEWLINE
-            LOAD_CONST                1 (None)
+            LOAD_CONST                (None)
             RETURN_VALUE

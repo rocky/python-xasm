@@ -47,6 +47,8 @@ def get_opcode(python_version):
             from xdis.opcodes import opcode_34 as opc
         elif python_version == '3.5':
             from xdis.opcodes import opcode_35 as opc
+        elif python_version == '3.6':
+            from xdis.opcodes import opcode_36 as opc
     else:
         raise RuntimeError("Python version %s not supported yet" % python_version)
     return opc, Code
