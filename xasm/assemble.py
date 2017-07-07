@@ -142,7 +142,6 @@ def asm_file(path):
                 s = line[len('# First Line: '):].strip()
                 first_lineno = int(s)
                 asm.code.co_firstlineno = first_lineno
-                asm.code.co_lnotab.append((0, first_lineno))
             elif line.startswith('# Argument count: '):
                 argc = line[len('# Argument count: '):].strip().split()[0]
                 asm.code.co_argcount = eval(argc)
@@ -260,6 +259,7 @@ def asm_file(path):
                                    (opname, line))
             pass
         pass
+    # print(asm.code.co_lnotab)
     if asm:
         asm.code_list.append(create_code(asm, label, backpatch_inst))
     asm.code_list.reverse()
@@ -270,7 +270,7 @@ def create_code(asm, label, backpatch_inst):
     print('backpatch: ', backpatch_inst)
 
     bcode = []
-    print(asm.code.instructions)
+    # print(asm.code.instructions)
 
     offset = 0
     for inst in asm.code.instructions:

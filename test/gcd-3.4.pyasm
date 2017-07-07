@@ -1,6 +1,6 @@
 # pydisasm version 3.4.0
 # Python bytecode 3.4 (3310)
-# Disassembled from Python 3.4.2 (default, May 17 2015, 22:17:04) 
+# Disassembled from Python 3.4.2 (default, May 17 2015, 22:17:04)
 # [GCC 4.8.2]
 # Timestamp in code: 1499115120 (2017-07-03 16:52:00)
 # Source code size mod 2**32: 577 bytes
@@ -138,8 +138,6 @@ L72:
             POP_TOP
 
  28:
-            JUMP_FORWARD            L77 (to 77)
 L77:
             LOAD_CONST                7 (None)
             RETURN_VALUE
-
