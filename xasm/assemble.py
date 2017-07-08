@@ -3,6 +3,7 @@ from __future__ import print_function
 import re
 import xdis
 from xasm.misc import get_opcode
+from xdis.opcodes.base import cmp_op
 
 # import xdis.bytecode as Mbytecode
 
@@ -233,7 +234,7 @@ def asm_file(path):
                     inst.arg = None
                 inst.line_no = line_no
                 asm.code.instructions.append(inst)
-                if inst.opcode in asm.opc.JUMP_INSTRUCTIONS:
+                if inst.opcode in asm.opc.JUMP_OPS:
                     if not is_int(operand):
                         backpatch_inst.add(inst)
                 offset += xdis.op_size(inst.opcode, asm.opc)
@@ -248,6 +249,18 @@ def asm_file(path):
     asm.code_list.reverse()
     return asm
 
+def update_code_field(field_name, value, inst, opc):
+    l = getattr(opc, field_name)
+    if value in l:
+        inst.arg = l.index(value)
+    else:
+        inst.arg = len(l)
+        l.append(value)
+
+def err(msg, inst, i):
+    msg += ('. Instruction %d:\n%s' % (i, inst))
+    raise RuntimeError(msg)
+
 def create_code(asm, label, backpatch_inst):
     print('label: ', label)
     print('backpatch: ', backpatch_inst)
@@ -256,50 +269,44 @@ def create_code(asm, label, backpatch_inst):
     # print(asm.code.instructions)
 
     offset = 0
-    for inst in asm.code.instructions:
+    for i, inst in enumerate(asm.code.instructions):
         bcode.append(inst.opcode)
         offset += xdis.op_size(inst.opcode, asm.opc)
         if xdis.op_has_argument(inst.opcode, asm.opc):
             if inst in backpatch_inst:
                 target = inst.arg
-                int_target = is_int(target)
                 try:
-                    if inst.opcode in asm.opc.JREL_INSTRUCTIONS and int_target:
-                        inst.arg = offset + label[target]
+                    if inst.opcode in asm.opc.JREL_OPS:
+                        inst.arg = label[target] - offset
                     else:
                         inst.arg = label[target]
                         pass
                     pass
                 except KeyError:
-                    raise RuntimeError("Label %s not found. Instruction:\n%s" %
-                                       (target, inst))
+                    err("Label %s not found" %  target, inst, i)
             elif is_int(inst.arg):
                 pass
             elif inst.arg.startswith('(') and inst.arg.endswith(')'):
                 operand = inst.arg[1:-1]
-                if inst.opcode in asm.opc.CONST_INSTRUCTIONS:
-                    operand = eval(operand)
-                    inst.arg = len(asm.code.co_consts)
-                    asm.code.co_consts.append(operand)
-                elif inst.opcode in asm.opc.NAME_INSTRUCTIONS:
-                    if operand in asm.code.co_names:
-                        inst.arg = asm.code.co_names.index(operand)
+                if inst.opcode in asm.opc.COMPARE_OPS:
+                    if operand in cmp_op:
+                        inst.arg = cmp_op.index(operand)
                     else:
-                        inst.arg = len(asm.code.co_names)
-                        asm.code.co_names.append(operand)
-                elif inst.opcode in asm.opc.LOCAL_INSTRUCTIONS:
-                    if operand in asm.code.co_varnames:
-                        inst.arg = asm.code.co_varnames.index(operand)
-                    else:
-                        inst.arg = len(asm.code.co_varnames)
-                        asm.code.co_varnames.append(operand)
-                else:
-                    raise RuntimeError("Can't handle operand %s. Instruction:\n%s" %
-                                       (inst.arg, inst))
-            else:
-                raise RuntimeError("Don't understand operand %s expecting int or (..). Instruction:\n%s" %
-                                   (inst.arg, inst))
+                        err("Can't handle compare operand %s" % inst.arg, inst, i)
 
+                    pass
+                elif inst.opcode in asm.opc.CONST_OPS:
+                    operand = eval(operand)
+                    update_code_field('co_consts', operand, inst, asm.code)
+                elif inst.opcode in asm.opc.LOCAL_OPS:
+                    update_code_field('co_varnames', operand, inst, asm.code)
+                elif inst.opcode in asm.opc.NAME_OPS:
+                    update_code_field('co_names', operand, inst, asm.code)
+                else:
+                    err("Can't handle operand %s" % inst.arg, inst, i)
+            else:
+                # from trepan.api import debug; debug()
+                err("Don't understand operand %s expecting int or (..)" % inst.arg, inst, i)
 
             if asm.opc.version < 3.6:
                 arg_tup = xdis.util.num2code(inst.arg)
@@ -307,6 +314,8 @@ def create_code(asm, label, backpatch_inst):
             else:
                 # FIXME: this isn't right
                 bcode.append(inst.arg)
+        elif asm.opc.version >= 3.6:
+            bcode.append(0)
 
     if asm.python_version >= '3.0':
         co_code = bytearray()

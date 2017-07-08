@@ -1,12 +1,14 @@
 # pydisasm version 3.4.0
-# Python bytecode 2.7 (62211)
-# Disassembled from Python 2.7.13 (default, Jan  2 2017, 05:46:31)
+# Python bytecode 3.6 (3379)
+# Disassembled from Python 3.6.1 (default, May 20 2017, 16:12:50) 
 # [GCC 5.4.0 20160609]
 # Timestamp in code: 1499115120 (2017-07-03 16:52:00)
+# Source code size mod 2**32: 577 bytes
 
 # Method Name:       gcd
 # Filename:          exec
 # Argument count:    2
+# Kw-only arguments: 0
 # Number of locals:  2
 # Stack size:        3
 # Flags:             0x00000043 (NOFREE | NEWLOCALS | OPTIMIZED)
@@ -14,18 +16,17 @@
 # Constants:
 #    0: ' GCD. We assume positive numbers'
 #    1: 0
-#    2: 1
-#    3: None
+#    2: None
+#    3: 1
 # Names:
-#    0: None
-#    1: gcd
+#    0: gcd
 # Positional arguments:
 #	a, b
  15:
             LOAD_FAST            (a)
             LOAD_FAST            (b)
             COMPARE_OP           (>)
-            POP_JUMP_IF_FALSE    L28 (to 28)
+            POP_JUMP_IF_FALSE    L18 (to 18)
 
  16:
             LOAD_FAST            (b)
@@ -34,105 +35,107 @@
             STORE_FAST           (a)
             STORE_FAST           (b)
 
- 17:
-            JUMP_FORWARD         L28 (to 28)
-
-L28:
+L18:
   19:
             LOAD_FAST            (a)
             LOAD_CONST           1 (0)
             COMPARE_OP           (<=)
-            POP_JUMP_IF_FALSE    L44 (to 44)
+            POP_JUMP_IF_FALSE    L30 (to 30)
 
  20:
-            LOAD_CONST           3 (None)
+            LOAD_CONST           2 (None)
             RETURN_VALUE
 
-L44:
+L30:
   21:
             LOAD_FAST            (a)
-            LOAD_CONST           2 (1)
+            LOAD_CONST           3 (1)
             COMPARE_OP           (==)
-            POP_JUMP_IF_TRUE     L68 (to 68)
+            POP_JUMP_IF_TRUE     L46 (to 46)
             LOAD_FAST            (a)
             LOAD_FAST            (b)
             COMPARE_OP           (==)
-            POP_JUMP_IF_FALSE    L72 (to 72)
+            POP_JUMP_IF_FALSE    L50 (to 50)
 
-L68:
+L46:
   22:
             LOAD_FAST            (a)
             RETURN_VALUE
 
-L72:
+L50:
   23:
             LOAD_GLOBAL          (gcd)
             LOAD_FAST            (b)
             LOAD_FAST            (a)
             BINARY_SUBTRACT
             LOAD_FAST            (a)
-            CALL_FUNCTION        2 (2 positional, 0 keyword pair)
+            CALL_FUNCTION        2
             RETURN_VALUE
 
 
 # Method Name:       <module>
 # Filename:          exec
 # Argument count:    0
+# Kw-only arguments: 0
 # Number of locals:  0
-# Stack size:        6
+# Stack size:        7
 # Flags:             0x00000040 (NOFREE)
 # First Line:        10
 # Constants:
 #    0: "Greatest Common Divisor\n\nSome characterstics of this program used for testing check_args() does\nnot have a 'return' statement.\n\ncheck_args() raises an uncaught exception when given the wrong number\nof parameters.\n\n"
-#    1: <code object gcd at 0x7f8390f1eeb0, file "exec", line 11>
-#    2: '__main__'
-#    3: 3
-#    4: 5
-#    5: 'The GCD of %d and %d is %d'
-#    6: None
-#    7: (3, 5)
+#    1: <code object gcd at 0x7f9153f74420, file "exec", line 11>
+#    2: 'gcd'
+#    3: '__main__'
+#    4: 3
+#    5: 5
+#    6: 'The GCD of %d and %d is %d'
+#    7: None
+#    8: (3, 5)
 # Names:
 #    0: __doc__
 #    1: gcd
 #    2: __name__
 #    3: a
 #    4: b
+#    5: print
  10:
             LOAD_CONST           0 ("Greatest Common Divisor\n\nSome characterstics of this program used for testing check_args() does\nnot have a 'return' statement.\n\ncheck_args() raises an uncaught exception when given the wrong number\nof parameters.\n\n")
             STORE_NAME           (__doc__)
 
  11:
-            LOAD_CONST           1 (<code object gcd at 0x7f8390f1eeb0, file "exec", line 11>)
+            LOAD_CONST           1 (<code object gcd at 0x7f9153f74420, file "exec", line 11>)
+            LOAD_CONST           2 ('gcd')
             MAKE_FUNCTION        0
             STORE_NAME           (gcd)
 
  25:
             LOAD_NAME            (__name__)
-            LOAD_CONST           2 ('__main__')
+            LOAD_CONST           3 ('__main__')
             COMPARE_OP           (==)
-            POP_JUMP_IF_FALSE    L69 (to 69)
+            POP_JUMP_IF_FALSE    L52 (to 52)
 
  26:
-            LOAD_CONST           7 ((3, 5))
+            LOAD_CONST           8 ((3, 5))
             UNPACK_SEQUENCE      2
             STORE_NAME           (a)
             STORE_NAME           (b)
 
  27:
-            LOAD_CONST           5 ('The GCD of %d and %d is %d')
+            LOAD_NAME            (print)
+            LOAD_CONST           6 ('The GCD of %d and %d is %d')
             LOAD_NAME            (a)
             LOAD_NAME            (b)
             LOAD_NAME            (gcd)
             LOAD_NAME            (a)
             LOAD_NAME            (b)
-            CALL_FUNCTION        2 (2 positional, 0 keyword pair)
+            CALL_FUNCTION        2
             BUILD_TUPLE          3
             BINARY_MODULO
-            PRINT_ITEM
-            PRINT_NEWLINE
+            CALL_FUNCTION        1
+            POP_TOP
 
- 28:
-            JUMP_FORWARD         L69 (to 69)
-L69:
-            LOAD_CONST           6 (None)
+L52:
+  28:
+            LOAD_CONST           7 (None)
             RETURN_VALUE
+

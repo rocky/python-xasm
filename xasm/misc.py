@@ -37,7 +37,7 @@ def get_opcode(python_version):
         else:
             from xdis.opcodes import opcode_27 as opc
             pass
-    elif python_version in "3.2 3.3 3.4 3.5".split():
+    elif python_version in "3.2 3.3 3.4 3.5 3.6".split():
         from xdis.code import Code3 as Code
         if python_version == '3.2':
             from xdis.opcodes import opcode_32 as opc
