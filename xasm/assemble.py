@@ -48,18 +48,6 @@ class Assembler(object):
         self.status = 'unfinished'
         self.python_version = python_version
         self.timestamp = 0
-
-        self.CONST_INSTRUCTIONS   = set(self.opc.hasconst)
-        self.JREL_INSTRUCTIONS    = set(self.opc.hasjrel)
-        self.JABS_INSTRUCTIONS    = set(self.opc.hasjabs)
-        self.JUMP_UNCONDITONAL    = set([self.opc.opmap['JUMP_ABSOLUTE'],
-                                         self.opc.opmap['JUMP_FORWARD']])
-        self.LOOP_INSTRUCTIONS    = set([self.opc.opmap['SETUP_LOOP']])
-        self.JUMP_INSTRUCTIONS    = (self.JABS_INSTRUCTIONS
-                                     | self.JREL_INSTRUCTIONS
-                                     | self.LOOP_INSTRUCTIONS
-                                     | self.JUMP_UNCONDITONAL)
-        self.NAME_INSTRUCTIONS    = set(self.opc.hasname)
         self.code = None
 
     def code_init(self, python_version=None):
@@ -245,7 +233,7 @@ def asm_file(path):
                     inst.arg = None
                 inst.line_no = line_no
                 asm.code.instructions.append(inst)
-                if inst.opcode in asm.JUMP_INSTRUCTIONS:
+                if inst.opcode in asm.opc.JUMP_INSTRUCTIONS:
                     if not is_int(operand):
                         backpatch_inst.add(inst)
                 offset += xdis.op_size(inst.opcode, asm.opc)
@@ -276,7 +264,7 @@ def create_code(asm, label, backpatch_inst):
                 target = inst.arg
                 int_target = is_int(target)
                 try:
-                    if inst.opcode in asm.JREL_INSTRUCTIONS and int_target:
+                    if inst.opcode in asm.opc.JREL_INSTRUCTIONS and int_target:
                         inst.arg = offset + label[target]
                     else:
                         inst.arg = label[target]
@@ -289,20 +277,28 @@ def create_code(asm, label, backpatch_inst):
                 pass
             elif inst.arg.startswith('(') and inst.arg.endswith(')'):
                 operand = inst.arg[1:-1]
-                if inst.opcode in asm.CONST_INSTRUCTIONS:
+                if inst.opcode in asm.opc.CONST_INSTRUCTIONS:
                     operand = eval(operand)
                     inst.arg = len(asm.code.co_consts)
                     asm.code.co_consts.append(operand)
-                elif inst.opcode in asm.NAME_INSTRUCTIONS:
-                    operand = eval(operand)
-                    inst.arg = len(asm.code.co_names)
-                    asm.code.co_names.append(operand)
+                elif inst.opcode in asm.opc.NAME_INSTRUCTIONS:
+                    if operand in asm.code.co_names:
+                        inst.arg = asm.code.co_names.index(operand)
+                    else:
+                        inst.arg = len(asm.code.co_names)
+                        asm.code.co_names.append(operand)
+                elif inst.opcode in asm.opc.LOCAL_INSTRUCTIONS:
+                    if operand in asm.code.co_varnames:
+                        inst.arg = asm.code.co_varnames.index(operand)
+                    else:
+                        inst.arg = len(asm.code.co_varnames)
+                        asm.code.co_varnames.append(operand)
                 else:
                     raise RuntimeError("Can't handle operand %s. Instruction:\n%s" %
-                                       inst.arg, inst)
+                                       (inst.arg, inst))
             else:
                 raise RuntimeError("Don't understand operand %s expecting int or (..). Instruction:\n%s" %
-                                   inst.arg, inst)
+                                   (inst.arg, inst))
 
 
             if asm.opc.version < 3.6:

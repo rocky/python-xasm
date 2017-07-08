@@ -20,8 +20,8 @@
 # Positional arguments:
 #	a, b
  15:
-            LOAD_FAST                 0 (a)
-            LOAD_FAST                 1 (b)
+            LOAD_FAST                 (a)
+            LOAD_FAST                 (b)
             COMPARE_OP                4 (>)
             POP_JUMP_IF_FALSE       L25 (to 25)
 
