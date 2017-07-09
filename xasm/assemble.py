@@ -135,6 +135,9 @@ def asm_file(path):
             elif line.startswith("# Source code size mod 2**32: "):
                 l_str = line[len("# Source code size mod 2**32: "):-len(' bytes')].strip()
                 asm.size = int(l_str)
+            elif line.startswith('# Cellvars: '):
+                l_str = line[len('# Cellvars: '):].strip()
+                asm.code.co_cellvars = eval(l_str)
             elif line.startswith('# Stack size: '):
                 l_str = line[len('# Stack size: '):].strip()
                 asm.code.co_stacksize = int(l_str)

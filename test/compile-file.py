@@ -16,6 +16,7 @@ PY_VERSION = sys.version_info[0] + (sys.version_info[1] / 10.0)
 
 ver_prefix = "%s-%s" % (basename, PY_VERSION)
 bytecode = "%s-good.pyc" % (ver_prefix)
+produced_bytecode = "%s.pyc" % (ver_prefix)
 
 import py_compile
 print("compiling %s to %s" % (source, bytecode))
@@ -25,5 +26,8 @@ cmd = "pydisasm --asm %s > %s" % (bytecode, asm_file)
 print(cmd)
 os.system(cmd)
 cmd = "../xasm/cli.py %s" % asm_file
+print(cmd)
+os.system(cmd)
+cmd = "%s %s" % (sys.executable, produced_bytecode)
 print(cmd)
 os.system(cmd)
