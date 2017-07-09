@@ -69,9 +69,9 @@ class Assembler(object):
             co_filename = 'unknown',
             co_name = 'unknown',
             co_firstlineno=1,
-            co_lnotab = [],
-            co_freevars = tuple(),
-            co_cellvars = tuple())
+            co_lnotab = {},
+            co_freevars = [],
+            co_cellvars = [])
 
         self.code.instructions = []
 
@@ -166,6 +166,22 @@ def asm_file(path):
                         break
                     pass
                 pass
+            elif line.startswith('# Free variables:'):
+                count = 0
+                while i < len(lines):
+                    line = lines[i]
+                    i += 1
+                    match = re.match('^#\s+(\d+): (.+)$', line)
+                    if match:
+                        index = int(match.group(1))
+                        assert index == count
+                        asm.code.co_freevars.append(eval(expr))
+                        count += 1
+                    else:
+                        i -= 1
+                        break
+                    pass
+                pass
             elif line.startswith('# Names:'):
                 count = 0
                 while i < len(lines):
@@ -197,7 +213,7 @@ def asm_file(path):
             match = re.match('^\s*([\d]+):\s*$', line)
             if match:
                 line_no = int(match.group(1))
-                asm.code.co_lnotab.append((offset, line_no))
+                asm.code.co_lnotab[offset] = line_no
                 continue
 
             # Opcode section
@@ -270,11 +286,17 @@ def create_code(asm, label, backpatch_inst):
 
     bcode = []
     # print(asm.code.instructions)
+    offset2label = {label[i]:i for i in label}
 
     offset = 0
     for i, inst in enumerate(asm.code.instructions):
         bcode.append(inst.opcode)
+        if offset in offset2label:
+            if is_int(offset2label[offset]):
+                inst.line_no = int(offset2label[offset])
+                asm.code.co_lnotab[offset] = inst.line_no
         offset += xdis.op_size(inst.opcode, asm.opc)
+
         if xdis.op_has_argument(inst.opcode, asm.opc):
             if inst in backpatch_inst:
                 target = inst.arg
