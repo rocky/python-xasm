@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
-import re
-import xdis
+import ast, re, xdis
 from xasm.misc import get_opcode
 from xdis.opcodes.base import cmp_op
 
@@ -128,7 +127,7 @@ def asm_file(path):
                 asm.code.co_firstlineno = first_lineno
             elif line.startswith('# Argument count: '):
                 argc = line[len('# Argument count: '):].strip().split()[0]
-                asm.code.co_argcount = eval(argc)
+                asm.code.co_argcount = ast.literal_eval(argc)
             elif line.startswith('# Number of locals: '):
                 l_str = line[len('# Number of locals: '):].strip()
                 asm.code.co_nlocals = int(l_str)
@@ -137,13 +136,13 @@ def asm_file(path):
                 asm.size = int(l_str)
             elif line.startswith('# Cellvars: '):
                 l_str = line[len('# Cellvars: '):].strip()
-                asm.code.co_cellvars = eval(l_str)
+                asm.code.co_cellvars = ast.literal_eval(l_str)
             elif line.startswith('# Stack size: '):
                 l_str = line[len('# Stack size: '):].strip()
                 asm.code.co_stacksize = int(l_str)
             elif line.startswith('# Flags: '):
                 flags = line[len('# Flags: '):].strip().split()[0]
-                asm.code.co_flags = eval(flags)
+                asm.code.co_flags = ast.literal_eval(flags)
             elif line.startswith('# Constants:'):
                 count = 0
                 while i < len(lines):
@@ -159,7 +158,7 @@ def asm_file(path):
                             name = match.group(1)
                             asm.code.co_consts.append(methods[name])
                         else:
-                            asm.code.co_consts.append(eval(expr))
+                            asm.code.co_consts.append(ast.literal_eval(expr))
                         count += 1
                     else:
                         i -= 1
@@ -175,7 +174,7 @@ def asm_file(path):
                     if match:
                         index = int(match.group(1))
                         assert index == count
-                        asm.code.co_freevars.append(eval(expr))
+                        asm.code.co_freevars.append(ast.literal_eval(expr))
                         count += 1
                     else:
                         i -= 1
