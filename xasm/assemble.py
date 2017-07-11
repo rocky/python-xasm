@@ -134,9 +134,6 @@ def asm_file(path):
             elif line.startswith("# Source code size mod 2**32: "):
                 l_str = line[len("# Source code size mod 2**32: "):-len(' bytes')].strip()
                 asm.size = int(l_str)
-            elif line.startswith('# Cellvars: '):
-                l_str = line[len('# Cellvars: '):].strip()
-                asm.code.co_cellvars = ast.literal_eval(l_str)
             elif line.startswith('# Stack size: '):
                 l_str = line[len('# Stack size: '):].strip()
                 asm.code.co_stacksize = int(l_str)
@@ -165,38 +162,16 @@ def asm_file(path):
                         break
                     pass
                 pass
+            elif line.startswith('# Cell variables:'):
+                i = update_code_tuple_field('co_cellvars', asm.code,
+                                            lines, i)
             elif line.startswith('# Free variables:'):
-                count = 0
-                while i < len(lines):
-                    line = lines[i]
-                    i += 1
-                    match = re.match('^#\s+(\d+): (.+)$', line)
-                    if match:
-                        index = int(match.group(1))
-                        assert index == count
-                        asm.code.co_freevars.append(ast.literal_eval(expr))
-                        count += 1
-                    else:
-                        i -= 1
-                        break
-                    pass
-                pass
+                i = update_code_tuple_field('co_freevars', asm.code,
+                                            lines, i)
             elif line.startswith('# Names:'):
-                count = 0
-                while i < len(lines):
-                    line = lines[i]
-                    i += 1
-                    match = re.match('^#\s+(\d+): (.+)$', line)
-                    if match:
-                        index = int(match.group(1))
-                        assert index == count
-                        asm.code.co_names.append(match.group(2))
-                        count += 1
-                    else:
-                        i -= 1
-                        break
-                    pass
-            elif line.startswith('# Positional arguments:'):
+                i = update_code_tuple_field('co_names', asm.code,
+                                            lines, i)
+            elif line.startswith('# Varnames:'):
                 line = lines[i]
                 asm.code.co_varnames = line[1:].strip().split(', ')
                 i += 1
@@ -265,15 +240,45 @@ def asm_file(path):
     if asm:
         asm.code_list.append(create_code(asm, label, backpatch_inst))
     asm.code_list.reverse()
+    asm.finished = True
     return asm
+
+def member(l, match_value):
+    for i, v in enumerate(l):
+        if v == match_value and type(v) == type(match_value):
+            return i
+        pass
+    return -1
 
 def update_code_field(field_name, value, inst, opc):
     l = getattr(opc, field_name)
-    if value in l:
-        inst.arg = l.index(value)
+    # Can't use "in" because True == 1 and False == 0
+    # if value in l:
+    i = member(l, value)
+    if i >= 0:
+        inst.arg = i
     else:
         inst.arg = len(l)
         l.append(value)
+
+def update_code_tuple_field(field_name, code, lines, i):
+    count = 0
+    while i < len(lines):
+        line = lines[i]
+        i += 1
+        match = re.match('^#\s+(\d+): (.+)$', line)
+        if match:
+            index = int(match.group(1))
+            assert index == count
+            l = getattr(code, field_name)
+            l.append(match.group(2))
+            count += 1
+        else:
+            i -= 1
+            break
+        pass
+    pass
+    return i
 
 def err(msg, inst, i):
     msg += ('. Instruction %d:\n%s' % (i, inst))
@@ -320,13 +325,19 @@ def create_code(asm, label, backpatch_inst):
 
                     pass
                 elif inst.opcode in asm.opc.CONST_OPS:
-                    operand = eval(operand)
+                    operand = ast.literal_eval(operand)
                     update_code_field('co_consts', operand, inst, asm.code)
                 elif inst.opcode in asm.opc.LOCAL_OPS:
                     update_code_field('co_varnames', operand, inst, asm.code)
                 elif inst.opcode in asm.opc.NAME_OPS:
                     update_code_field('co_names', operand, inst, asm.code)
+                elif inst.opcode in asm.opc.FREE_OPS:
+                    if operand in asm.code.co_cellvars:
+                        inst.arg = asm.code.co_cellvars.index(operand)
+                    else:
+                        update_code_field('co_freevars', operand, inst, asm.code)
                 else:
+                    # from trepan.api import debug; debug()
                     err("Can't handle operand %s" % inst.arg, inst, i)
             else:
                 # from trepan.api import debug; debug()
