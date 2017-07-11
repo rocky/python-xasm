@@ -219,8 +219,8 @@ def asm_file(path):
 
             if opname in asm.opc.opname:
                 inst = Instruction()
-                inst.opname = opname
-                inst.opcode = asm.opc.opmap[opname]
+                inst.opname = opname.replace('+', '_')
+                inst.opcode = asm.opc.opmap[inst.opname]
                 if xdis.op_has_argument(inst.opcode, asm.opc):
                     inst.arg = operand
                 else:
