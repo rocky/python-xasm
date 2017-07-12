@@ -293,6 +293,7 @@ def create_code(asm, label, backpatch_inst):
     offset2label = {label[i]:i for i in label}
 
     offset = 0
+    extended_value = 0
     for i, inst in enumerate(asm.code.instructions):
         bcode.append(inst.opcode)
         if offset in offset2label:
@@ -314,6 +315,12 @@ def create_code(asm, label, backpatch_inst):
                 except KeyError:
                     err("Label %s not found" %  target, inst, i)
             elif is_int(inst.arg):
+                if inst.opcode == asm.opc.EXTENDED_ARG:
+                    extended_value += inst.arg
+                    if asm.opc.version >= 3.6:
+                        extended_value <<= 8
+                    else:
+                        extended_value <<= 16
                 pass
             elif inst.arg.startswith('(') and inst.arg.endswith(')'):
                 operand = inst.arg[1:-1]
@@ -344,15 +351,25 @@ def create_code(asm, label, backpatch_inst):
                 err("Don't understand operand %s expecting int or (..)" % inst.arg, inst, i)
 
             if asm.opc.version < 3.6:
-                arg_tup = xdis.util.num2code(inst.arg)
+                # FIXME: this is wrong because it doesn't add
+                # EXTENDED_ARG
+                if inst.opcode == asm.opc.EXTENDED_ARG:
+                    arg_tup = xdis.util.num2code(inst.arg)
+                else:
+                    arg_tup = xdis.util.num2code(inst.arg - extended_value)
+                    extended_value = 0
                 bcode += arg_tup
+            # 3.6
             else:
-                # FIXME: this isn't right
-                bcode.append(inst.arg)
+                if inst.opcode == asm.opc.EXTENDED_ARG:
+                    bcode.append(inst.arg)
+                else:
+                    bcode.append(inst.arg - extended_value)
+                    extended_value = 0
         elif asm.opc.version >= 3.6:
             bcode.append(0)
 
-    if asm.python_version >= '3.0':
+    if asm.opc.version >= 3.0:
         co_code = bytearray()
         for j in bcode:
             co_code.append(j)
