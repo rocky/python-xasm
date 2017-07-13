@@ -351,8 +351,6 @@ def create_code(asm, label, backpatch_inst):
                 err("Don't understand operand %s expecting int or (..)" % inst.arg, inst, i)
 
             if asm.opc.version < 3.6:
-                # FIXME: this is wrong because it doesn't add
-                # EXTENDED_ARG
                 if inst.opcode == asm.opc.EXTENDED_ARG:
                     arg_tup = xdis.util.num2code(inst.arg)
                 else:

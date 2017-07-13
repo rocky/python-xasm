@@ -21,7 +21,6 @@ Here are some potential uses:
 * Foil uncompyle6_ in being able to disassemble bytecode
 
 This will support bytecodes from Python version 1.5 to 3.6 or so.
-Currently though only 2.6, 2.7 and 3.4 are planned.
 
 The code requires Python 2.7 or later.
 
