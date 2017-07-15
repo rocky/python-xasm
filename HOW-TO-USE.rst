@@ -32,8 +32,9 @@ preferable right now.
 Format of assembly file
 -----------------------
 
-Again, easiest to consult the ``pydiasm --xasm` output ``.pyasm`` file produced. Even easier
-is just to look in the test directory_ for files that end with ``.pyasm``.
+Again, easiest to consult the ``pydiasm --xasm`` output ``.pyasm``-file that is 
+produced. Even easier, just to look in the test directory_ for files that end 
+with ``.pyasm``.
 
 In general, lines that start with "#" in column one comments. Well, sort
 of.
