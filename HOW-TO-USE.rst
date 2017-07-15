@@ -36,8 +36,8 @@ Again, easiest to consult the ``pydiasm --xasm`` output ``.pyasm``-file that is
 produced. Even easier, just to look in the test directory_ for files that end 
 with ``.pyasm``.
 
-In general, lines that start with "#" in column one comments. Well, sort
-of.
+In general, lines that start with "#" in column one are comments or code or function 
+objects other than bytecode instructions.
 
 Necessary fields that are in Python code object and function objects
 are here. These include stuff like the Python "magic" number which
