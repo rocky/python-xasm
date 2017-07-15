@@ -123,7 +123,7 @@ example
 ::
 
    66:
-   LOAD_CONST ('this is line 66')
+       LOAD_CONST ('this is line 66')
 
 The ``LOAD_CONST`` instruction will be noted as being on line 66. Note
 that Python requires that line numbers doesn't decrease as the a
@@ -139,7 +139,7 @@ between line numbers and labels. Here is a label:
 ::
 
    L33:
-   POP_TOP
+       POP_TOP
 
 Inside an instruction you refer to the label without the trialing colon. For example:
 
@@ -202,7 +202,7 @@ wanted to jump relative 259 bytes you'd write:
 
 ::
 
-   EXTENDED_ARG 1
+   EXTENDED_ARG 1  # Neded because below offset is greater than 255 away
    JUMP_FORWARD 259  # Should really be 3
 
 We should have a better API to generate instructions from inside
