@@ -9,19 +9,19 @@ Although it is possible to write assembler code from scratch, for now
 it's much easier to start off using Python code, even if
 skeletal. Then use ``pydisasm --xasm`` to convert to the Python source
 code assembler format. From this then modify the results and run
-``xasm``.
+``pyxasm``.
 
 In normal python disassembly code (and in the bytecode file), the main
 function appears first; it contains constants which contain code to
 other functions and so on. In Python disassembly these are linearized
 so that from top down you have a topological sort of the dependencies.
 
-However in the assembler file input to xasm, it has to come the other
-way: The assembler for the main code has to come last: after all of
-the things it calls are listed beforehand. This is necessary because
-as the assembler reads the assembly file and builds code objects as it
-goes along. So the first routines have to be those that don't call any
-others (aside possibly itself recursively).
+However in the assembler file input to ``pyxasm``, it has to come the
+other way: The assembler for the main code has to come last: after all
+of the things it calls are listed beforehand. This is necessary
+because as the assembler reads the assembly file and builds code
+objects as it goes along. So the first routines have to be those that
+don't call any others (aside possibly itself recursively).
 
 And while on the topic, let me mention something about function
 calls. Right now, that I guess is kind of a pain because you need to
@@ -162,14 +162,15 @@ or label listed in the last section. We've seen examples of
 instructions above.
 
 Instructions start with an opcode and will have an operand depending
-on whether the opcode requres one or not. However as we've seen above
+on whether the opcode requires one or not. However as we've seen above
 the operands can take a couple of forms. The operand can be a number
 which represents a bytecode offset, or an index into one of the method
 lists like the Constants, or Names list. I don't recommend though that
 you use this form. Instead use labels where instead of offsets and
 list the values for list rather than an index.
 
-And all not-offset operands should be enclosed in parenthesis. For example:
+And operands other than offsets or labels, should be enclosed in
+parenthesis. For example:
 
 ::
 
@@ -188,7 +189,7 @@ Just that this even works blows my mind.
 First of all the fact that we can output bytecode for different
 versions is pretty neat. Even more, the bytecode version you produce
 doesn't have to be the same as the Python interpreter that runs
-xasm. That's why there's that "x" at the beginning. It stands for
+``pyxasm``. That's why there's that "x": it stands for
 "cross"
 
 TODO
