@@ -32,8 +32,8 @@ preferable right now.
 Format of assembly file
 -----------------------
 
-Again, easiest to consult the ``pydiasm --xasm` output `.pyasm` file produced. Even easier
-is just to look in the [test directory](https://github.com/rocky/python-xasm/tree/master/test) for files that end with .pyasm.
+Again, easiest to consult the ``pydiasm --xasm` output ``.pyasm`` file produced. Even easier
+is just to look in the test directory_ for files that end with ``.pyasm``.
 
 In general, lines that start with "#" in column one comments. Well, sort
 of.
@@ -210,3 +210,5 @@ We should have a better API to generate instructions from inside
 Python. This is pretty straightforward to do.
 
 I've not put much in the way of error checking and error reporting.
+
+.. _directory: https://github.com/rocky/python-xasm/tree/master/test
