@@ -73,5 +73,6 @@ For usage help  `pyxasm --help`
 See Also
 --------
 * https://github.com/rocky/python-xdis : Cross Python version dissasemble
+* https://github.com/rocky/python-xasm/blob/master/HOW-TO-USE.rst : How to write an assembler file
 
 .. _uncompyle6: https://github.com/rocky/python-uncompyle6

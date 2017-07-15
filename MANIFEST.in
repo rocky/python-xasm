@@ -1,0 +1,6 @@
+include README.rst
+include HOW-TO-USE.rst
+include LICENSE.gpl2
+include __pkginfo__.py
+recursive-include xasm *.py
+recursive-include test *.pyasm *.py
