@@ -32,11 +32,12 @@ preferable right now.
 Format of assembly file
 -----------------------
 
-Again, easiest to consult the ``pydiasm --xasm output``. Even easier
-is just to look in the test directory for files that end with .pyasm.
+Again, easiest to consult the ``pydiasm --xasm`` output ``.pyasm``-file that is 
+produced. Even easier, just to look in the test directory_ for files that end 
+with ``.pyasm``.
 
-In general, lines that start with "#" in column one comments. Well, sort
-of.
+In general, lines that start with "#" in column one are comments or code or function 
+objects other than bytecode instructions.
 
 Necessary fields that are in Python code object and function objects
 are here. These include stuff like the Python "magic" number which
@@ -210,3 +211,5 @@ We should have a better API to generate instructions from inside
 Python. This is pretty straightforward to do.
 
 I've not put much in the way of error checking and error reporting.
+
+.. _directory: https://github.com/rocky/python-xasm/tree/master/test
