@@ -36,11 +36,11 @@ def main(compile, disasm, asm, files):
             bytecode = "%s-good.pyc" % (ver_prefix)
             produced_bytecode = "%s.pyc" % (ver_prefix)
             print("compiling %s to %s" % (path, bytecode))
-            py_compile.compile(path, bytecode, 'exec')
+            py_compile.compile(path, bytecode)
         else:
             bytecode = path
 
-        have_disasm_path = path.endswith('.pyc') or path.endswith('pyo')
+        have_disasm_path = path.endswith('.pyc') or path.endswith('.pyo')
         have_asm_path = path.endswith('.pyasm')
         if disasm is None:
             do_disasm = have_disasm_path
@@ -53,9 +53,10 @@ def main(compile, disasm, asm, files):
             if have_disasm_path:
                 produced_bytecode = path
                 bytecode = path
-                basename = path[:-len('pyo')]
-
-            asm_file = "%s.pyasm" % basename
+                basename = path[:-len('.pyo')]
+                asm_file = "%s.pyasm" % basename
+            else:
+                asm_file = "%s.pyasm" % ver_prefix
 
             cmd = "pydisasm --asm %s > %s" % (bytecode, asm_file)
             print(cmd)

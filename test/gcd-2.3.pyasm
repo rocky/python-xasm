@@ -1,11 +1,11 @@
 # pydisasm version 3.5.0
 # Python bytecode 2.3 (62011)
-# Disassembled from Python 2.7.13 (default, Jan  1 2017, 20:35:56) 
+# Disassembled from Python 2.7.13 (default, Jan  1 2017, 20:35:56)
 # [GCC 5.4.0 20160609]
 # Timestamp in code: 1499156389 (2017-07-04 04:19:49)
 
 # Method Name:       gcd
-# Filename:          exec
+# Filename:          columnize.py
 # Argument count:    2
 # Number of locals:  2
 # Stack size:        3
@@ -165,4 +165,3 @@ L76:
 L77:
             LOAD_CONST           (None)
             RETURN_VALUE
-
