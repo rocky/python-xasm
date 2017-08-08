@@ -22,10 +22,11 @@ def transform_asm(asm):
     new_asm = Assembler('2.7')
     new_asm.code = copy(asm.code)
 
-    new_asm.backpatch_inst = copy(asm.backpatch_inst)
-    new_asm.label = copy(asm.label)
-    offset2label = {v: k for k, v in new_asm.label.items()}
     for j, code in enumerate(asm.code_list):
+        offset2label = {v: k for k, v in asm.label[j].items()}
+        new_asm.codes = copy(asm.codes)
+        new_asm.backpatch.append(copy(asm.backpatch[j]))
+        new_asm.label.append(copy(asm.label[j]))
         new_asm.codes.append(copy(code))
         i = 0
         instructions = asm.codes[j].instructions
@@ -45,20 +46,21 @@ def transform_asm(asm):
                 new_inst.opname = (
                     'POP_JUMP_IF_FALSE' if inst.opname == 'JUMP_IF_FALSE' else 'POP_JUMP_IF_TRUE'
                 )
-                new_asm.backpatch_inst.remove(inst)
+                new_asm.backpatch[-1].remove(inst)
                 new_inst.arg = 'L%d' % (inst.offset + inst.arg + 3)
-                new_asm.backpatch_inst.add(new_inst)
+                new_asm.backpatch[-1].add(new_inst)
             else:
                 xlate26_27(new_inst)
 
             if inst.offset in offset2label:
-                new_asm.label[offset2label[inst.offset]] = offset
+                new_asm.label[-1][offset2label[inst.offset]] = offset
             offset += xdis.op_size(new_inst.opcode, opcode_27)
             new_asm.code.instructions.append(new_inst)
             i += 1
             pass
 
-    new_asm.code_list.append(create_code(new_asm))
+    co = create_code(new_asm, new_asm.label[-1], new_asm.backpatch[-1])
+    new_asm.code_list.append(co)
     new_asm.code_list.reverse()
     new_asm.finished = 'finished'
     return new_asm

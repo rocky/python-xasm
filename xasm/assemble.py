@@ -49,8 +49,8 @@ class Assembler(object):
         self.status = 'unfinished'
         self.python_version = python_version
         self.timestamp = 0
-        self.backpatch_inst = set([])
-        self.label = {}
+        self.backpatch = []  # list of backpatch dicts, one for each function
+        self.label = []      # list of label dists, one for each function
         self.code = None
 
     def code_init(self, python_version=None):
@@ -77,6 +77,12 @@ class Assembler(object):
 
         self.code.instructions = []
 
+    def update_lists(self, co, label, backpatch):
+        self.code_list.append(co)
+        self.codes.append(self.code)
+        self.label.append(label)
+        self.backpatch.append(backpatch)
+
     def print_instructions(self):
         for inst in self.code.instructions:
             if inst.line_no:
@@ -92,6 +98,8 @@ def asm_file(path):
     methods = {}
     method_name = None
     asm = None
+    backpatch_inst = set([])
+    label = {}
 
     lines = open(path).readlines()
     i = 0
@@ -110,12 +118,12 @@ def asm_file(path):
                     asm.timestamp = int(time_str)
             elif line.startswith('# Method Name: '):
                 if method_name:
-                    co = create_code(asm, asm.backpatch_inst)
-                    asm.code_list.append(co)
+                    co = create_code(asm, label, backpatch_inst)
+                    asm.update_lists(co, label, backpatch_inst)
+                    label = {}
+                    backpatch_inst = set([])
                     methods[method_name] = co
                     offset = 0
-                    asm.label = {}
-                    asm.backpatch_inst = set([])
                 asm.code_init()
                 asm.code.co_name = line[len('# Method Name: '):].strip()
                 method_name = asm.code.co_name
@@ -182,7 +190,7 @@ def asm_file(path):
 
             match = re.match('^([^\s]+):$', line)
             if match:
-                asm.label[match.group(1)] = offset
+                label[match.group(1)] = offset
                 continue
 
             match = re.match('^\s*([\d]+):\s*$', line)
@@ -230,7 +238,7 @@ def asm_file(path):
                 asm.code.instructions.append(inst)
                 if inst.opcode in asm.opc.JUMP_OPS:
                     if not is_int(operand):
-                        asm.backpatch_inst.add(inst)
+                        backpatch_inst.add(inst)
                 offset += xdis.op_size(inst.opcode, asm.opc)
             else:
                 raise RuntimeError("Illegal opname %s in: %s" %
@@ -239,8 +247,8 @@ def asm_file(path):
         pass
     # print(asm.code.co_lnotab)
     if asm:
-        asm.code_list.append(create_code(asm))
-        asm.codes.append(asm.code)
+        co = create_code(asm, label, backpatch_inst)
+        asm.update_lists(co, label, backpatch_inst)
     asm.code_list.reverse()
     asm.status = 'finished'
     return asm
@@ -286,16 +294,17 @@ def err(msg, inst, i):
     msg += ('. Instruction %d:\n%s' % (i, inst))
     raise RuntimeError(msg)
 
-def create_code(asm):
+def create_code(asm, label, backpatch):
     # print('label: ', asm.label)
     # print('backpatch: ', asm.backpatch_inst)
 
     bcode = []
     # print(asm.code.instructions)
-    offset2label = {asm.label[i]:i for i in asm.label}
 
     offset = 0
     extended_value = 0
+    offset2label = {label[j]:j for j in label}
+
     for i, inst in enumerate(asm.code.instructions):
         bcode.append(inst.opcode)
         if offset in offset2label:
@@ -307,13 +316,13 @@ def create_code(asm):
         offset += xdis.op_size(inst.opcode, asm.opc)
 
         if xdis.op_has_argument(inst.opcode, asm.opc):
-            if inst in asm.backpatch_inst:
+            if inst in backpatch:
                 target = inst.arg
                 try:
                     if inst.opcode in asm.opc.JREL_OPS:
-                        inst.arg = asm.label[target] - offset
+                        inst.arg = label[target] - offset
                     else:
-                        inst.arg = asm.label[target]
+                        inst.arg = label[target]
                         pass
                     pass
                 except KeyError:
