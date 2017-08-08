@@ -2,6 +2,7 @@
 """Convert Python 2.6 bytecode to Python 2.7"""
 from xdis.main import disassemble_file
 import xdis
+from xasm.misc import write_pycfile
 from xdis.opcodes import opcode_27
 from tempfile import NamedTemporaryFile
 import os.path as osp
@@ -11,16 +12,23 @@ from xasm.assemble import asm_file, Assembler, create_code
 
 import sys
 
+def xlate26_27(inst):
+    """Between 2.6 and 2.7 opcode values changed
+    Adjust for the differences by using the opcode name
+    """
+    inst.opcode = opcode_27.opmap[inst.opname]
+
 def transform_asm(asm):
     new_asm = Assembler('2.7')
-    new_asm.code_init()
+    new_asm.code = copy(asm.code)
 
-    new_asm.backpatch_inst = asm.backpatch_inst
+    new_asm.backpatch_inst = copy(asm.backpatch_inst)
     new_asm.label = copy(asm.label)
-    for code in asm.code_list:
-        new_asm.code_list.append(copy(code))
+    offset2label = {v: k for k, v in new_asm.label.items()}
+    for j, code in enumerate(asm.code_list):
+        new_asm.codes.append(copy(code))
         i = 0
-        instructions = code.instructions
+        instructions = asm.codes[j].instructions
         new_asm.code.instructions = []
         n = len(instructions)
         offset = 0
@@ -37,7 +45,14 @@ def transform_asm(asm):
                 new_inst.opname = (
                     'POP_JUMP_IF_FALSE' if inst.opname == 'JUMP_IF_FALSE' else 'POP_JUMP_IF_TRUE'
                 )
-            # FIXME if inst.offset is in a label, then adjust the label
+                new_asm.backpatch_inst.remove(inst)
+                new_inst.arg = 'L%d' % (inst.offset + inst.arg + 3)
+                new_asm.backpatch_inst.add(new_inst)
+            else:
+                xlate26_27(new_inst)
+
+            if inst.offset in offset2label:
+                new_asm.label[offset2label[inst.offset]] = offset
             offset += xdis.op_size(new_inst.opcode, opcode_27)
             new_asm.code.instructions.append(new_inst)
             i += 1
@@ -63,3 +78,4 @@ assert version == 2.6, "Need a Python 2.6 bytecode; got bytecode for version %s"
 asm = asm_file(temp26_asm.name)
 new_asm = transform_asm(asm)
 os.unlink(temp26_asm.name)
+write_pycfile(bytecode_27_path, new_asm)

@@ -6,7 +6,7 @@ from xdis.opcodes.base import cmp_op
 
 # import xdis.bytecode as Mbytecode
 
-class Instruction(object): # (Mbytecode.Instruction):
+class Instruction(): # (Mbytecode.Instruction):
     def __repr__(self):
         s = ''
         if self.line_no:
@@ -45,6 +45,7 @@ class Assembler(object):
     def __init__(self, python_version):
         self.opc, self.Code = get_opcode(python_version)
         self.code_list = []
+        self.codes = []   # FIXME use a better name
         self.status = 'unfinished'
         self.python_version = python_version
         self.timestamp = 0
@@ -239,6 +240,7 @@ def asm_file(path):
     # print(asm.code.co_lnotab)
     if asm:
         asm.code_list.append(create_code(asm))
+        asm.codes.append(asm.code)
     asm.code_list.reverse()
     asm.status = 'finished'
     return asm
@@ -285,8 +287,8 @@ def err(msg, inst, i):
     raise RuntimeError(msg)
 
 def create_code(asm):
-    print('label: ', asm.label)
-    print('backpatch: ', asm.backpatch_inst)
+    # print('label: ', asm.label)
+    # print('backpatch: ', asm.backpatch_inst)
 
     bcode = []
     # print(asm.code.instructions)
@@ -300,6 +302,8 @@ def create_code(asm):
             if is_int(offset2label[offset]):
                 inst.line_no = int(offset2label[offset])
                 asm.code.co_lnotab[offset] = inst.line_no
+
+        inst.offset = offset
         offset += xdis.op_size(inst.opcode, asm.opc)
 
         if xdis.op_has_argument(inst.opcode, asm.opc):
@@ -372,13 +376,11 @@ def create_code(asm):
         for j in bcode:
             co_code.append(j)
         asm.code.co_code = bytes(co_code)
-        code = asm.code.freeze()
     else:
         asm.code.co_code = ''.join([chr(j) for j in bcode])
-        code = asm.code.freeze()
 
-    asm.print_instructions()
-    asm.code = None
+    code = asm.code.freeze()
+    # asm.print_instructions()
 
     # print (*args)
     # co = self.Code(*args)
