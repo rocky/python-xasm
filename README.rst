@@ -14,10 +14,11 @@ assemble bytecode for several different versions of Python.
 
 Here are some potential uses:
 
-* Make small patches ot existing Python bytecode when you don't have source
-* Write more efficient bytecode
+* Make small patches to existing Python bytecode when you don’t have source
+* Craft custom and efficient bytecode
 * Write an instruction-level optimizing compiler
-* Experiment and learn about Python Bytecode
+* Experiment with and learn about Python bytecode
+* Foil uncompyle6_ so that it can’t disassemble bytecode (at least for now)
 * Foil uncompyle6_ in being able to disassemble bytecode
 
 This will support bytecodes from Python version 1.5 to 3.6 or so.
@@ -29,12 +30,12 @@ Assembly files
 
 More detail will be filled in, but some principles:
 
-* Prefered extension for Python assembly is `.pyasm`
+* Preferred extension for Python assembly is `.pyasm`
 * assembly is designed to work with the output of `pydisasm`
-* Assesembly file lables are at the beginning of the line
+* Assembly file labels are at the beginning of the line
   and end in a colon, e.g. 'END_IF:'
 * instruction offsets in the assembly file are ignored and don't need
-  to be enteed
+  to be entered
 * in those instructions that refer to offsets, if the if the
   operand is an int, exactly that value will be used for the operand. Otherwise
   we will look for labels and match up with that
@@ -72,7 +73,7 @@ For usage help  `pyxasm --help`
 
 See Also
 --------
-* https://github.com/rocky/python-xdis : Cross Python version dissasemble
+* https://github.com/rocky/python-xdis : Cross Python version disassemble
 * https://github.com/rocky/python-xasm/blob/master/HOW-TO-USE.rst : How to write an assembler file
 
 .. _uncompyle6: https://github.com/rocky/python-uncompyle6
