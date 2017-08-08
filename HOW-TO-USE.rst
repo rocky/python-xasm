@@ -190,7 +190,7 @@ Just that this even works blows my mind.
 First of all the fact that we can output bytecode for different
 versions is pretty neat. Even more, the bytecode version you produce
 doesn't have to be the same as the Python interpreter that runs
-``pyxasm``. That's why there's that "x": it stands for
+``pyc-xasm``. That's why there's that "x": it stands for
 "cross"
 
 TODO
