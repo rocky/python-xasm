@@ -9,7 +9,7 @@ Although it is possible to write assembler code from scratch, for now
 it's much easier to start off using Python code, even if
 skeletal. Then use ``pydisasm --xasm`` to convert to the Python source
 code assembler format. From this then modify the results and run
-``pyxasm``.
+``pyc-xasm``.
 
 In normal python disassembly code (and in the bytecode file), the main
 function appears first; it contains constants which contain code to
