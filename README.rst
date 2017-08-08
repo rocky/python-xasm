@@ -19,7 +19,6 @@ Here are some potential uses:
 * Write an instruction-level optimizing compiler
 * Experiment with and learn about Python bytecode
 * Foil uncompyle6_ so that it can’t disassemble bytecode (at least for now)
-* Foil uncompyle6_ in being able to disassemble bytecode
 
 This will support bytecodes from Python version 1.5 to 3.6 or so.
 
