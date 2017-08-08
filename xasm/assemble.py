@@ -103,6 +103,7 @@ def asm_file(path):
 
     lines = open(path).readlines()
     i = 0
+    bytecode_seen = False
     while i < len(lines):
         line = lines[i]
         i += 1
@@ -111,6 +112,7 @@ def asm_file(path):
                 python_version = line[len('# Python bytecode '):].strip().split()[0]
                 asm = Assembler(python_version)
                 asm.code_init()
+                bytecode_seen = True
             elif line.startswith('# Timestamp in code: '):
                 text = line[len('# Timestamp in code: '):].strip()
                 time_str = text.split()[0]
@@ -200,6 +202,7 @@ def asm_file(path):
                 continue
 
             # Opcode section
+            assert bytecode_seen, 'File needs to start out with: # Python bytecode <version>'
             fields = line.strip().split()
             line_no = None
             l = len(fields)

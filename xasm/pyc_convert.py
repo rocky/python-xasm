@@ -9,8 +9,7 @@ import os.path as osp
 import os
 from copy import copy
 from xasm.assemble import asm_file, Assembler, create_code
-
-import sys
+import click
 
 def xlate26_27(inst):
     """Between 2.6 and 2.7 opcode values changed
@@ -18,8 +17,16 @@ def xlate26_27(inst):
     """
     inst.opcode = opcode_27.opmap[inst.opname]
 
-def transform_asm(asm):
-    new_asm = Assembler('2.7')
+def conversion_to_version(conversion_type, is_dest=False):
+    if is_dest:
+        return conversion_type[-2] + '.' + conversion_type[-1]
+    else:
+        return conversion_type[0] + '.' + conversion_type[1]
+
+
+def transform_asm(asm, conversion_type, dest_version):
+
+    new_asm = Assembler(dest_version)
     new_asm.code = copy(asm.code)
 
     for j, code in enumerate(asm.code_list):
@@ -65,19 +72,31 @@ def transform_asm(asm):
     new_asm.finished = 'finished'
     return new_asm
 
+@click.command()
+@click.option('--conversion-type', type=click.Choice(['26-27', '25-26']),
+              help='specify conversion from/to bytecode', default='26-27')
+@click.argument('input_pyc', type=click.Path('r'), nargs=1)
+@click.argument('output_pyc', type=click.Path('w'),
+                required=False, nargs=1, default=None)
+def main(conversion_type, input_pyc, output_pyc):
+    shortname = osp.basename(input_pyc)
+    if shortname.endswith('.pyc'):
+        shortname = shortname[:-4]
+    src_version = conversion_to_version(conversion_type, is_dest=False)
+    dest_version = conversion_to_version(conversion_type, is_dest=True)
+    if output_pyc is None:
+        output_pyc = "%s-%s.pyc" % (shortname, dest_version)
+    temp_asm = NamedTemporaryFile('w', suffix='.pyasm', prefix=shortname, delete=False)
+    (filename, co, version,
+     timestamp, magic_int) = disassemble_file(input_pyc, temp_asm, asm_format=True)
+    temp_asm.close()
+    assert version == float(src_version), (
+        "Need Python %s bytecode; got bytecode for version %s" %
+        (src_version, version))
+    asm = asm_file(temp_asm.name)
+    new_asm = transform_asm(asm, conversion_type, dest_version)
+    os.unlink(temp_asm.name)
+    write_pycfile(output_pyc, new_asm)
 
-if len(sys.argv) != 2:
-    print("usage: %s bytecode-26 bytecode27" % sys.argv[0])
-bytecode_26_path, bytecode_27_path = sys.argv[1:3]
-
-
-shortname = osp.basename(bytecode_26_path)
-temp26_asm = NamedTemporaryFile('w', suffix='.pyasm26', prefix=shortname, delete=False)
-filename, co, version, timestamp, magic_int = disassemble_file(bytecode_26_path,
-                                                               temp26_asm, asm_format=True)
-temp26_asm.close()
-assert version == 2.6, "Need a Python 2.6 bytecode; got bytecode for version %s" % version
-asm = asm_file(temp26_asm.name)
-new_asm = transform_asm(asm)
-os.unlink(temp26_asm.name)
-write_pycfile(bytecode_27_path, new_asm)
+if __name__ == '__main__':
+    main()
