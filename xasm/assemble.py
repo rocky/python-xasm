@@ -48,6 +48,8 @@ class Assembler(object):
         self.status = 'unfinished'
         self.python_version = python_version
         self.timestamp = 0
+        self.backpatch_inst = set([])
+        self.label = {}
         self.code = None
 
     def code_init(self, python_version=None):
@@ -86,8 +88,6 @@ class Assembler(object):
 
 def asm_file(path):
     offset = 0
-    label = {}
-    backpatch_inst = set([])
     methods = {}
     method_name = None
     asm = None
@@ -109,12 +109,12 @@ def asm_file(path):
                     asm.timestamp = int(time_str)
             elif line.startswith('# Method Name: '):
                 if method_name:
-                    co = create_code(asm, label, backpatch_inst)
+                    co = create_code(asm, asm.backpatch_inst)
                     asm.code_list.append(co)
                     methods[method_name] = co
                     offset = 0
-                    label = {}
-                    backpatch_inst = set([])
+                    asm.label = {}
+                    asm.backpatch_inst = set([])
                 asm.code_init()
                 asm.code.co_name = line[len('# Method Name: '):].strip()
                 method_name = asm.code.co_name
@@ -181,7 +181,7 @@ def asm_file(path):
 
             match = re.match('^([^\s]+):$', line)
             if match:
-                label[match.group(1)] = offset
+                asm.label[match.group(1)] = offset
                 continue
 
             match = re.match('^\s*([\d]+):\s*$', line)
@@ -229,7 +229,7 @@ def asm_file(path):
                 asm.code.instructions.append(inst)
                 if inst.opcode in asm.opc.JUMP_OPS:
                     if not is_int(operand):
-                        backpatch_inst.add(inst)
+                        asm.backpatch_inst.add(inst)
                 offset += xdis.op_size(inst.opcode, asm.opc)
             else:
                 raise RuntimeError("Illegal opname %s in: %s" %
@@ -238,9 +238,9 @@ def asm_file(path):
         pass
     # print(asm.code.co_lnotab)
     if asm:
-        asm.code_list.append(create_code(asm, label, backpatch_inst))
+        asm.code_list.append(create_code(asm))
     asm.code_list.reverse()
-    asm.finished = True
+    asm.status = 'finished'
     return asm
 
 def member(l, match_value):
@@ -284,13 +284,13 @@ def err(msg, inst, i):
     msg += ('. Instruction %d:\n%s' % (i, inst))
     raise RuntimeError(msg)
 
-def create_code(asm, label, backpatch_inst):
-    print('label: ', label)
-    print('backpatch: ', backpatch_inst)
+def create_code(asm):
+    print('label: ', asm.label)
+    print('backpatch: ', asm.backpatch_inst)
 
     bcode = []
     # print(asm.code.instructions)
-    offset2label = {label[i]:i for i in label}
+    offset2label = {asm.label[i]:i for i in asm.label}
 
     offset = 0
     extended_value = 0
@@ -303,13 +303,13 @@ def create_code(asm, label, backpatch_inst):
         offset += xdis.op_size(inst.opcode, asm.opc)
 
         if xdis.op_has_argument(inst.opcode, asm.opc):
-            if inst in backpatch_inst:
+            if inst in asm.backpatch_inst:
                 target = inst.arg
                 try:
                     if inst.opcode in asm.opc.JREL_OPS:
-                        inst.arg = label[target] - offset
+                        inst.arg = asm.label[target] - offset
                     else:
-                        inst.arg = label[target]
+                        inst.arg = asm.label[target]
                         pass
                     pass
                 except KeyError:
