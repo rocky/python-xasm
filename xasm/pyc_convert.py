@@ -73,12 +73,21 @@ def transform_asm(asm, conversion_type, dest_version):
     return new_asm
 
 @click.command()
-@click.option('--conversion-type', type=click.Choice(['26-27', '25-26']),
+@click.option('--conversion-type', '-t', type=click.Choice(['26-27', '25-26']),
               help='specify conversion from/to bytecode', default='26-27')
 @click.argument('input_pyc', type=click.Path('r'), nargs=1)
 @click.argument('output_pyc', type=click.Path('w'),
                 required=False, nargs=1, default=None)
 def main(conversion_type, input_pyc, output_pyc):
+    """Convert Python bytecode from one version to another.
+
+    INPUT_PYC contains the input bytecode path name
+    OUTPUT_PYC  contians the output bytecode path name if supplied
+    The --conversion type option specifies what conversion to do.
+
+    Note: there are a very limited set of conversions currently supported.
+    Help out and write more!"""
+
     shortname = osp.basename(input_pyc)
     if shortname.endswith('.pyc'):
         shortname = shortname[:-4]

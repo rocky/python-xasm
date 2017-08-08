@@ -59,15 +59,24 @@ sudo) will do the steps above.
 Usage
 -----
 
-Run
+To create a python bytecode file from an assemble file, run:
 
 ::
 
-     pyxasm  <Python assembler file>
+   pyc-xasm [OPTIONS] ASM_PATH
 
 
-For usage help  `pyxasm --help`
+For usage help  `pyc-xasm --help`
 
+
+To convert a python bytecode from one bytecode to another, run:
+
+::
+
+   pyc-convert [OPTIONS] INPUT_PYC [OUTPUT_PYC]
+
+
+For usage help  `pyc-convert --help`
 
 
 See Also

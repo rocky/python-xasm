@@ -23,7 +23,8 @@ setup(
        setup_requires     = setup_requires,
        entry_points='''
         [console_scripts]
-        pyxasm=xasm.cli:main
+        pyc-xasm    = xasm.xasm_cli:main
+        pyc-convert = xasm.pyc_convert:main
        ''',
        tests_require      = tests_require,
        url                = web,
