@@ -9,7 +9,7 @@ Although it is possible to write assembler code from scratch, for now
 it's much easier to start off using Python code, even if
 skeletal. Then use ``pydisasm --xasm`` to convert to the Python source
 code assembler format. From this then modify the results and run
-``pyxasm``.
+``pyc-xasm``.
 
 In normal python disassembly code (and in the bytecode file), the main
 function appears first; it contains constants which contain code to
@@ -127,7 +127,7 @@ example
        LOAD_CONST ('this is line 66')
 
 The ``LOAD_CONST`` instruction will be noted as being on line 66. Note
-that Python requires that line numbers doesn't decrease as the a
+that Python requires that line numbers don't decrease as the a
 method increases in bytecode offset. Also note that there can be white
 space before the line number; the number doesn't have to be in
 column 1.
@@ -190,7 +190,7 @@ Just that this even works blows my mind.
 First of all the fact that we can output bytecode for different
 versions is pretty neat. Even more, the bytecode version you produce
 doesn't have to be the same as the Python interpreter that runs
-``pyxasm``. That's why there's that "x": it stands for
+``pyc-xasm``. That's why there's that "x": it stands for
 "cross"
 
 TODO
