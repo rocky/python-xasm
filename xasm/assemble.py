@@ -391,6 +391,7 @@ def create_code(asm, label, backpatch):
     else:
         asm.code.co_code = ''.join([chr(j) for j in bcode])
 
+    # Stamp might be added here
     code = asm.code.freeze()
     # asm.print_instructions()
 
