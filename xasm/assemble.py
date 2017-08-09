@@ -3,6 +3,7 @@ from __future__ import print_function
 import ast, re, xdis
 from xasm.misc import get_opcode
 from xdis.opcodes.base import cmp_op
+from xdis import PYTHON3
 
 # import xdis.bytecode as Mbytecode
 
@@ -47,6 +48,7 @@ class Assembler(object):
         self.code_list = []
         self.codes = []   # FIXME use a better name
         self.status = 'unfinished'
+        self.size = 0 # Size of source code. Only relevant in version 3 and above
         self.python_version = python_version
         self.timestamp = 0
         self.backpatch = []  # list of backpatch dicts, one for each function
@@ -296,6 +298,31 @@ def update_code_tuple_field(field_name, code, lines, i):
 def err(msg, inst, i):
     msg += ('. Instruction %d:\n%s' % (i, inst))
     raise RuntimeError(msg)
+
+def decode_lineno_tab(lnotab, first_lineno):
+
+    line_number, line_number_diff = first_lineno, 0
+    offset, offset_diff = 0, 0
+    uncompressed_lnotab = {}
+    for i in range(0, len(lnotab), 2):
+        offset_diff = lnotab[i]
+        line_number_diff = lnotab[i+1]
+        if not isinstance(offset_diff, int):
+            offset_diff = ord(offset_diff)
+            line_number_diff = ord(line_number_diff)
+
+        assert offset_diff < 256
+        if offset_diff == 255:
+            continue
+        assert line_number_diff < 256
+        if line_number_diff == 255:
+            continue
+        line_number += line_number_diff
+        offset += offset_diff
+        line_number_diff, offset_diff = 0, 0
+        uncompressed_lnotab[offset] = line_number
+
+    return uncompressed_lnotab
 
 def create_code(asm, label, backpatch):
     # print('label: ', asm.label)
