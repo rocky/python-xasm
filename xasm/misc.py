@@ -14,7 +14,7 @@ def write_pycfile(pyc_file, asm):
         if not asm.timestamp :
             asm.timestamp = int(time.time())
         fp.write(pack('I', asm.timestamp))
-        if asm.python_version >= '3.0':
+        if asm.python_version > '3.2':
             fp.write(pack('I', asm.size))
         from xdis.marsh import dumps
         for co in asm.code_list:

@@ -105,6 +105,34 @@ def transform_32_33(inst, new_inst, i, n, offset,
         pass
     return add_size
 
+def transform_33_32(inst, new_inst, i, n, offset,
+                    instructions, new_asm):
+    """MAKE_FUNCTION, and MAKE_CLOSURE have an additional LOAD_CONST of a name
+    that are not in Python 3.2. Remove these.
+    """
+    add_size = xdis.op_size(new_inst.opcode, opcode_33)
+    if inst.opname in ('MAKE_FUNCTION','MAKE_CLOSURE'):
+        # Previous instruction should be a load const which
+        # contains the name of the function to call
+        prev_inst = instructions[i-1]
+        assert prev_inst.opname == 'LOAD_CONST'
+        assert isinstance(prev_inst.arg, int)
+        assert len(instructions) > 2
+        assert len(instructions) > 2
+        prev_inst2 = instructions[i-2]
+        assert prev_inst2.opname == 'LOAD_CONST'
+        assert isinstance(prev_inst2.arg, int)
+
+        # Remove the function name as an additional LOAD_CONST
+        prev2_const = new_asm.code.co_consts[prev_inst.arg]
+        assert hasattr(prev2_const, 'co_name')
+        new_asm.code.instructions = new_asm.code.instructions[:-1]
+        load_const_size = xdis.op_size(prev_inst.opcode, opcode_33)
+        add_size -= load_const_size
+        new_inst.offset = offset - add_size
+        return -load_const_size
+    return 0
+
 def transform_asm(asm, conversion_type, src_version, dest_version):
 
     new_asm = Assembler(dest_version)
@@ -115,6 +143,8 @@ def transform_asm(asm, conversion_type, src_version, dest_version):
         transform_fn = transform_26_27
     elif conversion_type == '32-33':
         transform_fn = transform_32_33
+    elif conversion_type == '33-32':
+        transform_fn = transform_33_32
     else:
         raise RuntimeError("Don't know how to covert %s "
                            % conversion_type)
@@ -150,7 +180,7 @@ UPWARD_COMPATABLE = tuple("20-21 21-22 23-24 24-23".split())
 @click.option('--conversion-type', '-t',
               type=click.Choice(
                   ['20-21', '21-22', '23-24', '24-23', '24-25', '25-26',
-                   '26-27', '32-33']
+                   '26-27', '32-33', '33-32']
               ),
               help='specify conversion from/to bytecode', default='26-27')
 @click.argument('input_pyc', type=click.Path('r'), nargs=1)
