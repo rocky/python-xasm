@@ -246,7 +246,7 @@ def asm_file(path):
                         backpatch_inst.add(inst)
                 offset += xdis.op_size(inst.opcode, asm.opc)
             else:
-                raise RuntimeError("Illegal opname %s in: %s" %
+                raise RuntimeError("Illegal opname %s in:\n%s" %
                                    (opname, line))
             pass
         pass
