@@ -62,6 +62,7 @@ there is also a size modulo 2**32 that is recorded.
    # Source code size mod 2**32: 577 bytes
 
 Method-level info
+.................
 
 Here is an example:
 
