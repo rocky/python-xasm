@@ -3,7 +3,6 @@ from __future__ import print_function
 import ast, re, xdis
 from xasm.misc import get_opcode
 from xdis.opcodes.base import cmp_op
-from xdis import PYTHON3
 
 # import xdis.bytecode as Mbytecode
 
@@ -163,9 +162,12 @@ def asm_file(path):
                         index = int(match.group(1))
                         assert index == count
                         expr = match.group(2)
-                        match = re.match('<code object (\S+) at', expr)
+                        match = re.match('<code object (\S+) at (0x[0-f]+)', expr)
                         if match:
                             name = match.group(1)
+                            m2 = re.match("^<(.+)>$", name)
+                            if m2:
+                                name = "%s_%s" % (m2.group(1), match.group(2))
                             asm.code.co_consts.append(methods[name])
                         else:
                             asm.code.co_consts.append(ast.literal_eval(expr))
