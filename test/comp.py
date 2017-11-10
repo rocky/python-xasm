@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os, sys
 if len(sys.argv) != 2:
-    print("Usage: compile-file.py *byte-compiled-file*")
+    print("Usage: comp.py *python-file*")
     sys.exit(1)
 source = sys.argv[1]
 

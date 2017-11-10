@@ -74,7 +74,7 @@ def main(compile, disasm, asm, files):
             do_asm = asm
 
         if do_asm:
-            cmd = "../xasm/cli.py %s" % asm_file
+            cmd = "../xasm/xasm_cli.py %s" % asm_file
             print(cmd)
             os.system(cmd)
             cmd = "%s %s" % (sys.executable, produced_bytecode)
