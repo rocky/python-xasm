@@ -162,7 +162,7 @@ def asm_file(path):
                         index = int(match.group(1))
                         assert index == count
                         expr = match.group(2)
-                        match = re.match('<code object (\S+) at (0x[0-f]+)', expr)
+                        match = re.match('<code[2,3]? object (\S+) at (0x[0-f]+)', expr)
                         if match:
                             name = match.group(1)
                             m2 = re.match("^<(.+)>$", name)
