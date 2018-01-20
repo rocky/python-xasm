@@ -205,8 +205,8 @@ wanted to jump relative 259 bytes you'd write:
 
 ::
 
-   EXTENDED_ARG 1  # Neded because below offset is greater than 255 away
-   JUMP_FORWARD 259  # Should really be 3
+   EXTENDED_ARG 1  # Needed because below offset is greater than 255 away
+   JUMP_FORWARD 259  # Should really be 3 (= 259 - 256)
 
 We should have a better API to generate instructions from inside
 Python. This is pretty straightforward to do.
