@@ -155,8 +155,8 @@ Instructions
 The module level bytecode line determines what Python opcodes are
 exceptable and how operands are interpreted.
 
-Instructions come after the information the other module or function
-information is given.
+Instructions come after the other module or function information that starts with `#` and
+is shown above.
 
 An instruction then is something that is not a comment or code or
 module field which would start with a #. And it is not a line number
