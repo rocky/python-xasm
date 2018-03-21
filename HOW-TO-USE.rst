@@ -119,7 +119,7 @@ Line Numbers and Labels
 -----------------------
 
 If the first token on a line is a number followed with a colon it is
-taken as a line number to be applied to the next intstruction. For
+taken as a line number to be applied to the next instruction. For
 example
 
 ::
