@@ -176,8 +176,9 @@ parenthesis. For example:
 
 ::
 
-    LOAD_CONST (3)  # loads number 3
-    LOAD_CONST 3 # load Constants[3] JUMP_ABSOLUTE 10 # Jumps to offset 10
+    LOAD_CONST (3)    # loads number 3
+    LOAD_CONST 3      # load Constants[3] 
+    JUMP_ABSOLUTE 10  # Jumps to offset 10
     JUMP_ABSOLUTE L10 # Jumps to label L10
     LOAD_CONSTANT (('load_entry_point',)) # Same as: tuple('load_entry_point')
 
