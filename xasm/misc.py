@@ -33,10 +33,11 @@ def write_pycfile(pyc_file, asm):
 def get_opcode(python_version):
     # not sure we can do < 2.5 yet.
     if python_version in "1.4 1.5".split():
-        from xdis.code import Code2 as Code
         if python_version == '1.4':
+            from xdis.code import Code14 as Code
             from xdis.opcodes import opcode_14 as opc
         elif python_version == '1.5':
+            from xdis.code import Code2 as Code
             from xdis.opcodes import opcode_15 as opc
     elif python_version in "2.2 2.3 2.4 2.5 2.6 2.7".split():
         from xdis.code import Code2 as Code
