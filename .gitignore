@@ -1,12 +1,14 @@
 *.pyc
 *~
+/.cache
 /.eggs
+/.pytest_cache
 /.python-version
 /README.html
 /build
 /dist
+/how-to-make-a-release.txt
 /pyxasm.egg-info
 /tmp
 /xasm.egg-info
 /xdis.egg-info
-/how-to-make-a-release.txt

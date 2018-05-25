@@ -1,0 +1,43 @@
+# pydisasm version 3.5.1
+# Python bytecode 2.7 (62211)
+# Disassembled from Python 2.7.13 (default, Jan  2 2017, 05:46:31)
+# [GCC 5.4.0 20160609]
+# Timestamp in code: 1502284795 (2017-08-09 09:19:55)
+
+# Method Name:       <module>
+# Filename:          multi-assign.py
+# Argument count:    0
+# Number of locals:  0
+# Stack size:        2
+# Flags:             0x00000040 (NOFREE)
+# First Line:        2
+# Constants:
+#    0: 1
+#    1: 2
+#    2: 3
+#    3: None
+# Names:
+#    0: x
+#    1: y
+#    2: z
+  2:
+            LOAD_CONST           (1)
+            STORE_NAME           (x)
+
+  2:
+	    LOAD_CONST           (2)
+            STORE_NAME           (y)
+  2:
+            LOAD_CONST           (3)
+            STORE_NAME           (z)
+
+  3:
+            LOAD_NAME            (x)
+            LOAD_NAME            (y)
+            BINARY_ADD
+            LOAD_NAME            (z)
+            BINARY_ADD
+            PRINT_ITEM
+            PRINT_NEWLINE
+            LOAD_CONST           (None)
+            RETURN_VALUE
