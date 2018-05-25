@@ -18,16 +18,27 @@ def write_pycfile(pyc_file, asm):
             fp.write(pack('I', asm.size))
         from xdis.marsh import dumps
         for co in asm.code_list:
-            co_obj = dumps(co, python_version=asm.python_version)
-            if PYTHON3 and asm.python_version < '3.0':
-                co_obj = str.encode(co_obj)
+            try:
+                co_obj = dumps(co, python_version=asm.python_version)
+                if PYTHON3 and asm.python_version < '3.0':
+                    co_obj = str.encode(co_obj)
+                    pass
 
-            fp.write(co_obj)
+                fp.write(co_obj)
+            except:
+                pass
+            pass
     print("Wrote %s" % pyc_file)
 
 def get_opcode(python_version):
     # not sure we can do < 2.5 yet.
-    if python_version in "2.2 2.3 2.4 2.5 2.6 2.7".split():
+    if python_version in "1.4 1.5".split():
+        from xdis.code import Code2 as Code
+        if python_version == '1.4':
+            from xdis.opcodes import opcode_14 as opc
+        elif python_version == '1.5':
+            from xdis.opcodes import opcode_15 as opc
+    elif python_version in "2.2 2.3 2.4 2.5 2.6 2.7".split():
         from xdis.code import Code2 as Code
         if python_version == '2.2':
             from xdis.opcodes import opcode_22 as opc

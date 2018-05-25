@@ -168,7 +168,12 @@ def asm_file(path):
                             m2 = re.match("^<(.+)>$", name)
                             if m2:
                                 name = "%s_%s" % (m2.group(1), match.group(2))
-                            asm.code.co_consts.append(methods[name])
+                            if name in methods:
+                                asm.code.co_consts.append(methods[name])
+                            else:
+                                print("line %d (%s, %s): can't find method %s" %
+                                    (i, asm.code.co_filename, method_name, name))
+                                asm.code.co_consts.append("**bogus %s**" % name)
                         else:
                             asm.code.co_consts.append(ast.literal_eval(expr))
                         count += 1
