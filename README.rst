@@ -1,7 +1,7 @@
 xasm
 ====
 
-*NOTE: this is in an early beta stage*
+*NOTE: this is in beta*
 
 A Cross-Python bytecode Assembler
 
@@ -20,7 +20,7 @@ Here are some potential uses:
 * Experiment with and learn about Python bytecode
 * Foil uncompyle6_ so that it can’t disassemble bytecode (at least for now)
 
-This will support bytecodes from Python version 1.5 to 3.6 or so.
+This will support bytecodes from Python version 1.5 to 3.8 or so.
 
 The code requires Python 2.7 or later.
 
@@ -55,6 +55,78 @@ This uses setup.py, so it follows the standard Python routine:
 
 A GNU makefile is also provided so :code:`make install` (possibly as root or
 sudo) will do the steps above.
+
+Example Assembly File
+---------------------
+
+For this Python source code:
+
+::
+    def five():
+        return 5
+
+    print(five())
+
+Here is an assembly for the above:
+
+::
+    # Python bytecode 3.6 (3379)
+
+    # Method Name:       five
+    # Filename:          /tmp/five.pl
+    # Argument count:    0
+    # Kw-only arguments: 0
+    # Number of locals:  0
+    # Stack size:        1
+    # Flags:             0x00000043 (NOFREE | NEWLOCALS | OPTIMIZED)
+    # First Line:        1
+    # Constants:
+    #    0: None
+    #    1: 5
+      2:
+                LOAD_CONST           (5)
+                RETURN_VALUE
+
+
+    # Method Name:       <module>
+    # Filename:          /tmp/five.pl
+    # Argument count:    0
+    # Kw-only arguments: 0
+    # Number of locals:  0
+    # Stack size:        2
+    # Flags:             0x00000040 (NOFREE)
+    # First Line:        1
+    # Constants:
+    #    0: <code object five at 0x0000>
+    #    1: 'five'
+    #    2: None
+    # Names:
+    #    0: five
+    #    1: print
+      1:
+                LOAD_CONST           0 (<code object five at 0x0000>)
+                LOAD_CONST           ('five')
+                MAKE_FUNCTION        0
+                STORE_NAME           (five)
+
+      3:
+                LOAD_NAME            (print)
+                LOAD_NAME            (five)
+                CALL_FUNCTION        0
+                CALL_FUNCTION        1
+                POP_TOP
+                LOAD_CONST           (None)
+                RETURN_VALUE
+
+
+The above can be created automatically from Python source code using the `pydisasm`
+command from `xdis`:
+
+::
+    pydisasm --asm /tmp/five.pyc
+
+In the example above though, I have shortend and simplified the result.
+
 
 Usage
 -----
