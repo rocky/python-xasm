@@ -62,6 +62,7 @@ Example Assembly File
 For this Python source code:
 
 ::
+
     def five():
         return 5
 
@@ -70,6 +71,7 @@ For this Python source code:
 Here is an assembly for the above:
 
 ::
+
     # Python bytecode 3.6 (3379)
 
     # Method Name:       five
@@ -123,6 +125,7 @@ The above can be created automatically from Python source code using the `pydisa
 command from `xdis`:
 
 ::
+
     pydisasm --asm /tmp/five.pyc
 
 In the example above though, I have shortend and simplified the result.
