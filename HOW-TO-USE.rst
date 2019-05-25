@@ -74,7 +74,8 @@ Here is an example:
    # Kw-only arguments: 0
    # Number of locals: 2 # Stack size: 3
    # Flags: 0x00000043 (NOFREE | NEWLOCALS | OPTIMIZED)
-   # First Line: 11 # Constants:
+   # First Line: 11 
+   # Constants:
    # 0: ' GCD. We assume positive numbers'
    # 1: 0
    # 2: None
@@ -104,16 +105,14 @@ the last sentence means is that
 
    LOAD_CONST 3
 
-would be invalid if constant 3 hasn't been listed. However you could instead write:
+would be invalid if the size of the constant array is less than 4, or `constant[3]` wasn't defined by adding it to the `Constants` section. However when you put a value in parenthesis, that indicate a value rather than an index into a list. 
+So you could instead write:
 
 ::
 
    LOAD_CONST (1)
 
-which in this case does the same thing. The assember will append the
-value 1 to the end of the list of constants, if constant one isn't
-already in the list and then it will insert whatever number has been
-assigned to that constant.
+which in this case does the same thing since `1 = constant[3]`. If the value 1 does not appear anywhere in the constants list, the assember would append the value 1 to the end of the list of the constants list. When writing the final bytecode file an appropriate constant index will be inserted into that instruction. 
 
 Line Numbers and Labels
 -----------------------
