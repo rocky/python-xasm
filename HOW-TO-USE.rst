@@ -3,7 +3,7 @@ Introduction
 
 Welcome back to the wonderful times world of SEGV's (from the Python interpreter)!
 
-If you mess up on the bytecode you may get a SEGV with no futrher information.
+If you mess up on the bytecode you may get a SEGV with no further information.
 
 Although it is possible to write assembler code from scratch, for now
 it's much easier to start off using Python code, even if
