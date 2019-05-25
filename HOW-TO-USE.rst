@@ -95,8 +95,7 @@ Here is an example:
 
 Some of these can be omitted and default values will be used. For the
 lists like Constants, Names, and so on, those can be omitted too. But
-if they are, the instruction section can't refer to those values by
-number.
+if they are, the instruction section can't refer to those values by list index value. (List index value is however used in the actual bytecode.)b
 
 Although we haven't gotten to the exact format of instructions, what
 the last sentence means is that
