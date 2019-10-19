@@ -1,3 +1,5 @@
+|Pypi Installs| |Latest Version| |Supported Python Versions|
+
 xasm
 ====
 
@@ -20,7 +22,7 @@ Here are some potential uses:
 * Experiment with and learn about Python bytecode
 * Foil uncompyle6_ so that it can’t disassemble bytecode (at least for now)
 
-This will support bytecodes from Python version 1.5 to 3.8 or so.
+This will support bytecodes from Python version 1.0 to 3.8 or so.
 
 The code requires Python 2.7 or later.
 
@@ -30,9 +32,9 @@ Assembly files
 More detail will be filled in, but some principles:
 
 * Preferred extension for Python assembly is `.pyasm`
-* assembly is designed to work with the output of `pydisasm`
+* assembly is designed to work with the output of `pydisasm --asm`
 * Assembly file labels are at the beginning of the line
-  and end in a colon, e.g. 'END_IF:'
+  and end in a colon, e.g. `END_IF`
 * instruction offsets in the assembly file are ignored and don't need
   to be entered
 * in those instructions that refer to offsets, if the if the
@@ -43,18 +45,30 @@ More detail will be filled in, but some principles:
 Installation
 ------------
 
-This uses setup.py, so it follows the standard Python routine:
+The standard Python routine:
 
 ::
 
-    pip install -e . 
+    pip install -e .
     pip install -r requirements-dev.txt
-    python setup.py install # may need sudo
-    # or if you have pyenv:
-    python setup.py develop
 
 A GNU makefile is also provided so :code:`make install` (possibly as root or
 sudo) will do the steps above.
+
+
+Testing
+-------
+
+::
+
+   make check
+
+A GNU makefile has been added to smooth over setting running the right
+command, and running tests from fastest to slowest.
+
+If you have remake_ installed, you can see the list of all tasks
+including tests via :code:`remake --tasks`.
+
 
 Example Assembly File
 ---------------------
@@ -158,5 +172,9 @@ See Also
 --------
 * https://github.com/rocky/python-xdis : Cross Python version disassemble
 * https://github.com/rocky/python-xasm/blob/master/HOW-TO-USE.rst : How to write an assembler file
-
+* https://rocky.github.io/pycon2018-light.co/ : Pycolumbia 2018 Lightning talk showing how to use the assembler
 .. _uncompyle6: https://github.com/rocky/python-uncompyle6
+
+.. |Latest Version| image:: https://badge.fury.io/py/xasm.svg
+		 :target: https://badge.fury.io/py/xasm
+.. |Pypi Installs| image:: https://pepy.tech/badge/xasm
