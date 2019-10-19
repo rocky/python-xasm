@@ -178,3 +178,4 @@ See Also
 .. |Latest Version| image:: https://badge.fury.io/py/xasm.svg
 		 :target: https://badge.fury.io/py/xasm
 .. |Pypi Installs| image:: https://pepy.tech/badge/xasm
+.. |Supported Python Versions| image:: https://img.shields.io/pypi/pyversions/xasm.svg
