@@ -1,4 +1,5 @@
 include README.rst
+include NEWS.md
 include HOW-TO-USE.rst
 include LICENSE.gpl2
 include __pkginfo__.py

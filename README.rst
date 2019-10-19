@@ -155,7 +155,7 @@ To create a python bytecode file from an assemble file, run:
    pyc-xasm [OPTIONS] ASM_PATH
 
 
-For usage help  `pyc-xasm --help`
+For usage help, type  `pyc-xasm --help`.
 
 
 To convert a python bytecode from one bytecode to another, run:
@@ -165,17 +165,20 @@ To convert a python bytecode from one bytecode to another, run:
    pyc-convert [OPTIONS] INPUT_PYC [OUTPUT_PYC]
 
 
-For usage help  `pyc-convert --help`
+For usage help, type  `pyc-convert --help`.
 
 
 See Also
 --------
+
 * https://github.com/rocky/python-xdis : Cross Python version disassemble
 * https://github.com/rocky/python-xasm/blob/master/HOW-TO-USE.rst : How to write an assembler file
 * https://rocky.github.io/pycon2018-light.co/ : Pycolumbia 2018 Lightning talk showing how to use the assembler
-.. _uncompyle6: https://github.com/rocky/python-uncompyle6
 
+
+.. _uncompyle6: https://github.com/rocky/python-uncompyle6
 .. |Latest Version| image:: https://badge.fury.io/py/xasm.svg
 		 :target: https://badge.fury.io/py/xasm
 .. |Pypi Installs| image:: https://pepy.tech/badge/xasm
 .. |Supported Python Versions| image:: https://img.shields.io/pypi/pyversions/xasm.svg
+.. _remake: http://bashdb.sf.net/remake

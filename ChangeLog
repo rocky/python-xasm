@@ -1,0 +1,407 @@
+2019-10-19  rocky <rocky@gnu.org>
+
+	* MANIFEST.in, NEWS.md, README.rst, admin-tools/check-versions.sh,
+	admin-tools/make-dist.sh, admin-tools/pyenv-versions,
+	xasm/version.py: Get ready for release 1.0.0
+
+2019-10-19  rocky <rocky@gnu.org>
+
+	* README.rst: Fix support versions link
+
+2019-10-19  rocky <rocky@gnu.org>
+
+	* README.rst, __pkginfo__.py: Bump min xdis version. Update
+	README.rst
+
+2019-05-25  R. Bernstein <rocky@users.noreply.github.com>
+
+	* HOW-TO-USE.rst: Update HOW-TO-USE.rst
+
+2019-05-25  R. Bernstein <rocky@users.noreply.github.com>
+
+	* HOW-TO-USE.rst: Update HOW-TO-USE.rst
+
+2019-05-25  R. Bernstein <rocky@users.noreply.github.com>
+
+	* HOW-TO-USE.rst: Update HOW-TO-USE.rst
+
+2019-05-25  R. Bernstein <rocky@users.noreply.github.com>
+
+	* README.rst: Update README.rst
+
+2019-05-05  R. Bernstein <rocky@users.noreply.github.com>
+
+	* README.rst: Update README.rst
+
+2019-05-05  rocky <rb@dustyfeet.com>
+
+	* README.rst, xasm/misc.py: Improve docs
+
+2019-04-13  rocky <rb@dustyfeet.com>
+
+	* : commit 6d390b4b3fdbe5a43e00500ce50811d8cb91af03 Author: rocky
+	<rocky@gnu.org> Date:   Fri Apr 5 16:29:27 2019 -0400
+
+2019-04-05  rocky <rocky@gnu.org>
+
+	* __pkginfo__.py: Version hell
+
+2018-05-25  rocky <rb@dustyfeet.com>
+
+	* xasm/misc.py: Allow Python 1.5 and 1.4 assembly ...  but both are borked.
+
+2018-05-25  rocky <rb@dustyfeet.com>
+
+	* .gitignore, test/multi-assign-2.7.pyasm, test/multi-assign.py,
+	test/multi-assign2-2.7.pyasm: More tests
+
+2018-05-25  rocky <rb@dustyfeet.com>
+
+	* xasm/assemble.py, xasm/misc.py: Allow 1.4 and 1.5 assembly
+
+2018-03-21  R. Bernstein <rocky@users.noreply.github.com>
+
+	* HOW-TO-USE.rst: Update HOW-TO-USE.rst
+
+2018-03-21  R. Bernstein <rocky@users.noreply.github.com>
+
+	* HOW-TO-USE.rst: Update HOW-TO-USE.rst
+
+2018-03-21  R. Bernstein <rocky@users.noreply.github.com>
+
+	* HOW-TO-USE.rst: Update HOW-TO-USE.rst
+
+2018-01-19  R. Bernstein <rocky@users.noreply.github.com>
+
+	* HOW-TO-USE.rst: Update HOW-TO-USE.rst
+
+2017-11-10  rocky <rb@dustyfeet.com>
+
+	* __pkginfo__.py, xasm/assemble.py: Code objects can be code2 or
+	code3
+
+2017-11-09  rocky <rb@dustyfeet.com>
+
+	* test/comp.py, test/run-test.py: Small fixes
+
+2017-10-05  rocky <rb@dustyfeet.com>
+
+	* __pkginfo__.py, xasm/assemble.py: Start handling code objects with
+	the same name <lambda> and <genexpr> are common situations, but users can also use
+	the same name nested in different inside different methods
+
+2017-08-12  R. Bernstein <rocky@users.noreply.github.com>
+
+	* HOW-TO-USE.rst: Update HOW-TO-USE.rst
+
+2017-08-12  rocky <rb@dustyfeet.com>
+
+	* xasm/assemble.py: A slightly better exception message
+
+2017-08-11  rocky <rb@dustyfeet.com>
+
+	* xasm/misc.py, xasm/pyc_convert.py: Fix writing Python 3.0..3.2
+	bytecode writing...  Start a Python 3.3->3.2 bytecode converter. Not fully finished
+	though.
+
+2017-08-09  rocky <rb@dustyfeet.com>
+
+	* __pkginfo__.py, xasm/assemble.py, xasm/pyc_convert.py: Slightly
+	better 32-33 conversion...  and other slight improvements. More work is needed though
+
+2017-08-08  rocky <rb@dustyfeet.com>
+
+	* : commit 6c7daa9bd31bc92a14f47bf27bb2602e58603944 Author: rocky
+	<rb@dustyfeet.com> Date:   Tue Aug 8 20:42:40 2017 -0400
+
+2017-08-08  R. Bernstein <rocky@users.noreply.github.com>
+
+	* HOW-TO-USE.rst: Update HOW-TO-USE.rst
+
+2017-08-08  R. Bernstein <rocky@users.noreply.github.com>
+
+	* HOW-TO-USE.rst: Update HOW-TO-USE.rst
+
+2017-08-08  R. Bernstein <rocky@users.noreply.github.com>
+
+	* HOW-TO-USE.rst: Update HOW-TO-USE.rst
+
+2017-08-08  rocky <rb@dustyfeet.com>
+
+	* README.rst, setup.py, xasm/cli.py, xasm/pyc_convert.py: Update
+	docs.  Change the install command-line names
+
+2017-08-08  rocky <rb@dustyfeet.com>
+
+	* README.rst: One more typo
+
+2017-08-08  rocky <rb@dustyfeet.com>
+
+	* README.rst: Typos
+
+2017-08-08  rocky <rb@dustyfeet.com>
+
+	* xasm/assemble.py, xasm/{convert26-27.py => pyc_convert.py}: Use
+	click and generalize
+
+2017-08-08  rocky <rb@dustyfeet.com>
+
+	* xasm/assemble.py, xasm/convert26-27.py: labels and backpatches
+	need to be per function
+
+2017-08-07  rocky <rb@dustyfeet.com>
+
+	* xasm/assemble.py, xasm/convert26-27.py: First 2.6->2.7 conversion
+	works
+
+2017-08-07  rocky <rb@dustyfeet.com>
+
+	* xasm/assemble.py, xasm/convert26-27.py: Start Python 2.6-2.7
+	conversion tool
+
+2017-07-20  rocky <rb@dustyfeet.com>
+
+	* Makefile, test/gcd-2.2.pyasm, test/gcd-2.3.pyasm,
+	test/gcd-2.4.pyasm, test/gcd-2.5.pyasm, test/gcd-2.7.pyasm,
+	test/gcd-3.5.pyasm, test/test_all.py: Add some sort of testing
+
+2017-07-18  rocky <rb@dustyfeet.com>
+
+	* test/.gitignore, test/columnize.py, test/comp.py,
+	test/gcd-2.2.pyasm, test/gcd-2.3.pyasm, test/run-test.py,
+	test/tasm2.pyasm: misc fixes...  columnize.py: make it per 2.7-compatible - remove backports.shutil test/run-test.py: preserve filename in .pyc
+
+2017-07-16  rocky <rb@dustyfeet.com>
+
+	* : commit d4e2fc3a6ae3f56b80778a6a01273166ab404886 Author: R.
+	Bernstein <rocky@users.noreply.github.com> Date:   Sat Jul 15
+	15:46:31 2017 -0400
+
+2017-07-15  R. Bernstein <rocky@users.noreply.github.com>
+
+	* HOW-TO-USE.rst: Update HOW-TO-USE.rst
+
+2017-07-15  R. Bernstein <rocky@users.noreply.github.com>
+
+	* HOW-TO-USE.rst: Update HOW-TO-USE.rst
+
+2017-07-15  R. Bernstein <rocky@users.noreply.github.com>
+
+	* HOW-TO-USE.rst: Update HOW-TO-USE.rst
+
+2017-07-15  rocky <rb@dustyfeet.com>
+
+	* __pkginfo__.py: Administrivia
+
+2017-07-15  rocky <rb@dustyfeet.com>
+
+	* HOW-TO-USE.rst: Doc corrections
+
+2017-07-15  rocky <rb@dustyfeet.com>
+
+	* HOW-TO-USE.rst: Doc fixes
+
+2017-07-15  rocky <rb@dustyfeet.com>
+
+	* .gitignore, LICENSE.gpl2: Administrivia
+
+2017-07-15  rocky <rb@dustyfeet.com>
+
+	* HOW-TO-USE.rst: Reformat for Rst
+
+2017-07-14  rocky <rb@dustyfeet.com>
+
+	* MANIFEST.in, README.rst: Add link
+
+2017-07-14  rocky <rb@dustyfeet.com>
+
+	* HOW-TO-USE.rst, __pkginfo__.py, xasm/version.py: First notes as to
+	how to use
+
+2017-07-13  rocky <rb@dustyfeet.com>
+
+	* test/compile-file.py, test/run-test.py: Add a better run-test.py
+	routine
+
+2017-07-13  rocky <rb@dustyfeet.com>
+
+	* README.rst, __pkginfo__.py, test/gcd-2.2.pyasm,
+	test/gcd-2.3.pyasm, test/gcd-2.4.pyasm, test/gcd-2.5.pyasm,
+	test/gcd-2.7.pyasm, test/gcd-3.5.pyasm, test/tasm-3.5.pyasm,
+	xasm/assemble.py, xasm/cli.py, xasm/misc.py: Mess of little
+	things...  Better cli.py options testing:    required and readable assembly path    make sure path is nonzero Add pyasm for 2.2-2.5 and allow assembly to those
+
+2017-07-11  rocky <rb@dustyfeet.com>
+
+	* xasm/assemble.py: Handle EXTENDED_ARG ...  For both 3.6 and before. FIXME: should change xasm to record
+	extended_arg stride
+
+2017-07-11  rocky <rb@dustyfeet.com>
+
+	* test/.gitignore, test/fn-2.7.pyasm, xasm/assemble.py: Handle
+	opcodes with + in them.  Thank you, Python!
+
+2017-07-11  rocky <rb@dustyfeet.com>
+
+	* test/tasm-3.4.pyasm, xasm/assemble.py: Apparently cellvars are
+	freevars too...  so don't add a freevar if it is already listed as a cellvar
+
+2017-07-09  rocky <rb@dustyfeet.com>
+
+	* test/fn-3.4.pyasm, xasm/assemble.py: Use ast.eval_literal()
+	instead of eval()
+
+2017-07-09  rocky <rb@dustyfeet.com>
+
+	* xasm/assemble.py: Track free variables and line numbers
+
+2017-07-09  rocky <rb@dustyfeet.com>
+
+	* test/.gitignore, test/Makefile, test/columnize.py,
+	test/compile-file.py, test/gcd-2.7.pyasm, test/gcd-3.3.pyasm,
+	test/gcd-3.4.pyasm, test/gcd-3.5.pyasm, test/gcd-3.6.pyasm,
+	test/tasm-3.6.pyasm, xasm/assemble.py: Use cellvars values compile-file.py: run after building pyc file test/columnize.py: a longer more rigorous test test/*.pyasm: start
+	   deleting those that can be derived via compile_file and pydisasm
+	-asm test/Makefile: start and add a "clean" target
+
+2017-07-08  rocky <rb@dustyfeet.com>
+
+	* __pkginfo__.py, test/gcd-2.7.pyasm, test/gcd-3.6.pyasm,
+	test/tasm-3.5.pyasm, test/tasm-3.6.pyasm, xasm/assemble.py,
+	xasm/misc.py: Python 3.6 now supported...  Handle COMPARE_OP by symbol (==, <=, etc.) or without int value
+	Handle NAME and LOCAL ops by name or without int value Start a
+	common assembler error message routine Need xdis 3.5.0 or greater now
+
+2017-07-07  rocky <rb@dustyfeet.com>
+
+	* test/gcd-3.5.pyasm, xasm/assemble.py: Handle LOCAL and NAME
+	operands ...  NAME was buggy.  Use recently-added xdis opcode sets
+
+2017-07-07  rocky <rb@dustyfeet.com>
+
+	* test/gcd-3.5.pyasm: One more test
+
+2017-07-07  rocky <rb@dustyfeet.com>
+
+	* README.rst, test/compile-file.py, test/fn-2.7.pyasm,
+	test/fn-3.4.pyasm, xasm/assemble.py, xasm/misc.py: Interpret
+	assembly constants and names in opcode..  and other cleanups.
+
+2017-07-06  rocky <rb@dustyfeet.com>
+
+	* test/gcd-3.4.pyasm, xasm/assemble.py, xasm/cli.py: Improve cli,
+	reduce debug output...  Remove duplicate offset 0 line number
+
+2017-07-05  rocky <rb@dustyfeet.com>
+
+	* test/gcd-3.3.pyasm, test/gcd-3.4.pyasm, test/tasm-3.4.pyasm,
+	test/tasm2.pyasm: more test files
+
+2017-07-05  rocky <rb@dustyfeet.com>
+
+	* test/compile-file.py, test/fn-2.7.pyasm, test/gcd-2.7.pyasm,
+	test/tasm.py, xasm/assemble.py, xasm/misc.py: Handle lnotab. More
+	Python version Compile-file does more.  Clean up some test files
+
+2017-07-05  rocky <rb@dustyfeet.com>
+
+	* xasm/assemble.py: Correct Code3 argument order
+
+2017-07-05  rocky <rb@dustyfeet.com>
+
+	* xasm/assemble.py: Decompile from Python 3.4 works...  Change made was in xdis unmarshalling routine.  Remove debug
+	statement.
+
+2017-07-05  rocky <rb@dustyfeet.com>
+
+	* xasm/assemble.py, xasm/misc.py: Better Python 3 asm of Python 2 Not there yet, but closer. Clompliance needs fixing on the xdis
+	side.
+
+2017-07-04  rocky <rb@dustyfeet.com>
+
+	* test/gcd-2.7.pyasm, xasm/assemble.py: More proper label handling All non-int labels are absolute Labels as an operand don't and shouldn't have the trailing ':'.
+	pydisasm doen't add that Start moving toward xdis enhanced ability to work with Python code
+	more interchangeably between Python 2 and 3.
+
+2017-07-03  rocky <rb@dustyfeet.com>
+
+	* test/fn-2.7.pyasm, test/fn-3.4.pyasm, test/fn.py,
+	test/gcd-2.7.pyasm, test/gcd.py, xasm/assemble.py, xasm/cli.py,
+	xasm/misc.py: Set function parameters better, 3.x tolerance...  was wasn't setting locals, argcount, or varnames Slightly better 3.x
+	coverage, but still broken
+
+2017-07-03  rocky <rb@dustyfeet.com>
+
+	* xasm/assemble.py, xasm/cli.py, xasm/misc.py: Better modularity:
+	code more separate from module
+
+2017-07-01  rocky <rb@dustyfeet.com>
+
+	* test/tasm-2.5.pyasm, xasm/assemble.py: Start line number table
+
+2017-07-01  rocky <rb@dustyfeet.com>
+
+	* .gitignore, test/fn-2.6.pyasm, xasm/assemble.py, xasm/cli.py,
+	xasm/misc.py, xasm/pythonfile.py: Handle multiple modules properly Pick up python version from file, --python-version is now optional
+	Use click
+
+2017-07-01  rocky <rb@dustyfeet.com>
+
+	* test/compile-file.py, test/fn-2.6.pyasm, test/tasm-2.6.pyasm,
+	xasm/assemble.py, xasm/cli.py, xasm/pythonfile.py: Extract timestamp
+	from code
+
+2017-06-28  rocky <rb@dustyfeet.com>
+
+	* test/tasm3-3.4.pyasm: A Python 3.4 test
+
+2017-06-28  rocky <rb@dustyfeet.com>
+
+	* : commit 924a38064fe9e4d402a77e1231f0d58e263b69b5 Author: rocky
+	<rb@dustyfeet.com> Date:   Wed Jun 28 17:23:45 2017 -0400
+
+2017-06-28  rocky <rb@dustyfeet.com>
+
+	* README.rst: Typo
+
+2017-06-28  rocky <rb@dustyfeet.com>
+
+	* README.rst, setup.py: Administrivia
+
+2017-06-28  rocky <rb@dustyfeet.com>
+
+	* xasm/cli.py: Remove debug statement
+
+2017-06-28  R. Bernstein <rocky@users.noreply.github.com>
+
+	* README.rst: Update README.rst
+
+2017-06-28  R. Bernstein <rocky@users.noreply.github.com>
+
+	* README.rst: Update README.rst
+
+2017-06-28  rocky <rb@dustyfeet.com>
+
+	* README.rst: Update doc
+
+2017-06-27  rocky <rb@dustyfeet.com>
+
+	* .gitignore, README.rst, __pkginfo__.py, setup.py, tasm2.pyasm,
+	test/fn-2.6.pyasm, test/fn.py, test/tasm-2.6.pyasm, tasm.pyasm =>
+	test/tasm-2.7.pyasm, tasm.py => test/tasm.py, xasm.py,
+	xasm/__init__.py, xasm/assemble.py, xasm/cli.py,
+	xasm/pythonfile.py, xasm/version.py: Python setupize
+
+2017-06-27  rocky <rb@dustyfeet.com>
+
+	* tasm.pyasm, xasm.py: Turn into a CLI
+
+2017-06-26  rocky <rb@dustyfeet.com>
+
+	* .gitignore, tasm.py, tasm.pyasm, tasm2.pyasm, xasm.py: Assemble
+	class, instruction encoding
+
+2017-06-26  rocky <rb@dustyfeet.com>
+
+	* Assembler first step
+
