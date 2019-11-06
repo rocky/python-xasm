@@ -422,7 +422,7 @@ def create_code(asm, label, backpatch):
     if asm.opc.version >= 3.0:
         co_code = bytearray()
         for j in bcode:
-            co_code.append(j)
+            co_code.append(j % 255)
         asm.code.co_code = bytes(co_code)
     else:
         asm.code.co_code = ''.join([chr(j) for j in bcode])
