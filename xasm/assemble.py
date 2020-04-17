@@ -160,11 +160,11 @@ def asm_file(path):
                     match = re.match('^#\s+(\d+): (.+)$', line)
                     if match:
                         index = int(match.group(1))
-                        assert index == count, ("Constant index {%d} foundn on line {%d}"
+                        assert index == count, ("Constant index {%d} found on line {%d}"
                                                 "doesn't match expected constant index {%d}." %
                                                 (index, i, count))
                         expr = match.group(2)
-                        match = re.match('<code[2,3]? object (\S+) at (0x[0-f]+)', expr)
+                        match = re.match('<(?:Code\d+ )?code object (\S+) at (0x[0-f]+)', expr)
                         if match:
                             name = match.group(1)
                             m2 = re.match("^<(.+)>$", name)
