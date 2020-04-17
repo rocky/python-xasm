@@ -61,6 +61,7 @@ class Assembler(object):
 
         self.code = xdis.codetype.to_portable(
             co_argcount=0,
+            co_posonlyargcount=0,
             co_kwonlyargcount=0,
             co_nlocals=0,
             co_stacksize=10,
@@ -139,7 +140,12 @@ def asm_file(path):
                 asm.code.co_firstlineno = first_lineno
             elif line.startswith('# Argument count: '):
                 argc = line[len('# Argument count: '):].strip().split()[0]
-                asm.code.co_argcount = ast.literal_eval(argc)
+            elif line.startswith('# Position-only argument count: '):
+                argc = line[len('# Position-only argument count: '):].strip().split()[0]
+                asm.code.co_posonlyargcount = ast.literal_eval(argc)
+            elif line.startswith('# Keyword-only argument count: '):
+                argc = line[len('# Keyword-only argument count: '):].strip().split()[0]
+                asm.code.co_kwonlyargcount = ast.literal_eval(argc)
             elif line.startswith('# Number of locals: '):
                 l_str = line[len('# Number of locals: '):].strip()
                 asm.code.co_nlocals = int(l_str)
@@ -196,6 +202,11 @@ def asm_file(path):
             elif line.startswith('# Varnames:'):
                 line = lines[i]
                 asm.code.co_varnames = line[1:].strip().split(', ')
+                i += 1
+            elif line.startswith('# Positional arguments:'):
+                line = lines[i]
+                args = line[1:].strip().split(', ')
+                asm.code.co_argcount = len(args)
                 i += 1
         else:
             if not line.strip():

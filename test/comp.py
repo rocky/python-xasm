@@ -18,5 +18,5 @@ bytecode = "%s-%s.pyc" % (basename, PY_VERSION)
 
 import py_compile
 print("compiling %s to %s" % (source, bytecode))
-py_compile.compile(source, bytecode, 'exec')
+py_compile.compile(source, bytecode, source)
 os.system("cp %s %s-%s-good.pyc" % (bytecode, basename, PY_VERSION))

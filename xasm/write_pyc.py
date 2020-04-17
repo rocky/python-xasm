@@ -1,16 +1,30 @@
 import xdis
 from xdis import PYTHON3
-from xdis.magics import magics
+from xdis.magics import magics, magic2int
 from xdis.marsh import dumps
 from struct import pack
 import time
 
-def write_pycfile(fp, code_list, timestamp=int(time.time()),
+def write_pycfile(fp, code_list, timestamp=None,
                   version=xdis.PYTHON_VERSION):
-    fp.write(magics[version])
-    fp.write(pack('I', timestamp))
-    if version > 3.2:
+
+    magic_bytes = magics[version]
+    magic_int = magic2int(magic_bytes)
+    fp.write(magic_bytes)
+
+    if timestamp is None:
+        timestamp = int(time.time())
+    if magic_int == 3393:
+        fp.write(pack('I', timestamp))
         fp.write(pack('I', 0))
+    elif magic_int in (3394, 3401, 3412, 3413, 3422):
+        fp.write(pack('<I', 0)) # pep552_bits
+    else:
+        fp.write(pack('<I', timestamp))
+
+    if version > 3.2:
+        fp.write(pack('<I', 0)) # size mod 2**32
+
     for co in code_list:
         try:
             co_obj = dumps(co, python_version=str(version))
