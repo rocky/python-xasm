@@ -43,13 +43,13 @@ def get_opname_operand(fields):
 
 class Assembler(object):
     def __init__(self, python_version):
-        self.opc, self.Code = get_opcode(python_version)
+        self.opc = get_opcode(python_version)
         self.code_list = []
         self.codes = []   # FIXME use a better name
         self.status = 'unfinished'
         self.size = 0 # Size of source code. Only relevant in version 3 and above
         self.python_version = python_version
-        self.timestamp = 0
+        self.timestamp = None
         self.backpatch = []  # list of backpatch dicts, one for each function
         self.label = []      # list of label dists, one for each function
         self.code = None
@@ -59,7 +59,7 @@ class Assembler(object):
         if self.python_version is None and python_version:
             self.python_version = python_version
 
-        self.code = self.Code(
+        self.code = xdis.codetype.to_portable(
             co_argcount=0,
             co_kwonlyargcount=0,
             co_nlocals=0,
@@ -428,7 +428,7 @@ def create_code(asm, label, backpatch):
         asm.code.co_code = ''.join([chr(j) for j in bcode])
 
     # Stamp might be added here
-    code = asm.code.freeze()
+    code = asm.code.to_native()
     # asm.print_instructions()
 
     # print (*args)

@@ -2,7 +2,8 @@
 from __future__ import print_function
 import click, os, sys
 from xasm.assemble import asm_file
-from xasm.misc import write_pycfile
+from xasm.write_pyc import write_pycfile
+import xdis
 
 @click.command()
 @click.option("--pyc-file", default=None)
@@ -29,7 +30,14 @@ def main(pyc_file, asm_path):
     if not pyc_file and asm_path.endswith('.pyasm'):
         pyc_file = asm_path[:-len('.pyasm')] + '.pyc'
 
-    write_pycfile(pyc_file, asm)
+    if xdis.PYTHON3:
+        file_mode = 'wb'
+    else:
+        file_mode = 'w'
+
+    with open(pyc_file, file_mode) as fp:
+        write_pycfile(fp, asm.code_list, asm.timestamp, float(asm.python_version))
+    print("Wrote Python %s bytecode file %s" % (asm.python_version, pyc_file))
 
 if __name__ == '__main__':
     main(sys.argv[1:])

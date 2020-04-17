@@ -10,3 +10,6 @@ def test_xasm():
     for asm in "tasm fn gcd columnize".split():
         print("Testing %s" % asm)
         assert subprocess.call((python_interp, "./%s.py" % asm)) == 0
+
+if __name__ == "__main__":
+    test_xasm()
