@@ -1,0 +1,143 @@
+# pydisasm version 4.5.0
+# Python bytecode 3.8 (3413)
+# Disassembled from Python 3.8.2 (default, Mar  6 2020, 19:12:28) 
+# [GCC 9.2.1 20191008]
+# Timestamp in code: 1499156389 (2017-07-04 04:19:49)
+# Source code size mod 2**32: 577 bytes
+
+# Method Name:       gcd
+# Filename:          gcd.py
+# Argument count:    2
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  2
+# Stack size:        3
+# Flags:             0x00000043 (NOFREE | NEWLOCALS | OPTIMIZED)
+# First Line:        11
+# Constants:
+#    0: ' GCD. We assume positive numbers'
+#    1: 0
+#    2: None
+#    3: 1
+# Names:
+#    0: gcd
+# Varnames:
+#	a, b
+# Positional arguments:
+#	a, b
+ 15:
+            LOAD_FAST            (a)
+            LOAD_FAST            (b)
+            COMPARE_OP           (>)
+            POP_JUMP_IF_FALSE    L18 (to 18)
+
+ 16:
+            LOAD_FAST            (b)
+            LOAD_FAST            (a)
+            ROT_TWO
+            STORE_FAST           (a)
+            STORE_FAST           (b)
+
+L18:
+  19:
+            LOAD_FAST            (a)
+            LOAD_CONST           (0)
+            COMPARE_OP           (<=)
+            POP_JUMP_IF_FALSE    L30 (to 30)
+
+ 20:
+            LOAD_CONST           (None)
+            RETURN_VALUE
+
+L30:
+  21:
+            LOAD_FAST            (a)
+            LOAD_CONST           (1)
+            COMPARE_OP           (==)
+            POP_JUMP_IF_TRUE     L46 (to 46)
+            LOAD_FAST            (a)
+            LOAD_FAST            (b)
+            COMPARE_OP           (==)
+            POP_JUMP_IF_FALSE    L50 (to 50)
+
+L46:
+  22:
+            LOAD_FAST            (a)
+            RETURN_VALUE
+
+L50:
+  23:
+            LOAD_GLOBAL          (gcd)
+            LOAD_FAST            (b)
+            LOAD_FAST            (a)
+            BINARY_SUBTRACT
+            LOAD_FAST            (a)
+            CALL_FUNCTION        2
+            RETURN_VALUE
+
+
+# Method Name:       <module>
+# Filename:          gcd.py
+# Argument count:    0
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  0
+# Stack size:        7
+# Flags:             0x00000040 (NOFREE)
+# First Line:        2
+# Constants:
+#    0: "Greatest Common Divisor\n\nSome characterstics of this program used for testing check_args() does\nnot have a 'return' statement.\n\ncheck_args() raises an uncaught exception when given the wrong number\nof parameters.\n\n"
+#    1: <Code38 code object gcd at 0x7f4954d7ddc0, file gcd.py>, line 11
+#    2: 'gcd'
+#    3: '__main__'
+#    4: (3, 5)
+#    5: 'The GCD of %d and %d is %d'
+#    6: None
+# Names:
+#    0: __doc__
+#    1: gcd
+#    2: __name__
+#    3: a
+#    4: b
+#    5: print
+  2:
+            LOAD_CONST           0 ("Greatest Common Divisor\n\nSome characterstics of this program used for testing check_args() does\nnot have a 'return' statement.\n\ncheck_args() raises an uncaught exception when given the wrong number\nof parameters.\n\n")
+            STORE_NAME           (__doc__)
+
+ 11:
+            LOAD_CONST           1 (<Code38 code object gcd at 0x7f4954d7ddc0, file gcd.py>, line 11)
+            LOAD_CONST           ('gcd')
+            MAKE_FUNCTION        0
+            STORE_NAME           (gcd)
+
+ 25:
+            LOAD_NAME            (__name__)
+            LOAD_CONST           ('__main__')
+            COMPARE_OP           (==)
+            POP_JUMP_IF_FALSE    L52 (to 52)
+
+ 26:
+            LOAD_CONST           4 ((3, 5))
+            UNPACK_SEQUENCE      2
+            STORE_NAME           (a)
+            STORE_NAME           (b)
+
+ 27:
+            LOAD_NAME            (print)
+            LOAD_CONST           5 ('The GCD of %d and %d is %d')
+            LOAD_NAME            (a)
+            LOAD_NAME            (b)
+            LOAD_NAME            (gcd)
+            LOAD_NAME            (a)
+            LOAD_NAME            (b)
+            CALL_FUNCTION        2
+            BUILD_TUPLE          3
+            BINARY_MODULO
+            CALL_FUNCTION        1
+            POP_TOP
+
+L52:
+  28:
+            LOAD_CONST           (None)
+            RETURN_VALUE
+

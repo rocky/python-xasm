@@ -15,7 +15,7 @@ os.chdir(src_dir)
 def test_roundtrip():
     fp = NamedTemporaryFile(mode="wb+", suffix=".pyc", prefix="test_pyc-", delete=False)
     orig_path="testdata/test_pyc.pyc"
-    version, timestamp, magic_int, co, is_pypy, source_size = load_module(orig_path)
+    version, timestamp, magic_int, co, is_pypy, source_size, sip_hash = load_module(orig_path)
     write_pycfile(fp, [co], timestamp, version)
     new_path = fp.name
     fp.close()

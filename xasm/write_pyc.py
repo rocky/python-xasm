@@ -14,15 +14,20 @@ def write_pycfile(fp, code_list, timestamp=None,
 
     if timestamp is None:
         timestamp = int(time.time())
-    if magic_int == 3393:
-        fp.write(pack('I', timestamp))
-        fp.write(pack('I', 0))
-    elif magic_int in (3394, 3401, 3412, 3413, 3422):
-        fp.write(pack('<I', 0)) # pep552_bits
+    write_source_size = version > 3.2
+    if version >= 3.7:
+        if magic_int == 3393:
+            fp.write(pack('I', timestamp))
+            fp.write(pack('I', 0))
+        else:
+            # PEP 552. https://www.python.org/dev/peps/pep-0552/
+            # 0 in the lowest-order bit means used old-style timestamps
+            fp.write(pack('<I', 0))
+            fp.write(pack('<I', timestamp))
     else:
         fp.write(pack('<I', timestamp))
 
-    if version > 3.2:
+    if write_source_size:
         fp.write(pack('<I', 0)) # size mod 2**32
 
     for co in code_list:
