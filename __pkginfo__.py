@@ -39,7 +39,7 @@ license = "GPL-2.0"
 mailing_list = "python-debugger@googlegroups.com"
 modname = "xasm"
 py_modules = None
-setup_requires = ["pytest-runner", "xdis >= 4.5.0, < 4.6.0"]
+setup_requires = ["pytest-runner", "xdis >= 4.5.1, < 4.6.0"]
 # scripts            = ['bin/pydisasm']
 short_desc = "Python cross-version byte-code assembler"
 tests_require = ["pytest", _six]

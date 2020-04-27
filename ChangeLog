@@ -1,8 +1,50 @@
+2020-04-26  rocky <rocky@gnu.org>
+
+	* ChangeLog, __pkginfo__.py, xasm/version.py: Get ready for release
+	1.1.0
+
+2020-04-24  rocky <rocky@gnu.org>
+
+	* __pkginfo__.py, pytest/test_write_pyc.py, test/gcd-3.7.pyasm,
+	test/gcd-3.8.pyasm, xasm/write_pyc.py: Add 3.7 PEP 552 header for
+	3.7+ Fixes #3 Bump xdis version
+
+2020-04-18  R. Bernstein <rocky@users.noreply.github.com>
+
+	* .github/FUNDING.yml: Create FUNDING.yml
+
+2020-04-17  rocky <rb@dustyfeet.com>
+
+	* test/comp.py, xasm/assemble.py, xasm/write_pyc.py: Misc assembly
+	bug fixes: * Add 3.8+ posonlyargcount * More sensitive to writing pep pep552 bits and network order of
+	ints * note positional arguments in 3.6+
+
+2020-04-17  rocky <rb@dustyfeet.com>
+
+	* xasm/assemble.py: Track xdis changes to Code repr()
+
+2020-04-17  rocky <rocky@gnu.org>
+
+	* Makefile, __pkginfo__.py, admin-tools/how-to-make-a-release.md,
+	admin-tools/pyenv-versions, pytest/.gitignore,
+	pytest/test_write_pyc.py, test/test_all.py, xasm/.gitignore,
+	xasm/assemble.py, xasm/misc.py, xasm/write_pyc.py, xasm/xasm_cli.py: 
+	Revise for new xdis. Add Better write_pyc() fn
+
+2019-11-06  rocky <rb@dustyfeet.com>
+
+	* xasm/assemble.py: Ensure bytecode is in range
+
 2019-10-19  rocky <rocky@gnu.org>
 
-	* MANIFEST.in, NEWS.md, README.rst, admin-tools/check-versions.sh,
-	admin-tools/make-dist.sh, admin-tools/pyenv-versions,
-	xasm/version.py: Get ready for release 1.0.0
+	* xasm/assemble.py: Add an "assert" message
+
+2019-10-19  rocky <rocky@gnu.org>
+
+	* ChangeLog, MANIFEST.in, Makefile, NEWS.md, README.rst,
+	__pkginfo__.py, admin-tools/check-versions.sh,
+	admin-tools/make-dist.sh, admin-tools/pyenv-versions, setup.py,
+	xasm/version.py: Release 1.0.0
 
 2019-10-19  rocky <rocky@gnu.org>
 

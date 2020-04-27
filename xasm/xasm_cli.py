@@ -37,7 +37,9 @@ def main(pyc_file, asm_path):
 
     with open(pyc_file, file_mode) as fp:
         write_pycfile(fp, asm.code_list, asm.timestamp, float(asm.python_version))
-    print("Wrote Python %s bytecode file %s" % (asm.python_version, pyc_file))
+        size = fp.tell()
+    print("Wrote Python %s bytecode file %s; %d bytes." %
+          (asm.python_version, pyc_file, size))
 
 if __name__ == '__main__':
     main(sys.argv[1:])
