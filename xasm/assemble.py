@@ -3,6 +3,7 @@ from __future__ import print_function
 import ast, re, xdis
 from xasm.misc import get_opcode
 from xdis.opcodes.base import cmp_op
+from xdis import PYTHON_VERSION
 
 # import xdis.bytecode as Mbytecode
 
@@ -75,7 +76,9 @@ class Assembler(object):
             co_firstlineno=1,
             co_lnotab = {},
             co_freevars = [],
-            co_cellvars = [])
+            co_cellvars = [],
+            version = float(python_version)
+        )
 
         self.code.instructions = []
 
@@ -113,7 +116,7 @@ def asm_file(path):
             if line.startswith('# Python bytecode '):
                 python_version = line[len('# Python bytecode '):].strip().split()[0]
                 asm = Assembler(python_version)
-                asm.code_init()
+                asm.code_init(python_version)
                 bytecode_seen = True
             elif line.startswith('# Timestamp in code: '):
                 text = line[len('# Timestamp in code: '):].strip()
@@ -128,7 +131,7 @@ def asm_file(path):
                     backpatch_inst = set([])
                     methods[method_name] = co
                     offset = 0
-                asm.code_init()
+                asm.code_init(python_version)
                 asm.code.co_name = line[len('# Method Name: '):].strip()
                 method_name = asm.code.co_name
 
@@ -439,7 +442,10 @@ def create_code(asm, label, backpatch):
         asm.code.co_code = ''.join([chr(j) for j in bcode])
 
     # Stamp might be added here
-    code = asm.code.to_native()
+    if asm.python_version == PYTHON_VERSION:
+        code = asm.code.to_native()
+    else:
+        code = asm.code.freeze()
     # asm.print_instructions()
 
     # print (*args)

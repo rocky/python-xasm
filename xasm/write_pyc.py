@@ -32,7 +32,7 @@ def write_pycfile(fp, code_list, timestamp=None,
 
     for co in code_list:
         try:
-            co_obj = dumps(co, python_version=str(version))
+            co_obj = dumps(co, python_version=version)
             if PYTHON3 and version < 3.0:
                 co_obj = str.encode(co_obj)
                 pass
