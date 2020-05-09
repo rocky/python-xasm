@@ -5,7 +5,7 @@ some limited set of python bytecode versions
 from xdis.main import disassemble_file
 import xdis
 from xasm.misc import write_pycfile
-from xdis import load_module, magics2int, write_bytecode_file
+from xdis import load_module, magic2int, write_bytecode_file
 from xdis.opcodes import opcode_33, opcode_27
 from tempfile import NamedTemporaryFile
 import os.path as osp
