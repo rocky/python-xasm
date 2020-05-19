@@ -9,7 +9,7 @@
 
 # Things that change more often go here.
 copyright = """
-Copyright (C) 2017, 2019 Rocky Bernstein <rb@dustyfeet.com>.
+Copyright (C) 2017, 2019-2020 Rocky Bernstein <rb@dustyfeet.com>.
 """
 
 classifiers = [
@@ -39,7 +39,7 @@ license = "GPL-2.0"
 mailing_list = "python-debugger@googlegroups.com"
 modname = "xasm"
 py_modules = None
-setup_requires = ["pytest-runner", "xdis >= 4.5.1, < 4.6.0"]
+setup_requires = ["pytest-runner", "xdis >= 4.6.0, < 4.7.0"]
 # scripts            = ['bin/pydisasm']
 short_desc = "Python cross-version byte-code assembler"
 tests_require = ["pytest", _six]
@@ -48,19 +48,19 @@ web = "https://github.com/rocky/python-xasm/"
 # tracebacks in zip files are funky and not debuggable
 zip_safe = True
 
-import os.path
+import os.path as osp
 
 
 def get_srcdir():
-    filename = os.path.normcase(os.path.dirname(os.path.abspath(__file__)))
-    return os.path.realpath(filename)
+    filename = osp.normcase(osp.dirname(osp.abspath(__file__)))
+    return osp.realpath(filename)
 
 
 srcdir = get_srcdir()
 
 
 def read(*rnames):
-    return open(os.path.join(srcdir, *rnames)).read()
+    return open(osp.join(srcdir, *rnames)).read()
 
 
 # Get info from files; set: long_description and VERSION

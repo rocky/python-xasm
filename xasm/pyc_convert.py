@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 """Convert Python Bytecode from one version to another for
-some limited set of python bytecode versions
+some limited set of Python bytecode versions
 """
-from xdis.main import disassemble_file
+from xdis import disassemble_file, load_module, magic2int, write_bytecode_file
+from xasm.write_pyc import write_pycfile
 import xdis
-from xasm.misc import write_pycfile
-from xdis import load_module, magic2int, write_bytecode_file
 from xdis.opcodes import opcode_33, opcode_27
 from tempfile import NamedTemporaryFile
 import os.path as osp
@@ -42,7 +41,7 @@ def copy_magic_into_pyc(input_pyc, output_pyc, src_version, dest_version):
     assert version == float(
         src_version
     ), "Need Python %s bytecode; got bytecode for version %s" % (src_version, version)
-    magic_int = magic2int(magics[dest_version])
+    magic_int = magic2int(magics.magics[dest_version])
     write_bytecode_file(output_pyc, co, magic_int)
     print("Wrote %s" % output_pyc)
     return

@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 from __future__ import print_function
 import ast, re, xdis
-from xasm.misc import get_opcode
 from xdis.opcodes.base import cmp_op
-from xdis import PYTHON_VERSION
+from xdis import get_opcode, PYTHON_VERSION
 
 # import xdis.bytecode as Mbytecode
 
-class Instruction(): # (Mbytecode.Instruction):
+
+class Instruction(object):  # (Mbytecode.Instruction):
     def __repr__(self):
-        s = ''
+        s = ""
         if self.line_no:
             s = "%4d: " % self.line_no
         else:
@@ -18,7 +18,9 @@ class Instruction(): # (Mbytecode.Instruction):
         if self.arg is not None:
             s += "\t%s" % self.arg
         return s
+
     pass
+
 
 def is_int(s):
     try:
@@ -27,8 +29,10 @@ def is_int(s):
     except:
         return False
 
+
 def is_lineno(s):
-    return re.match('^\d+:', s)
+    return re.match("^\d+:", s)
+
 
 def get_opname_operand(fields):
     assert len(fields) > 0
@@ -42,17 +46,18 @@ def get_opname_operand(fields):
     else:
         return fields[0], None
 
+
 class Assembler(object):
     def __init__(self, python_version):
         self.opc = get_opcode(python_version)
         self.code_list = []
-        self.codes = []   # FIXME use a better name
-        self.status = 'unfinished'
-        self.size = 0 # Size of source code. Only relevant in version 3 and above
+        self.codes = []  # FIXME use a better name
+        self.status = "unfinished"
+        self.size = 0  # Size of source code. Only relevant in version 3 and above
         self.python_version = python_version
         self.timestamp = None
         self.backpatch = []  # list of backpatch dicts, one for each function
-        self.label = []      # list of label dists, one for each function
+        self.label = []  # list of label dists, one for each function
         self.code = None
 
     def code_init(self, python_version=None):
@@ -71,13 +76,13 @@ class Assembler(object):
             co_consts=[],
             co_names=[],
             co_varnames=[],
-            co_filename = 'unknown',
-            co_name = 'unknown',
+            co_filename="unknown",
+            co_name="unknown",
             co_firstlineno=1,
-            co_lnotab = {},
-            co_freevars = [],
-            co_cellvars = [],
-            version = float(python_version)
+            co_lnotab={},
+            co_freevars=[],
+            co_cellvars=[],
+            version=float(python_version),
         )
 
         self.code.instructions = []
@@ -96,7 +101,8 @@ class Assembler(object):
 
     def err(self, mess):
         print(mess)
-        self.status = 'errored'
+        self.status = "errored"
+
 
 def asm_file(path):
     offset = 0
@@ -112,18 +118,18 @@ def asm_file(path):
     while i < len(lines):
         line = lines[i]
         i += 1
-        if line.startswith('#'):
-            if line.startswith('# Python bytecode '):
-                python_version = line[len('# Python bytecode '):].strip().split()[0]
+        if line.startswith("#"):
+            if line.startswith("# Python bytecode "):
+                python_version = line[len("# Python bytecode ") :].strip().split()[0]
                 asm = Assembler(python_version)
                 asm.code_init(python_version)
                 bytecode_seen = True
-            elif line.startswith('# Timestamp in code: '):
-                text = line[len('# Timestamp in code: '):].strip()
+            elif line.startswith("# Timestamp in code: "):
+                text = line[len("# Timestamp in code: ") :].strip()
                 time_str = text.split()[0]
                 if is_int(time_str):
                     asm.timestamp = int(time_str)
-            elif line.startswith('# Method Name: '):
+            elif line.startswith("# Method Name: "):
                 if method_name:
                     co = create_code(asm, label, backpatch_inst)
                     asm.update_lists(co, label, backpatch_inst)
@@ -132,48 +138,56 @@ def asm_file(path):
                     methods[method_name] = co
                     offset = 0
                 asm.code_init(python_version)
-                asm.code.co_name = line[len('# Method Name: '):].strip()
+                asm.code.co_name = line[len("# Method Name: ") :].strip()
                 method_name = asm.code.co_name
 
-            elif line.startswith('# Filename: '):
-                asm.code.co_filename = line[len('# Filename: '):].strip()
-            elif line.startswith('# First Line: '):
-                s = line[len('# First Line: '):].strip()
+            elif line.startswith("# Filename: "):
+                asm.code.co_filename = line[len("# Filename: ") :].strip()
+            elif line.startswith("# First Line: "):
+                s = line[len("# First Line: ") :].strip()
                 first_lineno = int(s)
                 asm.code.co_firstlineno = first_lineno
-            elif line.startswith('# Argument count: '):
-                argc = line[len('# Argument count: '):].strip().split()[0]
-            elif line.startswith('# Position-only argument count: '):
-                argc = line[len('# Position-only argument count: '):].strip().split()[0]
+            elif line.startswith("# Argument count: "):
+                argc = line[len("# Argument count: ") :].strip().split()[0]
+            elif line.startswith("# Position-only argument count: "):
+                argc = (
+                    line[len("# Position-only argument count: ") :].strip().split()[0]
+                )
                 asm.code.co_posonlyargcount = ast.literal_eval(argc)
-            elif line.startswith('# Keyword-only argument count: '):
-                argc = line[len('# Keyword-only argument count: '):].strip().split()[0]
+            elif line.startswith("# Keyword-only argument count: "):
+                argc = line[len("# Keyword-only argument count: ") :].strip().split()[0]
                 asm.code.co_kwonlyargcount = ast.literal_eval(argc)
-            elif line.startswith('# Number of locals: '):
-                l_str = line[len('# Number of locals: '):].strip()
+            elif line.startswith("# Number of locals: "):
+                l_str = line[len("# Number of locals: ") :].strip()
                 asm.code.co_nlocals = int(l_str)
             elif line.startswith("# Source code size mod 2**32: "):
-                l_str = line[len("# Source code size mod 2**32: "):-len(' bytes')].strip()
+                l_str = line[
+                    len("# Source code size mod 2**32: ") : -len(" bytes")
+                ].strip()
                 asm.size = int(l_str)
-            elif line.startswith('# Stack size: '):
-                l_str = line[len('# Stack size: '):].strip()
+            elif line.startswith("# Stack size: "):
+                l_str = line[len("# Stack size: ") :].strip()
                 asm.code.co_stacksize = int(l_str)
-            elif line.startswith('# Flags: '):
-                flags = line[len('# Flags: '):].strip().split()[0]
+            elif line.startswith("# Flags: "):
+                flags = line[len("# Flags: ") :].strip().split()[0]
                 asm.code.co_flags = ast.literal_eval(flags)
-            elif line.startswith('# Constants:'):
+            elif line.startswith("# Constants:"):
                 count = 0
                 while i < len(lines):
                     line = lines[i]
                     i += 1
-                    match = re.match('^#\s+(\d+): (.+)$', line)
+                    match = re.match("^#\s+(\d+): (.+)$", line)
                     if match:
                         index = int(match.group(1))
-                        assert index == count, ("Constant index {%d} found on line {%d}"
-                                                "doesn't match expected constant index {%d}." %
-                                                (index, i, count))
+                        assert index == count, (
+                            "Constant index {%d} found on line {%d}"
+                            "doesn't match expected constant index {%d}."
+                            % (index, i, count)
+                        )
                         expr = match.group(2)
-                        match = re.match('<(?:Code\d+ )?code object (\S+) at (0x[0-f]+)', expr)
+                        match = re.match(
+                            "<(?:Code\d+ )?code object (\S+) at (0x[0-f]+)", expr
+                        )
                         if match:
                             name = match.group(1)
                             m2 = re.match("^<(.+)>$", name)
@@ -182,8 +196,10 @@ def asm_file(path):
                             if name in methods:
                                 asm.code.co_consts.append(methods[name])
                             else:
-                                print("line %d (%s, %s): can't find method %s" %
-                                    (i, asm.code.co_filename, method_name, name))
+                                print(
+                                    "line %d (%s, %s): can't find method %s"
+                                    % (i, asm.code.co_filename, method_name, name)
+                                )
                                 asm.code.co_consts.append("**bogus %s**" % name)
                         else:
                             asm.code.co_consts.append(ast.literal_eval(expr))
@@ -193,47 +209,46 @@ def asm_file(path):
                         break
                     pass
                 pass
-            elif line.startswith('# Cell variables:'):
-                i = update_code_tuple_field('co_cellvars', asm.code,
-                                            lines, i)
-            elif line.startswith('# Free variables:'):
-                i = update_code_tuple_field('co_freevars', asm.code,
-                                            lines, i)
-            elif line.startswith('# Names:'):
-                i = update_code_tuple_field('co_names', asm.code,
-                                            lines, i)
-            elif line.startswith('# Varnames:'):
+            elif line.startswith("# Cell variables:"):
+                i = update_code_tuple_field("co_cellvars", asm.code, lines, i)
+            elif line.startswith("# Free variables:"):
+                i = update_code_tuple_field("co_freevars", asm.code, lines, i)
+            elif line.startswith("# Names:"):
+                i = update_code_tuple_field("co_names", asm.code, lines, i)
+            elif line.startswith("# Varnames:"):
                 line = lines[i]
-                asm.code.co_varnames = line[1:].strip().split(', ')
+                asm.code.co_varnames = line[1:].strip().split(", ")
                 i += 1
-            elif line.startswith('# Positional arguments:'):
+            elif line.startswith("# Positional arguments:"):
                 line = lines[i]
-                args = line[1:].strip().split(', ')
+                args = line[1:].strip().split(", ")
                 asm.code.co_argcount = len(args)
                 i += 1
         else:
             if not line.strip():
                 continue
 
-            match = re.match('^([^\s]+):$', line)
+            match = re.match("^([^\s]+):$", line)
             if match:
                 label[match.group(1)] = offset
                 continue
 
-            match = re.match('^\s*([\d]+):\s*$', line)
+            match = re.match("^\s*([\d]+):\s*$", line)
             if match:
                 line_no = int(match.group(1))
                 asm.code.co_lnotab[offset] = line_no
                 continue
 
             # Opcode section
-            assert bytecode_seen, 'File needs to start out with: # Python bytecode <version>'
+            assert (
+                bytecode_seen
+            ), "File needs to start out with: # Python bytecode <version>"
             fields = line.strip().split()
             line_no = None
             l = len(fields)
 
             if l > 1:
-                if fields[0] == '>>':
+                if fields[0] == ">>":
                     fields = fields[1:]
                     l -= 1
                 if is_lineno(fields[0]) and is_int(fields[1]):
@@ -242,7 +257,7 @@ def asm_file(path):
                 elif is_lineno(fields[0]):
                     line_no = int(fields[0][:-1])
                     fields = fields[1:]
-                    if fields[0] == '>>':
+                    if fields[0] == ">>":
                         fields = fields[1:]
                         if is_int(fields[0]):
                             fields = fields[1:]
@@ -256,7 +271,7 @@ def asm_file(path):
 
             if opname in asm.opc.opname:
                 inst = Instruction()
-                inst.opname = opname.replace('+', '_')
+                inst.opname = opname.replace("+", "_")
                 inst.opcode = asm.opc.opmap[inst.opname]
                 if xdis.op_has_argument(inst.opcode, asm.opc):
                     inst.arg = operand
@@ -269,8 +284,7 @@ def asm_file(path):
                         backpatch_inst.add(inst)
                 offset += xdis.op_size(inst.opcode, asm.opc)
             else:
-                raise RuntimeError("Illegal opname %s in:\n%s" %
-                                   (opname, line))
+                raise RuntimeError("Illegal opname %s in:\n%s" % (opname, line))
             pass
         pass
     # print(asm.code.co_lnotab)
@@ -278,8 +292,9 @@ def asm_file(path):
         co = create_code(asm, label, backpatch_inst)
         asm.update_lists(co, label, backpatch_inst)
     asm.code_list.reverse()
-    asm.status = 'finished'
+    asm.status = "finished"
     return asm
+
 
 def member(l, match_value):
     for i, v in enumerate(l):
@@ -287,6 +302,7 @@ def member(l, match_value):
             return i
         pass
     return -1
+
 
 def update_code_field(field_name, value, inst, opc):
     l = getattr(opc, field_name)
@@ -299,12 +315,13 @@ def update_code_field(field_name, value, inst, opc):
         inst.arg = len(l)
         l.append(value)
 
+
 def update_code_tuple_field(field_name, code, lines, i):
     count = 0
     while i < len(lines):
         line = lines[i]
         i += 1
-        match = re.match('^#\s+(\d+): (.+)$', line)
+        match = re.match("^#\s+(\d+): (.+)$", line)
         if match:
             index = int(match.group(1))
             assert index == count
@@ -318,9 +335,11 @@ def update_code_tuple_field(field_name, code, lines, i):
     pass
     return i
 
+
 def err(msg, inst, i):
-    msg += ('. Instruction %d:\n%s' % (i, inst))
+    msg += ". Instruction %d:\n%s" % (i, inst)
     raise RuntimeError(msg)
+
 
 def decode_lineno_tab(lnotab, first_lineno):
 
@@ -329,7 +348,7 @@ def decode_lineno_tab(lnotab, first_lineno):
     uncompressed_lnotab = {}
     for i in range(0, len(lnotab), 2):
         offset_diff = lnotab[i]
-        line_number_diff = lnotab[i+1]
+        line_number_diff = lnotab[i + 1]
         if not isinstance(offset_diff, int):
             offset_diff = ord(offset_diff)
             line_number_diff = ord(line_number_diff)
@@ -347,6 +366,7 @@ def decode_lineno_tab(lnotab, first_lineno):
 
     return uncompressed_lnotab
 
+
 def create_code(asm, label, backpatch):
     # print('label: ', asm.label)
     # print('backpatch: ', asm.backpatch_inst)
@@ -356,7 +376,7 @@ def create_code(asm, label, backpatch):
 
     offset = 0
     extended_value = 0
-    offset2label = {label[j]:j for j in label}
+    offset2label = {label[j]: j for j in label}
 
     for i, inst in enumerate(asm.code.instructions):
         bcode.append(inst.opcode)
@@ -379,7 +399,7 @@ def create_code(asm, label, backpatch):
                         pass
                     pass
                 except KeyError:
-                    err("Label %s not found" %  target, inst, i)
+                    err("Label %s not found" % target, inst, i)
             elif is_int(inst.arg):
                 if inst.opcode == asm.opc.EXTENDED_ARG:
                     extended_value += inst.arg
@@ -388,7 +408,7 @@ def create_code(asm, label, backpatch):
                     else:
                         extended_value <<= 16
                 pass
-            elif inst.arg.startswith('(') and inst.arg.endswith(')'):
+            elif inst.arg.startswith("(") and inst.arg.endswith(")"):
                 operand = inst.arg[1:-1]
                 if inst.opcode in asm.opc.COMPARE_OPS:
                     if operand in cmp_op:
@@ -399,22 +419,26 @@ def create_code(asm, label, backpatch):
                     pass
                 elif inst.opcode in asm.opc.CONST_OPS:
                     operand = ast.literal_eval(operand)
-                    update_code_field('co_consts', operand, inst, asm.code)
+                    update_code_field("co_consts", operand, inst, asm.code)
                 elif inst.opcode in asm.opc.LOCAL_OPS:
-                    update_code_field('co_varnames', operand, inst, asm.code)
+                    update_code_field("co_varnames", operand, inst, asm.code)
                 elif inst.opcode in asm.opc.NAME_OPS:
-                    update_code_field('co_names', operand, inst, asm.code)
+                    update_code_field("co_names", operand, inst, asm.code)
                 elif inst.opcode in asm.opc.FREE_OPS:
                     if operand in asm.code.co_cellvars:
                         inst.arg = asm.code.co_cellvars.index(operand)
                     else:
-                        update_code_field('co_freevars', operand, inst, asm.code)
+                        update_code_field("co_freevars", operand, inst, asm.code)
                 else:
                     # from trepan.api import debug; debug()
                     err("Can't handle operand %s" % inst.arg, inst, i)
             else:
                 # from trepan.api import debug; debug()
-                err("Don't understand operand %s expecting int or (..)" % inst.arg, inst, i)
+                err(
+                    "Don't understand operand %s expecting int or (..)" % inst.arg,
+                    inst,
+                    i,
+                )
 
             if asm.opc.version < 3.6:
                 if inst.opcode == asm.opc.EXTENDED_ARG:
@@ -439,7 +463,7 @@ def create_code(asm, label, backpatch):
             co_code.append(j % 255)
         asm.code.co_code = bytes(co_code)
     else:
-        asm.code.co_code = ''.join([chr(j) for j in bcode])
+        asm.code.co_code = "".join([chr(j) for j in bcode])
 
     # Stamp might be added here
     if asm.python_version == PYTHON_VERSION:
