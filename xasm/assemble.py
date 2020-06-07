@@ -48,8 +48,8 @@ def get_opname_operand(fields):
 
 
 class Assembler(object):
-    def __init__(self, python_version):
-        self.opc = get_opcode(python_version)
+    def __init__(self, python_version, is_pypy):
+        self.opc = get_opcode(python_version, is_pypy)
         self.code_list = []
         self.codes = []  # FIXME use a better name
         self.status = "unfinished"
@@ -59,6 +59,7 @@ class Assembler(object):
         self.backpatch = []  # list of backpatch dicts, one for each function
         self.label = []  # list of label dists, one for each function
         self.code = None
+        self.siphash = None
 
     def code_init(self, python_version=None):
 
@@ -119,9 +120,24 @@ def asm_file(path):
         line = lines[i]
         i += 1
         if line.startswith("#"):
-            if line.startswith("# Python bytecode "):
-                python_version = line[len("# Python bytecode ") :].strip().split()[0]
-                asm = Assembler(python_version)
+            match = re.match("^# (Pypy )?Python bytecode ", line)
+            if match:
+                if match.group(1):
+                    is_pypy = len(pypy_str)
+                    pypy_str = match.group(1)
+                else:
+                    is_pypy = False
+                    pypy_str = ""
+
+                python_version = (
+                    line[len("# Python bytecode " + pypy_str) :].strip().split()[0]
+                )
+                asm = Assembler(python_version, is_pypy)
+                if python_version >= 3.8:
+                    TypeError(
+                        "Creating Python version %s not supported yet. Feel free to fix and put in a PR.\n"
+                        % python_version
+                    )
                 asm.code_init(python_version)
                 bytecode_seen = True
             elif line.startswith("# Timestamp in code: "):
@@ -140,6 +156,13 @@ def asm_file(path):
                 asm.code_init(python_version)
                 asm.code.co_name = line[len("# Method Name: ") :].strip()
                 method_name = asm.code.co_name
+            elif line.startswith("# SipHash: "):
+                siphash = line[len("# ShipHash: ") :].strip().split()[0]
+                asm.siphash = ast.literal_eval(siphash)
+                if asm.siphash != 0:
+                    raise TypeError(
+                        "SIP hashes not supported yet. Feel free to fix and in a PR.\n"
+                    )
 
             elif line.startswith("# Filename: "):
                 asm.code.co_filename = line[len("# Filename: ") :].strip()
