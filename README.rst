@@ -172,6 +172,7 @@ See Also
 --------
 
 * https://github.com/rocky/python-xdis : Cross Python version disassemble
+* https://github.com/rocky/x-python : Cross Python version interpreter
 * https://github.com/rocky/python-xasm/blob/master/HOW-TO-USE.rst : How to write an assembler file
 * https://rocky.github.io/pycon2018-light.co/ : Pycolumbia 2018 Lightning talk showing how to use the assembler
 
