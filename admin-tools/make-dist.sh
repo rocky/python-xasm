@@ -33,7 +33,7 @@ for pyversion in $PYVERSIONS; do
     echo === $pyversion ===
 done
 
-for pyversion in 2.7.16 3.8.0; do
+for pyversion in 2.7.16 3.8.6; do
     echo --- $pyversion ---
     if ! pyenv local $pyversion ; then
 	exit $?
