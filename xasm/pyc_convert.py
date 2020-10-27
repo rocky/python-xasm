@@ -20,7 +20,7 @@ from xasm.assemble import (
 from xdis.magics import magics
 import click
 
-VERSION = "1.0.0"
+from xasm.version import __version__
 
 
 def add_credit(asm, src_version, dest_version):
@@ -28,7 +28,7 @@ def add_credit(asm, src_version, dest_version):
         src_version,
         dest_version,
         "pyc-convert",
-        VERSION,
+        __version__,
     )
     asm.codes[-1].co_consts = list(asm.codes[-1].co_consts).append(stamp)
     return

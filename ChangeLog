@@ -1,7 +1,48 @@
+2020-10-27  rocky <rocky@gnu.org>
+
+	* ChangeLog, NEWS.md, __pkginfo__.py,
+	admin-tools/how-to-make-a-release.md, admin-tools/pyenv-versions,
+	setup.py, xasm/__init__.py, xasm/pyc_convert.py, xasm/version.py: 
+	Get ready for release 1.1.1
+
+2020-07-02  rocky <rocky@gnu.org>
+
+	* requirements-dev.txt: Was missing this
+
+2020-06-08  rocky <rb@dustyfeet.com>
+
+	* README.rst: Note x-python.
+
+2020-06-07  rocky <rocky@gnu.org>
+
+	* xasm/assemble.py, xasm/pyc_convert.py: Detect PyPy. Add SIP hash
+	field...  Note brokenness for SIP and 3.8+ Fixes #4
+
+2020-05-18  rocky <rocky@gnu.org>
+
+	* __pkginfo__.py, admin-tools/pyenv-versions, xasm/assemble.py,
+	xasm/misc.py, xasm/pyc_convert.py, xasm/write_pyc.py: Simplify
+	imports using xdis 4.6.0+
+
+2020-05-09  rocky <rocky@gnu.org>
+
+	* xasm/pyc_convert.py: typo
+
+2020-05-08  rocky <rocky@gnu.org>
+
+	* xasm/pyc_convert.py, xasm/version.py: Simplify xdis imports,
+	blacken some buffers...  tweak version.py
+
+2020-04-28  rocky <rocky@gnu.org>
+
+	* xasm/assemble.py, xasm/write_pyc.py: Bugs in cross-assembly
+	bytecode writing...  Internal code type used is more correct - is for the right version.  Use to_native() when it makes sense.
+
 2020-04-26  rocky <rocky@gnu.org>
 
-	* ChangeLog, __pkginfo__.py, xasm/version.py: Get ready for release
-	1.1.0
+	* ChangeLog, NEWS.md, __pkginfo__.py, admin-tools/pyenv-versions,
+	pytest/test_write_pyc.py, test/gcd-3.7.pyasm, test/gcd-3.8.pyasm,
+	xasm/version.py, xasm/xasm_cli.py: Get ready for release 1.1.0
 
 2020-04-24  rocky <rocky@gnu.org>
 
