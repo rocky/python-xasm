@@ -123,8 +123,8 @@ def asm_file(path):
             match = re.match("^# (Pypy )?Python bytecode ", line)
             if match:
                 if match.group(1):
-                    is_pypy = len(pypy_str)
                     pypy_str = match.group(1)
+                    is_pypy = len(pypy_str)
                 else:
                     is_pypy = False
                     pypy_str = ""
@@ -133,7 +133,7 @@ def asm_file(path):
                     line[len("# Python bytecode " + pypy_str) :].strip().split()[0]
                 )
                 asm = Assembler(python_version, is_pypy)
-                if python_version >= 3.8:
+                if python_version >= "3.8":
                     TypeError(
                         "Creating Python version %s not supported yet. Feel free to fix and put in a PR.\n"
                         % python_version
