@@ -140,7 +140,7 @@ command from `xdis`:
 
 ::
 
-    pydisasm --asm /tmp/five.pyc
+    pydisasm --format xasm /tmp/five.pyc
 
 In the example above though, I have shortend and simplified the result.
 
