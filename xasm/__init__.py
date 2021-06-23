@@ -5,4 +5,4 @@
 __docformat__ = "restructuredtext"
 
 # This ensures VERSION will appear in pydoc
-from xdis.version import __version__ # noqa
+from xdis.version import __version__  # noqa

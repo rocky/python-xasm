@@ -5,10 +5,10 @@ from xasm.assemble import asm_file
 from xasm.write_pyc import write_pycfile
 import xdis
 
+
 @click.command()
 @click.option("--pyc-file", default=None)
-@click.argument("asm-path", type=click.Path(exists=True, readable=True),
-		 required=True)
+@click.argument("asm-path", type=click.Path(exists=True, readable=True), required=True)
 def main(pyc_file, asm_path):
     """
     Create Python bytecode from a Python assembly file.
@@ -27,19 +27,22 @@ def main(pyc_file, asm_path):
         sys.exit(1)
     asm = asm_file(asm_path)
 
-    if not pyc_file and asm_path.endswith('.pyasm'):
-        pyc_file = asm_path[:-len('.pyasm')] + '.pyc'
+    if not pyc_file and asm_path.endswith(".pyasm"):
+        pyc_file = asm_path[: -len(".pyasm")] + ".pyc"
 
     if xdis.PYTHON3:
-        file_mode = 'wb'
+        file_mode = "wb"
     else:
-        file_mode = 'w'
+        file_mode = "w"
 
     with open(pyc_file, file_mode) as fp:
         write_pycfile(fp, asm.code_list, asm.timestamp, float(asm.python_version))
         size = fp.tell()
-    print("Wrote Python %s bytecode file %s; %d bytes." %
-          (asm.python_version, pyc_file, size))
+    print(
+        "Wrote Python %s bytecode file %s; %d bytes."
+        % (asm.python_version, pyc_file, size)
+    )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main(sys.argv[1:])

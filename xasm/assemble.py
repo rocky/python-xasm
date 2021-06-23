@@ -26,12 +26,12 @@ def is_int(s):
     try:
         int(s)
         return True
-    except:
+    except ValueError:
         return False
 
 
 def is_lineno(s):
-    return re.match("^\d+:", s)
+    return re.match(r"^\d+:", s)
 
 
 def get_opname_operand(fields):
@@ -123,7 +123,7 @@ def asm_file(path):
             match = re.match("^# (Pypy )?Python bytecode ", line)
             if match:
                 if match.group(1):
-                    is_pypy = len(pypy_str)
+                    is_pypy = len(line)
                     pypy_str = match.group(1)
                 else:
                     is_pypy = False
@@ -199,7 +199,7 @@ def asm_file(path):
                 while i < len(lines):
                     line = lines[i]
                     i += 1
-                    match = re.match("^#\s+(\d+): (.+)$", line)
+                    match = re.match(r"^#\s+(\d+): (.+)$", line)
                     if match:
                         index = int(match.group(1))
                         assert index == count, (
@@ -209,7 +209,7 @@ def asm_file(path):
                         )
                         expr = match.group(2)
                         match = re.match(
-                            "<(?:Code\d+ )?code object (\S+) at (0x[0-f]+)", expr
+                            r"<(?:Code\d+ )?code object (\S+) at (0x[0-f]+)", expr
                         )
                         if match:
                             name = match.group(1)
@@ -251,12 +251,12 @@ def asm_file(path):
             if not line.strip():
                 continue
 
-            match = re.match("^([^\s]+):$", line)
+            match = re.match(r"^([^\s]+):$", line)
             if match:
                 label[match.group(1)] = offset
                 continue
 
-            match = re.match("^\s*([\d]+):\s*$", line)
+            match = re.match(r"^\s*([\d]+):\s*$", line)
             if match:
                 line_no = int(match.group(1))
                 asm.code.co_lnotab[offset] = line_no
@@ -268,12 +268,12 @@ def asm_file(path):
             ), "File needs to start out with: # Python bytecode <version>"
             fields = line.strip().split()
             line_no = None
-            l = len(fields)
+            num_fields = len(fields)
 
-            if l > 1:
+            if num_fields > 1:
                 if fields[0] == ">>":
                     fields = fields[1:]
-                    l -= 1
+                    num_fields -= 1
                 if is_lineno(fields[0]) and is_int(fields[1]):
                     line_no = int(fields[0][:-1])
                     opname, operand = get_opname_operand(fields[2:])
@@ -319,8 +319,8 @@ def asm_file(path):
     return asm
 
 
-def member(l, match_value):
-    for i, v in enumerate(l):
+def member(fields, match_value):
+    for i, v in enumerate(fields):
         if v == match_value and type(v) == type(match_value):
             return i
         pass
@@ -328,15 +328,15 @@ def member(l, match_value):
 
 
 def update_code_field(field_name, value, inst, opc):
-    l = getattr(opc, field_name)
+    field_values = getattr(opc, field_name)
     # Can't use "in" because True == 1 and False == 0
     # if value in l:
-    i = member(l, value)
+    i = member(field_values, value)
     if i >= 0:
         inst.arg = i
     else:
-        inst.arg = len(l)
-        l.append(value)
+        inst.arg = len(field_values)
+        field_values.append(value)
 
 
 def update_code_tuple_field(field_name, code, lines, i):
@@ -344,12 +344,12 @@ def update_code_tuple_field(field_name, code, lines, i):
     while i < len(lines):
         line = lines[i]
         i += 1
-        match = re.match("^#\s+(\d+): (.+)$", line)
+        match = re.match(r"^#\s+(\d+): (.+)$", line)
         if match:
             index = int(match.group(1))
             assert index == count
-            l = getattr(code, field_name)
-            l.append(match.group(2))
+            field_values = getattr(code, field_name)
+            field_values.append(match.group(2))
             count += 1
         else:
             i -= 1

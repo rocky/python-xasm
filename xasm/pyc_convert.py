@@ -83,8 +83,7 @@ def transform_26_27(inst, new_inst, i, n, offset, instructions, new_asm):
 
 
 def transform_32_33(inst, new_inst, i, n, offset, instructions, new_asm):
-    """MAKE_FUNCTION adds another const. probably MAKE_CLASS as well
-    """
+    """MAKE_FUNCTION adds another const. probably MAKE_CLASS as well"""
     add_size = xdis.op_size(new_inst.opcode, opcode_33)
     if inst.opname in ("MAKE_FUNCTION", "MAKE_CLOSURE"):
         # Previous instruction should be a load const which
