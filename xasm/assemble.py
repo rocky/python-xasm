@@ -1,8 +1,8 @@
-#!/usr/bin/env python
 from __future__ import print_function
 import ast, re, xdis
 from xdis.opcodes.base import cmp_op
-from xdis import get_opcode, PYTHON_VERSION
+
+from xdis import get_opcode, load_module, PYTHON_VERSION
 
 # import xdis.bytecode as Mbytecode
 
@@ -112,14 +112,28 @@ def asm_file(path):
     asm = None
     backpatch_inst = set([])
     label = {}
-
+    python_version = None
     lines = open(path).readlines()
     i = 0
     bytecode_seen = False
     while i < len(lines):
         line = lines[i]
         i += 1
-        if line.startswith("#"):
+        if line.startswith(".READ"):
+            match = re.match("^.READ (.+)$", line)
+            if match:
+                input_pyc = match.group(1)
+                print(f"Reading {input_pyc}")
+                (version, timestamp, magic_int, co, is_pypy, source_size, sip_hash) = load_module(
+                    input_pyc
+                )
+                if python_version and python_version != version:
+                    TypeError(
+                        f"We previously saw Python version {python_version} but we just loaded {version}.\n"
+                    )
+                python_version = version
+
+        elif line.startswith("#"):
             match = re.match("^# (Pypy )?Python bytecode ", line)
             if match:
                 if match.group(1):
@@ -129,14 +143,20 @@ def asm_file(path):
                     is_pypy = False
                     pypy_str = ""
 
-                python_version = (
+                version = (
                     line[len("# Python bytecode " + pypy_str) :].strip().split()[0]
                 )
+
+                if python_version is not None and version != python_version:
+                    TypeError(
+                        f"We previously saw Python version {python_version} but we just encountered {version}.\n"
+                    )
+                python_version = version
+
                 asm = Assembler(python_version, is_pypy)
                 if python_version >= "3.8":
                     TypeError(
-                        "Creating Python version %s not supported yet. Feel free to fix and put in a PR.\n"
-                        % python_version
+                        f"Creating Python version {python_version} not supported yet. Feel free to fix and put in a PR.\n"
                     )
                 asm.code_init(python_version)
                 bytecode_seen = True
