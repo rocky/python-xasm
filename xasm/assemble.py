@@ -132,6 +132,7 @@ def asm_file(path):
                         f"We previously saw Python version {python_version} but we just loaded {version}.\n"
                     )
                 python_version = version
+                # FIXME: extract all code options below the top-level and asm.code_list
 
         elif line.startswith("#"):
             match = re.match("^# (Pypy )?Python bytecode ", line)
