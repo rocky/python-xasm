@@ -1,11 +1,12 @@
 #!/usr/bin/env python
-from __future__ import print_function
 import ast, re, xdis
 from xdis.opcodes.base import cmp_op
-from xdis import get_opcode, PYTHON_VERSION
+from xdis import get_opcode, PYTHON_VERSION_TRIPLE
 
 # import xdis.bytecode as Mbytecode
 
+def version_str_to_tuple(python_version: str, len=2):
+    return tuple([int(v) for v in python_version.split(".")[:len]])
 
 class Instruction(object):  # (Mbytecode.Instruction):
     def __repr__(self):
@@ -34,17 +35,25 @@ def is_lineno(s):
     return re.match(r"^\d+:", s)
 
 
-def get_opname_operand(fields):
+def get_opname_operand(opc, fields):
     assert len(fields) > 0
+    opname = fields[0]
+    if opc.opmap[opname] < opc.HAVE_ARGUMENT:
+        return opname, None
     if len(fields) > 1:
         if is_int(fields[1]):
             operand = int(fields[1])
         else:
-            operand = fields[1]
+            operand = ' '.join(fields[1:])
+            if operand.startswith("(to "):
+                int_val = operand[len("(to "):]
+                # In xasm format this shouldn't appear
+                if is_int(int_val):
+                    operand = int(int_val)
 
-        return fields[0], operand
+        return opname, operand
     else:
-        return fields[0], None
+        return opname, None
 
 
 class Assembler(object):
@@ -83,7 +92,7 @@ class Assembler(object):
             co_lnotab={},
             co_freevars=[],
             co_cellvars=[],
-            version=float(python_version),
+            version_triple=python_version,
         )
 
         self.code.instructions = []
@@ -132,13 +141,15 @@ def asm_file(path):
                 python_version = (
                     line[len("# Python bytecode " + pypy_str) :].strip().split()[0]
                 )
-                asm = Assembler(python_version, is_pypy)
-                if python_version >= "3.8":
+
+                python_version_pair = version_str_to_tuple(python_version, len=2)
+                asm = Assembler(python_version_pair, is_pypy)
+                if python_version_pair >= (3, 9):
                     TypeError(
                         "Creating Python version %s not supported yet. Feel free to fix and put in a PR.\n"
                         % python_version
                     )
-                asm.code_init(python_version)
+                asm.code_init(python_version_pair)
                 bytecode_seen = True
             elif line.startswith("# Timestamp in code: "):
                 text = line[len("# Timestamp in code: ") :].strip()
@@ -153,7 +164,8 @@ def asm_file(path):
                     backpatch_inst = set([])
                     methods[method_name] = co
                     offset = 0
-                asm.code_init(python_version)
+                python_version_pair = version_str_to_tuple(python_version, len=2)
+                asm.code_init(python_version_pair)
                 asm.code.co_name = line[len("# Method Name: ") :].strip()
                 method_name = asm.code.co_name
             elif line.startswith("# SipHash: "):
@@ -220,10 +232,11 @@ def asm_file(path):
                                 asm.code.co_consts.append(methods[name])
                             else:
                                 print(
-                                    "line %d (%s, %s): can't find method %s"
-                                    % (i, asm.code.co_filename, method_name, name)
+                                    f"line {i} ({asm.code.co_filename}, {method_name}): can't find method {name}"
                                 )
-                                asm.code.co_consts.append("**bogus %s**" % name)
+                                bogus_name = f"**bogus {name}**"
+                                print(f"\t appending {bogus_name} to list of constants")
+                                asm.code.co_consts.append()
                         else:
                             asm.code.co_consts.append(ast.literal_eval(expr))
                         count += 1
@@ -276,7 +289,7 @@ def asm_file(path):
                     num_fields -= 1
                 if is_lineno(fields[0]) and is_int(fields[1]):
                     line_no = int(fields[0][:-1])
-                    opname, operand = get_opname_operand(fields[2:])
+                    opname, operand = get_opname_operand(asm.opc, fields[2:])
                 elif is_lineno(fields[0]):
                     line_no = int(fields[0][:-1])
                     fields = fields[1:]
@@ -284,13 +297,13 @@ def asm_file(path):
                         fields = fields[1:]
                         if is_int(fields[0]):
                             fields = fields[1:]
-                    opname, operand = get_opname_operand(fields)
+                    opname, operand = get_opname_operand(asm.opc, fields)
                 elif is_int(fields[0]):
-                    opname, operand = get_opname_operand(fields[1:])
+                    opname, operand = get_opname_operand(asm.opc, fields[1:])
                 else:
-                    opname, operand = get_opname_operand(fields)
+                    opname, operand = get_opname_operand(asm.opc, fields)
             else:
-                opname, _ = get_opname_operand(fields)
+                opname, _ = get_opname_operand(asm.opc, fields)
 
             if opname in asm.opc.opname:
                 inst = Instruction()
@@ -414,6 +427,9 @@ def create_code(asm, label, backpatch):
         if xdis.op_has_argument(inst.opcode, asm.opc):
             if inst in backpatch:
                 target = inst.arg
+                match = re.match(r"^(L\d+)(?: \(to \d+\))?$", target)
+                if match:
+                    target = match.group(1)
                 try:
                     if inst.opcode in asm.opc.JREL_OPS:
                         inst.arg = label[target] - offset
@@ -422,7 +438,7 @@ def create_code(asm, label, backpatch):
                         pass
                     pass
                 except KeyError:
-                    err("Label %s not found" % target, inst, i)
+                    err(f"Label {target} not found.\nI know about {backpatch}", inst, i)
             elif is_int(inst.arg):
                 if inst.opcode == asm.opc.EXTENDED_ARG:
                     extended_value += inst.arg
@@ -441,7 +457,8 @@ def create_code(asm, label, backpatch):
 
                     pass
                 elif inst.opcode in asm.opc.CONST_OPS:
-                    operand = ast.literal_eval(operand)
+                    if not operand.startswith("<Code"):
+                        operand = ast.literal_eval(operand)
                     update_code_field("co_consts", operand, inst, asm.code)
                 elif inst.opcode in asm.opc.LOCAL_OPS:
                     update_code_field("co_varnames", operand, inst, asm.code)
@@ -463,7 +480,7 @@ def create_code(asm, label, backpatch):
                     i,
                 )
 
-            if asm.opc.version < 3.6:
+            if asm.opc.version_tuple < (3, 6):
                 if inst.opcode == asm.opc.EXTENDED_ARG:
                     arg_tup = xdis.util.num2code(inst.arg)
                 else:
@@ -477,10 +494,10 @@ def create_code(asm, label, backpatch):
                 else:
                     bcode.append(inst.arg - extended_value)
                     extended_value = 0
-        elif asm.opc.version >= 3.6:
+        elif asm.opc.version_tuple >= (3, 6):
             bcode.append(0)
 
-    if asm.opc.version >= 3.0:
+    if asm.opc.version_tuple >= (3, 0):
         co_code = bytearray()
         for j in bcode:
             co_code.append(j % 255)
@@ -489,7 +506,7 @@ def create_code(asm, label, backpatch):
         asm.code.co_code = "".join([chr(j) for j in bcode])
 
     # Stamp might be added here
-    if asm.python_version == PYTHON_VERSION:
+    if asm.python_version[:2] == PYTHON_VERSION_TRIPLE[:2]:
         code = asm.code.to_native()
     else:
         code = asm.code.freeze()

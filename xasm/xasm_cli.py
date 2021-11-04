@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-from __future__ import print_function
 import click, os, sys
 from xasm.assemble import asm_file
 from xasm.write_pyc import write_pycfile
 import xdis
+from xdis.version_info import version_tuple_to_str
 
 
 @click.command()
@@ -36,12 +36,13 @@ def main(pyc_file, asm_path):
         file_mode = "w"
 
     with open(pyc_file, file_mode) as fp:
-        write_pycfile(fp, asm.code_list, asm.timestamp, float(asm.python_version))
+        write_pycfile(fp, asm.code_list, asm.timestamp, asm.python_version)
         size = fp.tell()
     print(
-        "Wrote Python %s bytecode file %s; %d bytes."
-        % (asm.python_version, pyc_file, size)
+        f"""Wrote Python {version_tuple_to_str(asm.python_version)} bytecode file "{pyc_file}"; {size} bytes."""
     )
+    if size <= 16:
+        print("Warning: bytecode file is too small to be usuable.")
 
 
 if __name__ == "__main__":
