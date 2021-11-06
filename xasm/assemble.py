@@ -2,11 +2,9 @@
 import ast, re, xdis
 from xdis.opcodes.base import cmp_op
 from xdis import get_opcode, PYTHON_VERSION_TRIPLE
+from xdis.version_info import PYTHON_VERSION_TRIPLE, version_str_to_tuple
 
 # import xdis.bytecode as Mbytecode
-
-def version_str_to_tuple(python_version: str, len=2):
-    return tuple([int(v) for v in python_version.split(".")[:len]])
 
 class Instruction(object):  # (Mbytecode.Instruction):
     def __repr__(self):
