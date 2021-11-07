@@ -1,3 +1,63 @@
+2021-11-07  rocky <rb@dusytfeet.com>
+
+	* ChangeLog, NEWS.md, admin-tools/check-versions.sh,
+	admin-tools/pyenv-versions, xasm/version.py: Get ready for release
+	1.2.0
+
+2021-11-07  rocky <rocky@dusytfeet.com>
+
+	* __pkginfo__.py, admin-tools/pyenv-versions: Allow for Python 3.10
+
+2021-11-07  rocky <rocky@dusytfeet.com>
+
+	* admin-tools/pyenv-versions, admin-tools/setup-master.sh: 
+	Administrivia
+
+2021-11-05  rocky <rocky@dusytfeet.com>
+
+	* : commit b0609501e91c7a91b01a62b2a2cb9d15fac3e500 Author: rocky
+	<rocky@dusytfeet.com> Date:   Fri Nov 5 20:39:55 2021 -0400
+
+2021-11-04  rocky <rocky@dusytfeet.com>
+
+	* __pkginfo__.py, xasm/assemble.py, xasm/write_pyc.py,
+	xasm/xasm_cli.py: Update to use Python xdis 6.02 A number of little bugs and usability features added.  * Warn if bytecode is too small.  * More informative error messages
+
+2021-07-20  rocky <rb@dustyfeet.com>
+
+	* xasm/assemble.py: Add FIXME note
+
+2021-07-20  rocky <rb@dustyfeet.com>
+
+	* xasm/assemble.py: WIP - start adding .READ directive
+
+2021-06-23  rocky <rocky@dusytfeet.com>
+
+	* xasm/version.py: Black shouldn't format version.py
+
+2021-06-23  rocky <rocky@dusytfeet.com>
+
+	* .editorconfig, setup.cfg: Add some boilerplate config files setup.cfg: general configuration .editorconfig: tells editors how to
+	set up formatting
+
+2021-06-23  rocky <rocky@dusytfeet.com>
+
+	* : commit ab72f12d3e2ad2d5a1319019165c9c792638db5e Author: rocky
+	<rocky@dusytfeet.com> Date:   Wed Jun 23 02:00:32 2021 -0400
+
+2021-03-16  rb@dustyfeet.conf <rocky>
+
+	* xasm/assemble.py: Small bug fixes
+
+2021-03-16  R. Bernstein <rocky@users.noreply.github.com>
+
+	* README.rst: Update README.rst
+
+2020-10-27  rocky <rocky@gnu.org>
+
+	* admin-tools/make-dist.sh: Remove 3.6 until we figure out what's
+	wrong
+
 2020-10-27  rocky <rocky@gnu.org>
 
 	* ChangeLog, NEWS.md, __pkginfo__.py,

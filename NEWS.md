@@ -1,3 +1,9 @@
+1.2.0 2021-11-07
+----------------
+
+* Adjust to use xdis 6.0.3 or later
+* start adding `.READ` directive
+
 1.1.1 2020-10-27
 ----------------
 

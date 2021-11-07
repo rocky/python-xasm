@@ -10,12 +10,12 @@ cd $(dirname ${BASH_SOURCE[0]})
 owd=$(pwd)
 trap finish EXIT
 
-if ! source ./pyenv-versions ; then
+if ! source ./pyenv-newest-versions ; then
     exit $?
 fi
 cd ..
 source $PACKAGE/version.py
-echo $VERSION
+echo $__version__
 
 for pyversion in $PYVERSIONS; do
     echo --- $pyversion ---
@@ -28,17 +28,9 @@ for pyversion in $PYVERSIONS; do
     # Pick out first two number of version, e.g. 3.5.1 -> 35
     first_two=$(echo $pyversion | cut -d'.' -f 1-2 | sed -e 's/\.//')
     rm -fr build
-    python setup.py bdist_egg
-    mv -v dist/${PACKAGE}-$VERSION-{py2.py3,py$first_two}-none-any.whl
+    python setup.py bdist_egg bdist_wheel
+    mv -v dist/${PACKAGE}-$__version__-{py3,py$first_two}-none-any.whl
     echo === $pyversion ===
-done
-
-for pyversion in 2.7.16 3.8.6; do
-    echo --- $pyversion ---
-    if ! pyenv local $pyversion ; then
-	exit $?
-    fi
-    python setup.py bdist_wheel
 done
 
 python ./setup.py sdist
