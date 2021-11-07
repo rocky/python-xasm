@@ -9,7 +9,7 @@
 
 # Things that change more often go here.
 copyright = """
-Copyright (C) 2017, 2019-2020 Rocky Bernstein <rb@dustyfeet.com>.
+Copyright (C) 2017, 2019-2021 Rocky Bernstein <rb@dustyfeet.com>.
 """
 
 classifiers = [
@@ -24,6 +24,7 @@ classifiers = [
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
     "Topic :: Software Development :: Debuggers",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
