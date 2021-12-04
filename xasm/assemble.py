@@ -155,7 +155,7 @@ def asm_file(path):
                     line[len("# Python bytecode " + pypy_str) :].strip().split()[0]
                 )
 
-                python_version_pair = version_str_to_tuple(python_version, len=2)
+                python_version_pair = version_str_to_tuple(version, len=2)
                 asm = Assembler(python_version_pair, is_pypy)
                 if python_version_pair >= (3, 10):
                     TypeError(
@@ -176,7 +176,7 @@ def asm_file(path):
                     backpatch_inst = set([])
                     methods[method_name] = co
                     offset = 0
-                python_version_pair = version_str_to_tuple(python_version, len=2)
+                python_version_pair = version_str_to_tuple(version, len=2)
                 asm.code_init(python_version_pair)
                 asm.code.co_name = line[len("# Method Name: ") :].strip()
                 method_name = asm.code.co_name
