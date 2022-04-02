@@ -248,7 +248,7 @@ def asm_file(path):
                                 )
                                 bogus_name = f"**bogus {name}**"
                                 print(f"\t appending {bogus_name} to list of constants")
-                                asm.code.co_consts.append()
+                                asm.code.co_consts.append(bogus_name)
                         else:
                             asm.code.co_consts.append(ast.literal_eval(expr))
                         count += 1
