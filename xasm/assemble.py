@@ -386,6 +386,7 @@ def update_code_tuple_field(field_name, code, lines, i):
 
 def err(msg, inst, i):
     msg += ". Instruction %d:\n%s" % (i, inst)
+    from trepan.api import debug; debug()
     raise RuntimeError(msg)
 
 
@@ -469,7 +470,7 @@ def create_code(asm, label, backpatch):
 
                     pass
                 elif inst.opcode in asm.opc.CONST_OPS:
-                    if not operand.startswith("<Code"):
+                    if not (operand.startswith("<Code") or operand.startswith("<code")):
                         operand = ast.literal_eval(operand)
                     update_code_field("co_consts", operand, inst, asm.code)
                 elif inst.opcode in asm.opc.LOCAL_OPS:
