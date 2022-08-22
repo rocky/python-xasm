@@ -227,9 +227,8 @@ def asm_file(path):
                     if match:
                         index = int(match.group(1))
                         assert index == count, (
-                            "Constant index {%d} found on line {%d}"
-                            "doesn't match expected constant index {%d}."
-                            % (index, i, count)
+                            f"Constant index {index} found on line {i} "
+                            f"doesn't match expected constant index {count}."
                         )
                         expr = match.group(2)
                         match = re.match(

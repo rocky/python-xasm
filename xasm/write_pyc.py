@@ -40,5 +40,5 @@ def write_pycfile(fp, code_list, timestamp=None, version_triple=xdis.PYTHON_VERS
                 pass
 
             fp.write(co_obj)
-        except:  # noqa
+        except Exception:
             pass
