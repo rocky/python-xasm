@@ -385,7 +385,6 @@ def update_code_tuple_field(field_name, code, lines, i):
 
 def err(msg, inst, i):
     msg += ". Instruction %d:\n%s" % (i, inst)
-    from trepan.api import debug; debug()
     raise RuntimeError(msg)
 
 

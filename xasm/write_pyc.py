@@ -41,4 +41,4 @@ def write_pycfile(fp, code_list, timestamp=None, version_triple=xdis.PYTHON_VERS
 
             fp.write(co_obj)
         except Exception:
-            pass
+            print(f"error dumping {co} - ignoring")
