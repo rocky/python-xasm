@@ -286,10 +286,23 @@ def asm_file(path):
                 asm.code.co_lnotab[offset] = line_no
                 continue
 
-            # Opcode section
+            # Sanity checking: make sure we have seen
+            # proper header lines
+            if i == 1:
+                assert bytecode_seen, (
+                    f"Improper beginning:\n{line}"
+                    "\nLine should begin with '#' "
+                    "and contain header bytecode header information."
+                )
             assert (
                 bytecode_seen
-            ), "File needs to start out with: # Python bytecode <version>"
+            ), (
+                f"Error translating line {i}: "
+                "a line before this should include: \n"
+                "# Python bytecode <version>"
+            )
+
+            # Opcode section
             fields = line.strip().split()
             line_no = None
             num_fields = len(fields)
