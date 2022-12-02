@@ -275,12 +275,12 @@ def asm_file(path):
             if not line.strip():
                 continue
 
-            match = re.match(r"^([^\s]+):$", line)
+            match = re.match(r"^(\S+):$", line)
             if match:
                 label[match.group(1)] = offset
                 continue
 
-            match = re.match(r"^\s*([\d]+):\s*$", line)
+            match = re.match(r"^\s*(\d+):\s*$", line)
             if match:
                 line_no = int(match.group(1))
                 asm.code.co_lnotab[offset] = line_no
@@ -421,7 +421,6 @@ def decode_lineno_tab(lnotab, first_lineno):
             continue
         line_number += line_number_diff
         offset += offset_diff
-        line_number_diff, offset_diff = 0, 0
         uncompressed_lnotab[offset] = line_number
 
     return uncompressed_lnotab
