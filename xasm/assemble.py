@@ -155,11 +155,12 @@ def asm_file(path):
                     line[len("# Python bytecode " + pypy_str) :].strip().split()[0]
                 )
 
-                python_version_pair = version_str_to_tuple(version, len=2)
+                python_version_pair = version_str_to_tuple(version, length=2)
                 asm = Assembler(python_version_pair, is_pypy)
                 if python_version_pair >= (3, 10):
                     TypeError(
-                        f"Creating Python version {python_version} not supported yet. Feel free to fix and put in a PR.\n"
+                        f"Creating Python version {python_version} not supported yet. "
+                        "Feel free to fix and put in a PR.\n"
                     )
                 asm.code_init(python_version_pair)
                 bytecode_seen = True
@@ -176,7 +177,7 @@ def asm_file(path):
                     backpatch_inst = set([])
                     methods[method_name] = co
                     offset = 0
-                python_version_pair = version_str_to_tuple(version, len=2)
+                python_version_pair = version_str_to_tuple(version, length=2)
                 asm.code_init(python_version_pair)
                 asm.code.co_name = line[len("# Method Name: ") :].strip()
                 method_name = asm.code.co_name
@@ -465,7 +466,7 @@ def create_code(asm, label, backpatch):
             elif is_int(inst.arg):
                 if inst.opcode == asm.opc.EXTENDED_ARG:
                     extended_value += inst.arg
-                    if asm.opc.version >= 3.6:
+                    if asm.opc.version_tuple >= (3, 6):
                         extended_value <<= 8
                     else:
                         extended_value <<= 16
