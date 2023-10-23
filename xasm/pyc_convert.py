@@ -158,7 +158,7 @@ def transform_asm(asm, conversion_type, src_version, dest_version):
     elif conversion_type == "33-32":
         transform_fn = transform_33_32
     else:
-        raise RuntimeError("Don't know how to covert %s " % conversion_type)
+        raise RuntimeError("Don't know how to convert %s " % conversion_type)
     for j, code in enumerate(asm.code_list):
         offset2label = {v: k for k, v in asm.label[j].items()}
         new_asm.backpatch.append(copy(asm.backpatch[j]))
@@ -220,7 +220,7 @@ def main(conversion_type, input_pyc, output_pyc):
     """Convert Python bytecode from one version to another.
 
     INPUT_PYC contains the input bytecode path name
-    OUTPUT_PYC  contians the output bytecode path name if supplied
+    OUTPUT_PYC  contains the output bytecode path name if supplied
     The --conversion type option specifies what conversion to do.
 
     Note: there are a very limited set of conversions currently supported.

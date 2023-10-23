@@ -8,7 +8,6 @@ from xdis.version_info import PYTHON_VERSION_TRIPLE, version_str_to_tuple
 
 class Instruction(object):  # (Mbytecode.Instruction):
     def __repr__(self):
-        s = ""
         if self.line_no:
             s = "%4d: " % self.line_no
         else:

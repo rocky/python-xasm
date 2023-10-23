@@ -2,6 +2,7 @@
 *~
 /.cache
 /.eggs
+/.idea
 /.mypy_cache
 /.pytest_cache
 /.python-version

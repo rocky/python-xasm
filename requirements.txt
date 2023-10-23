@@ -1,0 +1,9 @@
+click~=8.0.3
+pip~=22.0.2
+wheel~=0.37.1
+cryptography~=3.4.8
+py~=1.10.0
+lxml~=4.8.0
+keyring~=23.5.0
+colorama~=0.4.4
+setuptools~=59.6.0

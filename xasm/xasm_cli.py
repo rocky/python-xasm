@@ -42,7 +42,7 @@ def main(pyc_file, asm_path):
         f"""Wrote Python {version_tuple_to_str(asm.python_version)} bytecode file "{pyc_file}"; {size} bytes."""
     )
     if size <= 16:
-        print("Warning: bytecode file is too small to be usuable.")
+        print("Warning: bytecode file is too small to be usable.")
 
 
 if __name__ == "__main__":
