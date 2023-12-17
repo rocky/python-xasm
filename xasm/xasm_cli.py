@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-import click, os, sys
+import click
+import os
+import sys
 from xasm.assemble import asm_file
 from xasm.write_pyc import write_pycfile
 import xdis
