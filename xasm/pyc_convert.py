@@ -189,7 +189,7 @@ def transform_asm(asm, conversion_type, src_version, dest_version):
     return new_asm
 
 
-UPWARD_COMPATABLE = tuple("20-21 21-22 23-24 24-23".split())
+UPWARD_COMPATIBLE = tuple("20-21 21-22 23-24 24-23".split())
 
 
 @click.command()
@@ -212,9 +212,9 @@ UPWARD_COMPATABLE = tuple("20-21 21-22 23-24 24-23".split())
     help="specify conversion from/to bytecode",
     default="26-27",
 )
-@click.argument("input_pyc", type=click.Path("r"), nargs=1)
+@click.argument("input_pyc", type=click.Path(writable=True), nargs=1)
 @click.argument(
-    "output_pyc", type=click.Path("w"), required=False, nargs=1, default=None
+    "output_pyc", type=click.Path(writable=True), required=False, nargs=1, default=None
 )
 def main(conversion_type, input_pyc, output_pyc):
     """Convert Python bytecode from one version to another.
@@ -234,7 +234,7 @@ def main(conversion_type, input_pyc, output_pyc):
     if output_pyc is None:
         output_pyc = "%s-%s.pyc" % (shortname, dest_version)
 
-    if conversion_type in UPWARD_COMPATABLE:
+    if conversion_type in UPWARD_COMPATIBLE:
         copy_magic_into_pyc(input_pyc, output_pyc, src_version, dest_version)
         return
     temp_asm = NamedTemporaryFile("w", suffix=".pyasm", prefix=shortname, delete=False)

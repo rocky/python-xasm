@@ -7,14 +7,14 @@ from xdis.version_info import PYTHON_VERSION_TRIPLE, version_str_to_tuple
 # import xdis.bytecode as Mbytecode
 
 class Instruction(object):  # (Mbytecode.Instruction):
-    def __repr__(self):
+    def __repr__(self) -> str:
         if self.line_no:
             s = "%4d: " % self.line_no
         else:
             s = " " * 6
         s += "%-15s" % self.opname
         if self.arg is not None:
-            s += "\t%s" % self.arg
+            s += "\t{self.arg}"
         return s
 
     pass
