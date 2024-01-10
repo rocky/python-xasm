@@ -1,13 +1,22 @@
+default_language_version:
+  python: python
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.0.0
+    rev: v4.0.1
     hooks:
     - id: check-merge-conflict
     - id: debug-statements
+      stages: [commit]
     - id: end-of-file-fixer
--   repo: https://github.com/psf/black
-    rev: 19.10b0
+      stages: [commit]
+-   repo: https://github.com/pycqa/isort
+    rev: 5.13.2
     hooks:
-    - id: black
-      exclude: version.py
-      language_version: python3
+      - id: isort
+        stages: [commit]
+# -   repo: https://github.com/psf/black
+#     rev: 23.12.0
+#     hooks:
+#     - id: black
+#       language_version: python3
+#       stages: [commit]

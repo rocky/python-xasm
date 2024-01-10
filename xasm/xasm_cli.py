@@ -1,11 +1,13 @@
 #!/usr/bin/env python
-import click
 import os
 import sys
-from xasm.assemble import asm_file
-from xasm.write_pyc import write_pycfile
+
+import click
 import xdis
 from xdis.version_info import version_tuple_to_str
+
+from xasm.assemble import asm_file
+from xasm.write_pyc import write_pycfile
 
 
 @click.command()
@@ -25,7 +27,7 @@ def main(pyc_file, asm_path):
     for how to write a Python assembler file.
     """
     if os.stat(asm_path).st_size == 0:
-        print("Size of assembly file %s is zero" % asm_path)
+        print(f"Size of assembly file {asm_path} is zero")
         sys.exit(1)
     asm = asm_file(asm_path)
 

@@ -1,10 +1,14 @@
 #!/usr/bin/env python
-import ast, re, xdis
-from xdis.opcodes.base import cmp_op
+import ast
+import re
+
+import xdis
 from xdis import get_opcode, load_module
+from xdis.opcodes.base import cmp_op
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_str_to_tuple
 
 # import xdis.bytecode as Mbytecode
+
 
 class Instruction(object):  # (Mbytecode.Instruction):
     def __repr__(self) -> str:
@@ -41,9 +45,9 @@ def get_opname_operand(opc, fields):
         if is_int(fields[1]):
             operand = int(fields[1])
         else:
-            operand = ' '.join(fields[1:])
+            operand = " ".join(fields[1:])
             if operand.startswith("(to "):
-                int_val = operand[len("(to "):]
+                int_val = operand[len("(to ") :]
                 # In xasm format this shouldn't appear
                 if is_int(int_val):
                     operand = int(int_val)
@@ -68,7 +72,6 @@ class Assembler(object):
         self.siphash = None
 
     def code_init(self, python_version=None):
-
         if self.python_version is None and python_version:
             self.python_version = python_version
 
@@ -130,9 +133,15 @@ def asm_file(path):
             if match:
                 input_pyc = match.group(1)
                 print(f"Reading {input_pyc}")
-                (version, timestamp, magic_int, co, is_pypy, source_size, sip_hash) = load_module(
-                    input_pyc
-                )
+                (
+                    version,
+                    timestamp,
+                    magic_int,
+                    co,
+                    is_pypy,
+                    source_size,
+                    sip_hash,
+                ) = load_module(input_pyc)
                 if python_version and python_version != version:
                     TypeError(
                         f"We previously saw Python version {python_version} but we just loaded {version}.\n"
@@ -238,7 +247,7 @@ def asm_file(path):
                             name = match.group(1)
                             m2 = re.match("^<(.+)>$", name)
                             if m2:
-                                name = "%s_%s" % (m2.group(1), match.group(2))
+                                name = f"{m2.group(1)}_{match.group(2)}"
                             if name in methods:
                                 asm.code.co_consts.append(methods[name])
                             else:
@@ -294,9 +303,7 @@ def asm_file(path):
                     "\nLine should begin with '#' "
                     "and contain header bytecode header information."
                 )
-            assert (
-                bytecode_seen
-            ), (
+            assert bytecode_seen, (
                 f"Error translating line {i}: "
                 "a line before this should include: \n"
                 "# Python bytecode <version>"
@@ -344,7 +351,7 @@ def asm_file(path):
                         backpatch_inst.add(inst)
                 offset += xdis.op_size(inst.opcode, asm.opc)
             else:
-                raise RuntimeError("Illegal opname %s in:\n%s" % (opname, line))
+                raise RuntimeError(f"Illegal opname {opname} in:\n{line}")
             pass
         pass
     # print(asm.code.co_lnotab)
@@ -402,7 +409,6 @@ def err(msg, inst, i):
 
 
 def decode_lineno_tab(lnotab, first_lineno):
-
     line_number, line_number_diff = first_lineno, 0
     offset, offset_diff = 0, 0
     uncompressed_lnotab = {}
@@ -476,7 +482,7 @@ def create_code(asm, label, backpatch):
                     if operand in cmp_op:
                         inst.arg = cmp_op.index(operand)
                     else:
-                        err("Can't handle compare operand %s" % inst.arg, inst, i)
+                        err(f"Can't handle compare operand {inst.arg}", inst, i)
 
                     pass
                 elif inst.opcode in asm.opc.CONST_OPS:
@@ -494,11 +500,11 @@ def create_code(asm, label, backpatch):
                         update_code_field("co_freevars", operand, inst, asm.code)
                 else:
                     # from trepan.api import debug; debug()
-                    err("Can't handle operand %s" % inst.arg, inst, i)
+                    err(f"Can't handle operand {inst.arg}", inst, i)
             else:
                 # from trepan.api import debug; debug()
                 err(
-                    "Don't understand operand %s expecting int or (..)" % inst.arg,
+                    f"Don't understand operand {inst.arg} expecting int or (..)",
                     inst,
                     i,
                 )

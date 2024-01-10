@@ -2,25 +2,21 @@
 """Convert Python Bytecode from one version to another for
 some limited set of Python bytecode versions
 """
-from xdis import disassemble_file, load_module, magic2int, write_bytecode_file
-from xasm.write_pyc import write_pycfile
-import xdis
-from xdis.opcodes import opcode_33, opcode_27
-from tempfile import NamedTemporaryFile
-import os.path as osp
 import os
+import os.path as osp
 from copy import copy
-from xasm.assemble import (
-    asm_file,
-    Assembler,
-    create_code,
-    Instruction,
-    decode_lineno_tab,
-)
-from xdis.magics import magics
-import click
+from tempfile import NamedTemporaryFile
 
+import click
+import xdis
+from xdis import disassemble_file, load_module, magic2int, write_bytecode_file
+from xdis.magics import magics
+from xdis.opcodes import opcode_27, opcode_33
+
+from xasm.assemble import (Assembler, Instruction, asm_file, create_code,
+                           decode_lineno_tab)
 from xasm.version import __version__
+from xasm.write_pyc import write_pycfile
 
 
 def add_credit(asm, src_version, dest_version):
@@ -40,10 +36,10 @@ def copy_magic_into_pyc(input_pyc, output_pyc, src_version, dest_version):
     (version, timestamp, magic_int, co, is_pypy, source_size) = load_module(input_pyc)
     assert version == float(
         src_version
-    ), "Need Python %s bytecode; got bytecode for version %s" % (src_version, version)
+    ), f"Need Python {src_version} bytecode; got bytecode for version {version}"
     magic_int = magic2int(magics.magics[dest_version])
     write_bytecode_file(output_pyc, co, magic_int)
-    print("Wrote %s" % output_pyc)
+    print(f"Wrote {output_pyc}")
     return
 
 
@@ -146,7 +142,6 @@ def transform_33_32(inst, new_inst, i, n, offset, instructions, new_asm):
 
 
 def transform_asm(asm, conversion_type, src_version, dest_version):
-
     new_asm = Assembler(dest_version)
     for field in "code size".split():
         setattr(new_asm, field, copy(getattr(asm, field)))
@@ -158,7 +153,7 @@ def transform_asm(asm, conversion_type, src_version, dest_version):
     elif conversion_type == "33-32":
         transform_fn = transform_33_32
     else:
-        raise RuntimeError("Don't know how to convert %s " % conversion_type)
+        raise RuntimeError(f"Don't know how to convert {conversion_type} ")
     for j, code in enumerate(asm.code_list):
         offset2label = {v: k for k, v in asm.label[j].items()}
         new_asm.backpatch.append(copy(asm.backpatch[j]))
@@ -232,7 +227,7 @@ def main(conversion_type, input_pyc, output_pyc):
     src_version = conversion_to_version(conversion_type, is_dest=False)
     dest_version = conversion_to_version(conversion_type, is_dest=True)
     if output_pyc is None:
-        output_pyc = "%s-%s.pyc" % (shortname, dest_version)
+        output_pyc = f"{shortname}-{dest_version}.pyc"
 
     if conversion_type in UPWARD_COMPATIBLE:
         copy_magic_into_pyc(input_pyc, output_pyc, src_version, dest_version)
@@ -244,7 +239,7 @@ def main(conversion_type, input_pyc, output_pyc):
     temp_asm.close()
     assert version == float(
         src_version
-    ), "Need Python %s bytecode; got bytecode for version %s" % (src_version, version)
+    ), f"Need Python {src_version} bytecode; got bytecode for version {version}"
     asm = asm_file(temp_asm.name)
     new_asm = transform_asm(asm, conversion_type, src_version, dest_version)
     os.unlink(temp_asm.name)
