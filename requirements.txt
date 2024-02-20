@@ -1,7 +1,7 @@
 click~=8.0.3
 pip~>23.3
 wheel~=0.37.1
-cryptography~>41.0.6
+cryptography~>42.0.0
 lxml~>4.9.1
 keyring~=23.5.0
 colorama~=0.4.4
