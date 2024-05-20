@@ -31,8 +31,11 @@ def main(pyc_file, asm_path):
         sys.exit(1)
     asm = asm_file(asm_path)
 
-    if not pyc_file and asm_path.endswith(".pyasm"):
-        pyc_file = asm_path[: -len(".pyasm")] + ".pyc"
+    if not pyc_file:
+        if asm_path.endswith(".pyasm"):
+            pyc_file = asm_path[: -len(".pyasm")] + ".pyc"
+        elif not pyc_file and asm_path.endswith(".xasm"):
+            pyc_file = asm_path[: -len(".xasm")] + ".pyc"
 
     if xdis.PYTHON3:
         file_mode = "wb"
