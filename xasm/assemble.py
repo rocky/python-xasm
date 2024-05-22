@@ -464,7 +464,8 @@ def create_code(asm, label, backpatch):
                         inst.arg = label[target] - offset
                     else:
                         inst.arg = label[target]
-                        pass
+                    if asm.opc.version_tuple >= (3, 10):
+                        inst.arg >>= 1
                     pass
                 except KeyError:
                     err(f"Label {target} not found.\nI know about {backpatch}", inst, i)
