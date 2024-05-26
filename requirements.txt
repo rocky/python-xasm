@@ -6,3 +6,4 @@ lxml~>4.9.1
 keyring~=23.5.0
 colorama~=0.4.4
 setuptools~=~>65.5.1
+xdis>=6.1.0

@@ -2,23 +2,11 @@
 
 """Setup script for the 'xasm' distribution."""
 
-from __pkginfo__ import (
-    author,
-    author_email,
-    license,
-    long_description,
-    classifiers,
-    modname,
-    py_modules,
-    setup_requires,
-    short_desc,
-    tests_require,
-    __version__,
-    web,
-    zip_safe,
-)
+from setuptools import find_packages, setup
 
-from setuptools import setup, find_packages
+from __pkginfo__ import (__version__, author, author_email, classifiers,
+                         install_requires, license, long_description, modname,
+                         py_modules, short_desc, tests_require, web, zip_safe)
 
 setup(
     author=author,
@@ -31,7 +19,7 @@ setup(
     name=modname,
     packages=find_packages(),
     py_modules=py_modules,
-    setup_requires=setup_requires,
+    install_requires=install_requires,
     entry_points="""
         [console_scripts]
         pyc-xasm    = xasm.xasm_cli:main

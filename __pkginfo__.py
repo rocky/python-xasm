@@ -9,7 +9,7 @@
 
 # Things that change more often go here.
 copyright = """
-Copyright (C) 2017, 2019-2021 Rocky Bernstein <rb@dustyfeet.com>.
+Copyright (C) 2017, 2019-2021, 2024 Rocky Bernstein <rb@dustyfeet.com>.
 """
 
 classifiers = [
@@ -25,6 +25,8 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Debuggers",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
@@ -35,12 +37,12 @@ _six = "six >= 1.10.0"
 author = "Rocky Bernstein"
 author_email = "rb@dustyfeet.com"
 ftp_url = None
-install_requires = [_six]
+install_requires = [_six, "xdis >= 6.1.0"]
 license = "GPL-2.0"
 mailing_list = "python-debugger@googlegroups.com"
 modname = "xasm"
 py_modules = None
-setup_requires = ["pytest-runner", "xdis >= 6.0.3, < 6.2.0"]
+setup_requires = ["pytest-runner", "xdis >= 6.1.0"]
 # scripts            = ['bin/pydisasm']
 short_desc = "Python cross-version byte-code assembler"
 tests_require = ["pytest", _six]
