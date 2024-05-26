@@ -43,13 +43,17 @@ def main(pyc_file, asm_path):
         file_mode = "w"
 
     with open(pyc_file, file_mode) as fp:
-        write_pycfile(fp, asm.code_list, asm.timestamp, asm.python_version)
+        rc = write_pycfile(fp, asm.code_list, asm.timestamp, asm.python_version)
         size = fp.tell()
     print(
         f"""Wrote Python {version_tuple_to_str(asm.python_version)} bytecode file "{pyc_file}"; {size} bytes."""
     )
     if size <= 16:
         print("Warning: bytecode file is too small to be usable.")
+        rc = 2
+    if rc != 0:
+        print(f"Exiting with retrun code {rc}")
+    sys.exit(rc)
 
 
 if __name__ == "__main__":

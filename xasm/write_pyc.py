@@ -1,14 +1,16 @@
+import time
+from struct import pack
+
 import xdis
 from xdis import magic2int
-from xdis.marsh import dumps
 from xdis.magics import magics
-from struct import pack
+from xdis.marsh import dumps
 from xdis.version_info import PYTHON3, version_tuple_to_str
-import time
 
 
-def write_pycfile(fp, code_list, timestamp=None, version_triple=xdis.PYTHON_VERSION_TRIPLE):
+def write_pycfile(fp, code_list, timestamp=None, version_triple=xdis.PYTHON_VERSION_TRIPLE) -> int:
 
+    rc = 0
     version_str = version_tuple_to_str(version_triple, end=2)
     magic_bytes = magics[version_str]
     magic_int = magic2int(magic_bytes)
@@ -40,5 +42,7 @@ def write_pycfile(fp, code_list, timestamp=None, version_triple=xdis.PYTHON_VERS
                 pass
 
             fp.write(co_obj)
-        except Exception:
-            print(f"error dumping {co} - ignoring")
+        except Exception as e:
+            print(f"error dumping {co}: {e}; ignoring")
+            rc = 1
+    return rc
