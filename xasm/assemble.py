@@ -4,6 +4,7 @@ import re
 
 import xdis
 from xdis import get_opcode, load_module
+from xdis.codetype.base import CodeBase
 from xdis.opcodes.base import cmp_op
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_str_to_tuple
 
@@ -109,8 +110,19 @@ class Assembler(object):
                 print()
             print(inst)
 
-    def err(self, mess):
-        print(mess)
+    def warn(self, mess: str):
+        """
+        Print an error message and record that we warned, unless we have already errored.
+        """
+        print("Warning: ", mess)
+        if self.status != "errored":
+            self.status = "warning"
+
+    def err(self, mess: str):
+        """
+        Print an error message and record that we errored.
+        """
+        print("Error: ", mess)
         self.status = "errored"
 
 
@@ -408,6 +420,13 @@ def err(msg, inst, i):
     raise RuntimeError(msg)
 
 
+def warn(mess: str):
+    """
+    Print an error message and record that we warned.
+    """
+    print("Warning: ", mess)
+
+
 def decode_lineno_tab(lnotab, first_lineno):
     line_number, line_number_diff = first_lineno, 0
     offset, offset_diff = 0, 0
@@ -432,6 +451,21 @@ def decode_lineno_tab(lnotab, first_lineno):
     return uncompressed_lnotab
 
 
+def is_code_ok(code: CodeBase) -> bool:
+    """
+    Performs some sanity checks on code
+    """
+    last_instruction = code.instructions[-1]
+    if last_instruction.opname != "RETURN_VALUE":
+        warn(
+            f"Last instruction of {code.co_name} at offset {last_instruction.offset}"
+            f'should be "RETURN_VALUE", is "{code.instructions[-1].opname}"'
+        )
+        return False
+
+    return True
+
+
 def create_code(asm, label, backpatch):
     # print('label: ', asm.label)
     # print('backpatch: ', asm.backpatch_inst)
@@ -442,6 +476,8 @@ def create_code(asm, label, backpatch):
     offset = 0
     extended_value = 0
     offset2label = {label[j]: j for j in label}
+
+    is_code_ok(asm.code)
 
     for i, inst in enumerate(asm.code.instructions):
         bcode.append(inst.opcode)
