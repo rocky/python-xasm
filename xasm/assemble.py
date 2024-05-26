@@ -458,8 +458,8 @@ def is_code_ok(code: CodeBase) -> bool:
     last_instruction = code.instructions[-1]
     if last_instruction.opname != "RETURN_VALUE":
         warn(
-            f"Last instruction of {code.co_name} at offset {last_instruction.offset}"
-            f'should be "RETURN_VALUE", is "{code.instructions[-1].opname}"'
+            f"Last instruction of {code.co_name}"
+            f' should be "RETURN_VALUE", is "{code.instructions[-1].opname}"'
         )
         return False
 
