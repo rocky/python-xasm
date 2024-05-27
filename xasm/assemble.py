@@ -19,7 +19,7 @@ class Instruction(object):  # (Mbytecode.Instruction):
             s = " " * 6
         s += "%-15s" % self.opname
         if self.arg is not None:
-            s += "\t{self.arg}"
+            s += f"\t{self.arg}"
         return s
 
     pass
@@ -451,22 +451,70 @@ def decode_lineno_tab(lnotab, first_lineno):
     return uncompressed_lnotab
 
 
-def is_code_ok(code: CodeBase) -> bool:
+def is_code_ok(asm: Assembler) -> bool:
     """
     Performs some sanity checks on code
     """
+
+    is_valid: bool = True
+
+    code = asm.code
     last_instruction = code.instructions[-1]
+    last_offset = last_instruction.offset
     if last_instruction.opname != "RETURN_VALUE":
         warn(
-            f"Last instruction of {code.co_name}"
-            f' should be "RETURN_VALUE", is "{code.instructions[-1].opname}"'
+            f"Last instruction of at offset {last_offset} of {code.co_name}"
+            f' should be "RETURN_VALUE", is "{last_instruction.opname}"'
         )
-        return False
-
-    return True
+        is_valid = False
 
 
-def create_code(asm, label, backpatch):
+    cells_free_len = len(code.co_freevars) + len(code.co_cellvars)
+    consts_len = len(code.co_consts)
+    names_len = len(code.co_names)
+    varnames_len = len(code.co_varnames)
+
+    for i, inst in enumerate(code.instructions):
+        if xdis.op_has_argument(inst.opcode, asm.opc):
+            if is_int(inst.arg):
+                if inst.opcode == asm.opc.EXTENDED_ARG:
+                    continue
+                operand = inst.arg
+                if inst.opcode in asm.opc.CONST_OPS:
+                    # FIXME: DRY operand check
+                    if operand >= consts_len:
+                        print(inst)
+                        warn(f"Constant operand index {operand} at offset {inst.offset} of {code.co_name} "
+                             f"is too large; it should be less than {consts_len}."
+                        )
+                        is_valid = False
+                elif inst.opcode in asm.opc.LOCAL_OPS:
+                    if operand >= varnames_len:
+                        print(inst)
+                        warn(f"Variable operand index {operand} at offset {inst.offset} of {code.co_name} "
+                             f"is too large; it should be less than {varnames_len}."
+                        )
+                        is_valid = False
+                elif inst.opcode in asm.opc.NAME_OPS:
+                    if operand >= names_len:
+                        print(inst)
+                        warn(f"Name operand index {operand} at offset {inst.offset} of {code.co_name} "
+                             f"is too large; it should be less than {names_len}."
+                        )
+                        is_valid = False
+                elif inst.opcode in asm.opc.FREE_OPS:
+                    # FIXME: is this right?
+                    if operand >= cells_free_len:
+                        print(inst)
+                        warn(f"Free operand index {operand} at offset {inst.offset} of {code.co_name} "
+                             f"is too large; it should be less than {cells_free_len}."
+                        )
+                        is_valid = False
+
+    return is_valid
+
+
+def create_code(asm: Assembler, label, backpatch):
     # print('label: ', asm.label)
     # print('backpatch: ', asm.backpatch_inst)
 
@@ -476,8 +524,7 @@ def create_code(asm, label, backpatch):
     offset = 0
     extended_value = 0
     offset2label = {label[j]: j for j in label}
-
-    is_code_ok(asm.code)
+    is_valid = True
 
     for i, inst in enumerate(asm.code.instructions):
         bcode.append(inst.opcode)
@@ -505,6 +552,7 @@ def create_code(asm, label, backpatch):
                     pass
                 except KeyError:
                     err(f"Label {target} not found.\nI know about {backpatch}", inst, i)
+                    is_valid = False
             elif is_int(inst.arg):
                 if inst.opcode == asm.opc.EXTENDED_ARG:
                     extended_value += inst.arg
@@ -520,6 +568,7 @@ def create_code(asm, label, backpatch):
                         inst.arg = cmp_op.index(operand)
                     else:
                         err(f"Can't handle compare operand {inst.arg}", inst, i)
+                        is_valid = False
 
                     pass
                 elif inst.opcode in asm.opc.CONST_OPS:
@@ -538,6 +587,7 @@ def create_code(asm, label, backpatch):
                 else:
                     # from trepan.api import debug; debug()
                     err(f"Can't handle operand {inst.arg}", inst, i)
+                    is_valid = False
             else:
                 # from trepan.api import debug; debug()
                 err(
@@ -570,6 +620,9 @@ def create_code(asm, label, backpatch):
         asm.code.co_code = bytes(co_code)
     else:
         asm.code.co_code = "".join([chr(j) for j in bcode])
+
+    # FIXME: get
+    is_code_ok(asm)
 
     # Stamp might be added here
     if asm.python_version[:2] == PYTHON_VERSION_TRIPLE[:2]:
