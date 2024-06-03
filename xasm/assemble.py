@@ -133,7 +133,7 @@ def asm_file(path):
     asm = None
     backpatch_inst = set([])
     label = {}
-    python_version = None
+    python_bytecode_version = None
     lines = open(path).readlines()
     i = 0
     bytecode_seen = False
@@ -154,11 +154,11 @@ def asm_file(path):
                     source_size,
                     sip_hash,
                 ) = load_module(input_pyc)
-                if python_version and python_version != version:
+                if python_bytecode_version and python_bytecode_version != version:
                     TypeError(
-                        f"We previously saw Python version {python_version} but we just loaded {version}.\n"
+                        f"We previously saw Python version {python_bytecode_version} but we just loaded {version}.\n"
                     )
-                python_version = version
+                python_bytecode_version = version
                 # FIXME: extract all code options below the top-level and asm.code_list
 
         elif line.startswith("#"):
@@ -171,15 +171,15 @@ def asm_file(path):
                     is_pypy = False
                     pypy_str = ""
 
-                version = (
+                python_bytecode_version = (
                     line[len("# Python bytecode " + pypy_str) :].strip().split()[0]
                 )
 
-                python_version_pair = version_str_to_tuple(version, length=2)
+                python_version_pair = version_str_to_tuple(python_bytecode_version, length=2)
                 asm = Assembler(python_version_pair, is_pypy)
                 if python_version_pair >= (3, 10):
                     TypeError(
-                        f"Creating Python version {python_version} not supported yet. "
+                        f"Creating Python version {python_bytecode_version} not supported yet. "
                         "Feel free to fix and put in a PR.\n"
                     )
                 asm.code_init(python_version_pair)
@@ -197,7 +197,11 @@ def asm_file(path):
                     backpatch_inst = set([])
                     methods[method_name] = co
                     offset = 0
-                python_version_pair = version_str_to_tuple(version, length=2)
+                if python_bytecode_version is None:
+                    raise TypeError(
+                        f'Line {i}: "Python bytecode" not seen before "Method Name:"; please set this.'
+                    )
+                python_version_pair = version_str_to_tuple(python_bytecode_version, length=2)
                 asm.code_init(python_version_pair)
                 asm.code.co_name = line[len("# Method Name: ") :].strip()
                 method_name = asm.code.co_name
@@ -301,11 +305,10 @@ def asm_file(path):
                 label[match.group(1)] = offset
                 continue
 
-            match = re.match(r"^\s*(\d+):\s*$", line)
+            match = re.match(r"^\s*(\d+):\s*", line)
             if match:
                 line_no = int(match.group(1))
                 asm.code.co_lnotab[offset] = line_no
-                continue
 
             # Sanity checking: make sure we have seen
             # proper header lines
