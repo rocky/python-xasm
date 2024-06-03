@@ -305,6 +305,8 @@ def asm_file(path):
                 label[match.group(1)] = offset
                 continue
 
+            line_no = None
+
             match = re.match(r"^\s*(\d+):\s*", line)
             if match:
                 line_no = int(match.group(1))
@@ -326,8 +328,10 @@ def asm_file(path):
 
             # Opcode section
             fields = line.strip().split()
-            line_no = None
             num_fields = len(fields)
+
+            if num_fields == 1 and line_no is not None:
+                continue
 
             if num_fields > 1:
                 if fields[0] == ">>":
@@ -525,11 +529,20 @@ def create_code(asm: Assembler, label, backpatch):
     # print(asm.code.instructions)
 
     offset = 0
-    extended_value = 0
     offset2label = {label[j]: j for j in label}
     is_valid = True
 
     for i, inst in enumerate(asm.code.instructions):
+
+        # Strip out extended arg instructions.
+        # Operands in the input can be arbitary numbers.
+        # In this loop we will figure out whether
+        # or not to add EXTENDED_ARG
+        if inst.opcode == asm.opc.EXTENDED_ARG:
+            print(f"Line {i}: superflous EXTENDED_ARG instruction removed;"
+                  " this code decides when they are needed.")
+            continue
+
         bcode.append(inst.opcode)
         if offset in offset2label:
             if is_int(offset2label[offset]):
@@ -557,12 +570,6 @@ def create_code(asm: Assembler, label, backpatch):
                     err(f"Label {target} not found.\nI know about {backpatch}", inst, i)
                     is_valid = False
             elif is_int(inst.arg):
-                if inst.opcode == asm.opc.EXTENDED_ARG:
-                    extended_value += inst.arg
-                    if asm.opc.version_tuple >= (3, 6):
-                        extended_value <<= 8
-                    else:
-                        extended_value <<= 16
                 pass
             elif inst.arg.startswith("(") and inst.arg.endswith(")"):
                 operand = inst.arg[1:-1]
@@ -600,20 +607,17 @@ def create_code(asm: Assembler, label, backpatch):
                 )
 
             if asm.opc.version_tuple < (3, 6):
-                if inst.opcode == asm.opc.EXTENDED_ARG:
-                    arg_tup = xdis.util.num2code(inst.arg)
-                else:
-                    arg_tup = xdis.util.num2code(inst.arg - extended_value)
-                    extended_value = 0
+                arg_tup = xdis.util.num2code(inst.arg)
+                extended_value = 0
                 bcode += arg_tup
-            # 3.6
-            else:
-                if inst.opcode == asm.opc.EXTENDED_ARG:
-                    bcode.append(inst.arg)
-                else:
+            else:  # >= 3.6
+                if inst.arg > asm.opc.ARG_MAX_VALUE:
+                    bcode.append(asm.opc.EXTENDED_ARG)
                     bcode.append(inst.arg - extended_value)
-                    extended_value = 0
+            extended_value = 0
         elif asm.opc.version_tuple >= (3, 6):
+            # instructions with no operand, or one-byte instructions, are padded
+            # to two bytes in 3.6 and later.
             bcode.append(0)
 
     if asm.opc.version_tuple >= (3, 0):
