@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import ast
 import re
+from typing import Optional
 
 import xdis
 from xdis import get_opcode, load_module
@@ -10,7 +11,11 @@ from xdis.version_info import PYTHON_VERSION_TRIPLE, version_str_to_tuple
 # import xdis.bytecode as Mbytecode
 
 
-class Instruction(object):  # (Mbytecode.Instruction):
+class Instruction:  # (Mbytecode.Instruction):
+    line_no: Optional[int]
+    opname: str
+    arg: Optional[int]
+
     def __repr__(self) -> str:
         if self.line_no:
             s = "%4d: " % self.line_no
@@ -24,7 +29,7 @@ class Instruction(object):  # (Mbytecode.Instruction):
     pass
 
 
-def is_int(s):
+def is_int(s) -> bool:
     try:
         int(s)
         return True
@@ -32,7 +37,7 @@ def is_int(s):
         return False
 
 
-def is_lineno(s):
+def match_lineno(s: str) -> Optional[re.Match]:
     return re.match(r"^\d+:", s)
 
 
@@ -174,7 +179,9 @@ def asm_file(path):
                     line[len("# Python bytecode " + pypy_str) :].strip().split()[0]
                 )
 
-                python_version_pair = version_str_to_tuple(python_bytecode_version, length=2)
+                python_version_pair = version_str_to_tuple(
+                    python_bytecode_version, length=2
+                )
                 asm = Assembler(python_version_pair, is_pypy)
                 if python_version_pair >= (3, 10):
                     TypeError(
@@ -200,7 +207,9 @@ def asm_file(path):
                     raise TypeError(
                         f'Line {i}: "Python bytecode" not seen before "Method Name:"; please set this.'
                     )
-                python_version_pair = version_str_to_tuple(python_bytecode_version, length=2)
+                python_version_pair = version_str_to_tuple(
+                    python_bytecode_version, length=2
+                )
                 asm.code_init(python_version_pair)
                 asm.code.co_name = line[len("# Method Name: ") :].strip()
                 method_name = asm.code.co_name
@@ -336,10 +345,10 @@ def asm_file(path):
                 if fields[0] == ">>":
                     fields = fields[1:]
                     num_fields -= 1
-                if is_lineno(fields[0]) and is_int(fields[1]):
+                if match_lineno(fields[0]) and is_int(fields[1]):
                     line_no = int(fields[0][:-1])
                     opname, operand = get_opname_operand(asm.opc, fields[2:])
-                elif is_lineno(fields[0]):
+                elif match_lineno(fields[0]):
                     line_no = int(fields[0][:-1])
                     fields = fields[1:]
                     if fields[0] == ">>":
@@ -474,7 +483,6 @@ def is_code_ok(asm: Assembler) -> bool:
         )
         is_valid = False
 
-
     cells_free_len = len(code.co_freevars) + len(code.co_cellvars)
     consts_len = len(code.co_consts)
     names_len = len(code.co_names)
@@ -490,41 +498,72 @@ def is_code_ok(asm: Assembler) -> bool:
                     # FIXME: DRY operand check
                     if operand >= consts_len:
                         print(inst)
-                        warn(f"Constant operand index {operand} at offset {inst.offset} of {code.co_name} "
-                             f"is too large; it should be less than {consts_len}."
+                        warn(
+                            f"Constant operand index {operand} at offset {inst.offset} of {code.co_name} "
+                            f"is too large; it should be less than {consts_len}."
                         )
                         is_valid = False
                 elif inst.opcode in asm.opc.LOCAL_OPS:
                     if operand >= varnames_len:
                         print(inst)
-                        warn(f"Variable operand index {operand} at offset {inst.offset} of {code.co_name} "
-                             f"is too large; it should be less than {varnames_len}."
+                        warn(
+                            f"Variable operand index {operand} at offset {inst.offset} of {code.co_name} "
+                            f"is too large; it should be less than {varnames_len}."
                         )
                         is_valid = False
                 elif inst.opcode in asm.opc.NAME_OPS:
                     if operand >= names_len:
                         print(inst)
-                        warn(f"Name operand index {operand} at offset {inst.offset} of {code.co_name} "
-                             f"is too large; it should be less than {names_len}."
+                        warn(
+                            f"Name operand index {operand} at offset {inst.offset} of {code.co_name} "
+                            f"is too large; it should be less than {names_len}."
                         )
                         is_valid = False
                 elif inst.opcode in asm.opc.FREE_OPS:
                     # FIXME: is this right?
                     if operand >= cells_free_len:
                         print(inst)
-                        warn(f"Free operand index {operand} at offset {inst.offset} of {code.co_name} "
-                             f"is too large; it should be less than {cells_free_len}."
+                        warn(
+                            f"Free operand index {operand} at offset {inst.offset} of {code.co_name} "
+                            f"is too large; it should be less than {cells_free_len}."
                         )
                         is_valid = False
 
     return is_valid
 
 
+def append_operand(
+    bytecode: list, arg_value, extended_arg_shift, arg_max_value, extended_arg_op
+):
+    """
+    Write instruction operand adding EXTENDED_ARG instructions
+    when necessary.
+    """
+    arg_shifts = []
+    shift_value = 1
+
+    while arg_value > arg_max_value:
+        shift_value <<= extended_arg_shift
+        ext_arg_value, arg_value = divmod(arg_value, shift_value)
+        arg_shifts.append(ext_arg_value)
+
+    while arg_shifts:
+        bytecode.append(extended_arg_op)
+        ext_arg_value = arg_shifts.pop()
+        bytecode.append(ext_arg_value)
+
+    bytecode.append(arg_value)
+
+
 def create_code(asm: Assembler, label, backpatch):
+    """
+    Turn ``asm`` assembler text into a code object and
+    return that.
+    """
     # print('label: ', asm.label)
     # print('backpatch: ', asm.backpatch_inst)
 
-    bcode = []
+    bytecode = []
     # print(asm.code.instructions)
 
     offset = 0
@@ -538,11 +577,13 @@ def create_code(asm: Assembler, label, backpatch):
         # In this loop we will figure out whether
         # or not to add EXTENDED_ARG
         if inst.opcode == asm.opc.EXTENDED_ARG:
-            print(f"Line {i}: superflous EXTENDED_ARG instruction removed;"
-                  " this code decides when they are needed.")
+            print(
+                f"Line {i}: superflous EXTENDED_ARG instruction removed;"
+                " this code decides when they are needed."
+            )
             continue
 
-        bcode.append(inst.opcode)
+        bytecode.append(inst.opcode)
         if offset in offset2label:
             if is_int(offset2label[offset]):
                 inst.line_no = int(offset2label[offset])
@@ -605,41 +646,26 @@ def create_code(asm: Assembler, label, backpatch):
                     i,
                 )
 
-            if asm.opc.version_tuple < (3, 6):
-                arg_tup = xdis.util.num2code(inst.arg)
-                bcode += arg_tup
-            else:  # >= 3.6
-
-                arg_value = inst.arg
-                shift_value = 1 << asm.opc.EXTENDED_ARG_SHIFT
-
-                # Build up the smallest EXTENDED_ARG value that
-                # is just larger than inst.arg
-                while shift_value <= inst.arg:
-                    shift_value <<= asm.opc.EXTENDED_ARG_SHIFT
-
-                # Now make shift value just smaller than inst.arg
-                shift_value >>= asm.opc.EXTENDED_ARG_SHIFT
-
-                while shift_value > 1:
-                    ext_arg_value, arg_value = divmod(inst.arg, shift_value)
-                    bcode.append(asm.opc.EXTENDED_ARG)
-                    bcode.append(ext_arg_value)
-                    shift_value >>= asm.opc.EXTENDED_ARG_SHIFT
-                bcode.append(arg_value)
+            append_operand(
+                bytecode,
+                inst.arg,
+                asm.opc.EXTENDED_ARG_SHIFT,
+                asm.opc.ARG_MAX_VALUE,
+                asm.opc.EXTENDED_ARG,
+            )
 
         elif asm.opc.version_tuple >= (3, 6):
             # instructions with no operand, or one-byte instructions, are padded
             # to two bytes in 3.6 and later.
-            bcode.append(0)
+            bytecode.append(0)
 
     if asm.opc.version_tuple >= (3, 0):
         co_code = bytearray()
-        for j in bcode:
+        for j in bytecode:
             co_code.append(j % 255)
         asm.code.co_code = bytes(co_code)
     else:
-        asm.code.co_code = "".join([chr(j) for j in bcode])
+        asm.code.co_code = "".join([chr(j) for j in bytecode])
 
     # FIXME: get
     is_code_ok(asm)
