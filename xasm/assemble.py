@@ -608,13 +608,27 @@ def create_code(asm: Assembler, label, backpatch):
 
             if asm.opc.version_tuple < (3, 6):
                 arg_tup = xdis.util.num2code(inst.arg)
-                extended_value = 0
                 bcode += arg_tup
             else:  # >= 3.6
-                if inst.arg > asm.opc.ARG_MAX_VALUE:
+
+                arg_value = inst.arg
+                shift_value = 1 << asm.opc.EXTENDED_ARG_SHIFT
+
+                # Build up the smallest EXTENDED_ARG value that
+                # is just larger than inst.arg
+                while shift_value <= inst.arg:
+                    shift_value <<= asm.opc.EXTENDED_ARG_SHIFT
+
+                # Now make shift value just smaller than inst.arg
+                shift_value >>= asm.opc.EXTENDED_ARG_SHIFT
+
+                while shift_value > 1:
+                    ext_arg_value, arg_value = divmod(inst.arg, shift_value)
                     bcode.append(asm.opc.EXTENDED_ARG)
-                    bcode.append(inst.arg - extended_value)
-            extended_value = 0
+                    bcode.append(ext_arg_value)
+                    shift_value >>= asm.opc.EXTENDED_ARG_SHIFT
+                bcode.append(arg_value)
+
         elif asm.opc.version_tuple >= (3, 6):
             # instructions with no operand, or one-byte instructions, are padded
             # to two bytes in 3.6 and later.

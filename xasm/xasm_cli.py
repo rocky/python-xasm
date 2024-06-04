@@ -52,7 +52,7 @@ def main(pyc_file, asm_path):
         print("Warning: bytecode file is too small to be usable.")
         rc = 2
     if rc != 0:
-        print(f"Exiting with retrun code {rc}")
+        print(f"Exiting with return code {rc}")
     sys.exit(rc)
 
 
