@@ -4,7 +4,6 @@ import re
 
 import xdis
 from xdis import get_opcode, load_module
-from xdis.codetype.base import CodeBase
 from xdis.opcodes.base import cmp_op
 from xdis.version_info import PYTHON_VERSION_TRIPLE, version_str_to_tuple
 
