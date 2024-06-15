@@ -310,15 +310,15 @@ def asm_file(path):
 
             match = re.match(r"^(\S+):$", line)
             if match:
-                label[match.group(1)] = offset
-                continue
+                label_value = match.group(1)
+                # All-numeric labels, i.e. line numbers, are handled below
+                if not re.match(r"^(\d+)$", label_value):
+                    label[label_value] = offset
+                    continue
 
             line_no = None
 
             match = re.match(r"^\s*(\d+):\s*", line)
-            if match:
-                line_no = int(match.group(1))
-                asm.code.co_lnotab[offset] = line_no
 
             # Sanity checking: make sure we have seen
             # proper header lines
@@ -333,6 +333,13 @@ def asm_file(path):
                 "a line before this should include: \n"
                 "# Python bytecode <version>"
             )
+
+            if match:
+                line_no = int(match.group(1))
+                linetable_field = "co_linotab" if python_version_pair < (3, 10) else "co_linetable"
+                assert asm is not None
+                linetable = getattr(asm.code, linetable_field)
+                linetable[offset] = line_no
 
             # Opcode section
             fields = line.strip().split()
@@ -381,12 +388,15 @@ def asm_file(path):
                 raise RuntimeError(f"Illegal opname {opname} in:\n{line}")
             pass
         pass
-    # print(asm.code.co_lnotab)
-    if asm:
+
+    if asm is not None:
+        # print(linetable)
+
         co = create_code(asm, label, backpatch_inst)
         asm.update_lists(co, label, backpatch_inst)
-    asm.code_list.reverse()
-    asm.status = "finished"
+        asm.code_list.reverse()
+        asm.status = "finished"
+
     return asm
 
 
@@ -418,7 +428,7 @@ def update_code_tuple_field(field_name, code, lines, i):
         match = re.match(r"^#\s+(\d+): (.+)$", line)
         if match:
             index = int(match.group(1))
-            assert index == count
+            assert index == count, f'In field" "{field_name}", line {i}, number {index} is expected to have value {count}.'
             field_values = getattr(code, field_name)
             field_values.append(match.group(2))
             count += 1
@@ -426,7 +436,6 @@ def update_code_tuple_field(field_name, code, lines, i):
             i -= 1
             break
         pass
-    pass
     return i
 
 
@@ -587,6 +596,10 @@ def create_code(asm: Assembler, label, backpatch):
         if offset in offset2label:
             if is_int(offset2label[offset]):
                 inst.line_no = int(offset2label[offset])
+                if inst.line_no in asm.code.co_lnotab.values() and asm.python_version < (3, 10):
+                    print(
+                        f"Line {i}: this is not the first we encounter source-code line {inst.line_no}."
+                        )
                 asm.code.co_lnotab[offset] = inst.line_no
 
         inst.offset = offset
@@ -675,6 +688,7 @@ def create_code(asm: Assembler, label, backpatch):
         code = asm.code.to_native()
     else:
         code = asm.code.freeze()
+
     # asm.print_instructions()
 
     # print (*args)
