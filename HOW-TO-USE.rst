@@ -126,7 +126,7 @@ example
        LOAD_CONST ('this is line 66')
 
 The ``LOAD_CONST`` instruction will be noted as being on line 66. Note
-that Python requires that line numbers don't decrease as the a
+that Python before version 3.10 requires that line numbers don't decrease as the a
 method increases in bytecode offset. Also note that there can be white
 space before the line number; the number doesn't have to be in
 column 1.
