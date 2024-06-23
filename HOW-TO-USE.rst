@@ -1,5 +1,5 @@
 Introduction
-*************
+============
 
 Welcome back to the wonderful times world of SEGV's (from the Python interpreter)!
 
@@ -30,7 +30,7 @@ instructions. Another reason why using ``pydisasm --xasm`` is
 preferable right now.
 
 Format of assembly file
------------------------
+=======================
 
 Again, easiest to consult the ``pydisasm --xasm`` output ``.pyasm``-file that is 
 produced. Even easier, just to look in the test directory_ for files that end 
@@ -45,7 +45,8 @@ determines which Python bytecode opcodes to use and which Python
 interpreter can be used to run the resulting program.
 
 Module-level info
------------------
+------------------
+
 
 Here is an example of the module-level information:
 
@@ -62,7 +63,7 @@ there is also a size modulo 2**32 that is recorded.
    # Source code size mod 2**32: 577 bytes
 
 Method-level info
-.................
+------------------
 
 Here is an example:
 
@@ -111,7 +112,7 @@ So you could instead write:
 
    LOAD_CONST (1)
 
-which in this case does the same thing since `1 = constant[3]`. If the value 1 does not appear anywhere in the constants list, the assember would append the value 1 to the end of the list of the constants list. When writing the final bytecode file an appropriate constant index will be inserted into that instruction. 
+which in this case does the same thing since `1 = constant[3]`. If the value 1 does not appear anywhere in the constants list, the assembler would append the value 1 to the end of the list of the constants list. When writing the final bytecode file an appropriate constant index will be inserted into that instruction. 
 
 Line Numbers and Labels
 -----------------------
@@ -151,7 +152,7 @@ Instructions
 -------------
 
 The module level bytecode line determines what Python opcodes are
-exceptable and how operands are interpreted.
+acceptable and how operands are interpreted.
 
 Instructions come after the other module or function information that starts with `#` and
 is shown above.
@@ -161,15 +162,16 @@ module field which would start with a #. And it is not a line number
 or label listed in the last section. We've seen examples of
 instructions above.
 
-Opcodes
-+++++++
+Operation name
+...............
 
 Instructions start with an opcode name like ``LOAD_CONST``. The specific opcode names used depends on the Python version you are using.
 So make sure to consult the "opcodes" section of the "dis" module documentation for the version of Python listed at the top of the metadata section.
 
 
-Operands
-++++++++
+Operand
+........
+
 
 An instruction may also have an operand depending
 on whether the opcode requires one or not. However as we've seen above,
@@ -192,6 +194,8 @@ parenthesis. For example:
 
 Instructions can also have additional stuff after the operand and that is ignored.
 
+Internally operand values are integers or indexes in some table. When an index value is more than 255 (the largest value that fits in a single byte), an ``EXTENDED_OPERAND`` instruction is added automatically.
+
 Cool Stuff
 ----------
 
@@ -206,20 +210,9 @@ doesn't have to be the same as the Python interpreter that runs
 TODO
 -----
 
-Possibly we should figure out when to put in ``EXTENDED_ARGS``
-instructions. And for now, even though you put in ``EXTENDED_ARGS``,
-the operand that follows may have the value folded into it. For
-example in Python 3.6 where an operand can be at most 255, of you
-wanted to jump relative 259 bytes you'd write:
-
-::
-
-   EXTENDED_ARG 1  # Needed because below offset is greater than 255 away
-   JUMP_FORWARD 259  # Should really be 3 (= 259 - 256)
-
 We should have a better API to generate instructions from inside
 Python. This is pretty straightforward to do.
 
-I've not put much in the way of error checking and error reporting.
+There is some error checking of consistency of the input file, but more  error checking is desirable.
 
 .. _directory: https://github.com/rocky/python-xasm/tree/master/test
