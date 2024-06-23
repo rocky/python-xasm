@@ -161,8 +161,18 @@ module field which would start with a #. And it is not a line number
 or label listed in the last section. We've seen examples of
 instructions above.
 
-Instructions start with an opcode and will have an operand depending
-on whether the opcode requires one or not. However as we've seen above
+Opcodes
++++++++
+
+Instructions start with an opcode name like ``LOAD_CONST``. The specific opcode names used depends on the Python version you are using.
+So make sure to consult the "opcodes" section of the "dis" module documentation for the version of Python listed at the top of the metadata section.
+
+
+Operands
+++++++++
+
+An instruction may also have an operand depending
+on whether the opcode requires one or not. However as we've seen above,
 the operands can take a couple of forms. The operand can be a number
 which represents a bytecode offset, or an index into one of the method
 lists like the Constants, or Names list. I don't recommend though that
