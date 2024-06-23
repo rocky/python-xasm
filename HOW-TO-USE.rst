@@ -95,7 +95,7 @@ Here is an example:
 
 Some of these can be omitted and default values will be used. For the
 lists like Constants, Names, and so on, those can be omitted too. But
-if they are, the instruction section can't refer to those values by list index value. (List index value is however used in the actual bytecode.)b
+if they are, the instruction section can't refer to those values by list index value. (List index value is however used in the actual bytecode.)
 
 Although we haven't gotten to the exact format of instructions, what
 the last sentence means is that
@@ -133,7 +133,7 @@ column 1.
 
 Labels are like line numbers in that they have a colon suffix on the
 line and must be the first thing on a line. However The first
-character of a label _can't_ be a number: that's how we distinguish
+character of a label *cannot* be a number: that's how we distinguish
 between line numbers and labels. Here is a label:
 
 ::
