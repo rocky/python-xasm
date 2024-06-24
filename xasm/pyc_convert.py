@@ -14,7 +14,7 @@ from xdis.magics import magics
 from xdis.opcodes import opcode_27, opcode_33
 
 from xasm.assemble import (Assembler, Instruction, asm_file, create_code,
-                           decode_lineno_tab)
+                           decode_lineno_tab_old)
 from xasm.version import __version__
 from xasm.write_pyc import write_pycfile
 
@@ -159,7 +159,7 @@ def transform_asm(asm, conversion_type, src_version, dest_version):
         new_asm.backpatch.append(copy(asm.backpatch[j]))
         new_asm.label.append(copy(asm.label[j]))
         new_asm.codes.append(copy(code))
-        new_asm.code.co_lnotab = decode_lineno_tab(code.co_lnotab, code.co_firstlineno)
+        new_asm.code.co_lnotab = decode_lineno_tab_old(code.co_lnotab, code.co_firstlineno)
         instructions = asm.codes[j].instructions
         new_asm.code.instructions = []
         i, offset, n = 0, 0, len(instructions)

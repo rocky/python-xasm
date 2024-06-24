@@ -451,7 +451,11 @@ def warn(mess: str):
     print("Warning: ", mess)
 
 
-def decode_lineno_tab(lnotab, first_lineno):
+def decode_lineno_tab_old(lnotab, first_lineno: int) -> dict:
+    """
+    Uncompresses line number table for Python versions before
+    3.10
+    """
     line_number, line_number_diff = first_lineno, 0
     offset, offset_diff = 0, 0
     uncompressed_lnotab = {}
@@ -477,7 +481,7 @@ def decode_lineno_tab(lnotab, first_lineno):
 
 def is_code_ok(asm: Assembler) -> bool:
     """
-    Performs some sanity checks on code
+    Performs some sanity checks on code.
     """
 
     is_valid: bool = True
@@ -485,7 +489,7 @@ def is_code_ok(asm: Assembler) -> bool:
     code = asm.code
     last_instruction = code.instructions[-1]
     last_offset = last_instruction.offset
-    if last_instruction.opname != "RETURN_VALUE":
+    if last_instruction.opname not in ("RETURN_VALUE", "RERAISE", "RAISE_VARARGS"):
         warn(
             f"Last instruction of at offset {last_offset} of {code.co_name}"
             f' should be "RETURN_VALUE", is "{last_instruction.opname}"'
@@ -684,10 +688,10 @@ def create_code(asm: Assembler, label, backpatch):
     is_code_ok(asm)
 
     # Stamp might be added here
-    if asm.python_version[:2] == PYTHON_VERSION_TRIPLE[:2]:
-        code = asm.code.to_native()
-    else:
-        code = asm.code.freeze()
+    # if asm.python_version[:2] == PYTHON_VERSION_TRIPLE[:2]:
+    #     code = asm.code.to_native()
+    # else:
+    code = asm.code.freeze()
 
     # asm.print_instructions()
 
