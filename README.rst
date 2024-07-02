@@ -16,25 +16,27 @@ assemble bytecode for several different versions of Python.
 
 Here are some potential uses:
 
-* Make small patches to existing Python bytecode when you don’t have source
+* Make small changes to existing Python bytecode when you don’t have source
 * Craft custom and efficient bytecode
 * Write an instruction-level optimizing compiler
 * Experiment with and learn about Python bytecode
-* Foil uncompyle6_ so that it can’t disassemble bytecode (at least for now)
+* Foil decompilers like uncompyle6_ so that they can’t disassemble bytecode (at least for now)
 
-This will support bytecodes from Python version 1.0 to 3.8 or so.
+This support the same kinds of bytecode that xdis_ supports. This is
+pretty much all released bytecode, although we tend to lag behind the
+latest Python releases.
 
 The code requires Python 2.7 or later.
 
 Assembly files
 --------------
 
-More detail will be filled in, but some principles:
+See how-to-use_ for more deatil. Some general some principles:
 
-* Preferred extension for Python assembly is `.pyasm`
-* assembly is designed to work with the output of `pydisasm --asm`
+* Preferred extension for Python assembly is ``.pyasm``
+* assembly is designed to work with the output of ``pydisasm -F xasm``
 * Assembly file labels are at the beginning of the line
-  and end in a colon, e.g. `END_IF`
+  and end in a colon, e.g. ``END_IF:``
 * instruction offsets in the assembly file are ignored and don't need
   to be entered
 * in those instructions that refer to offsets, if the if the
@@ -155,7 +157,7 @@ To create a python bytecode file from an assemble file, run:
    pyc-xasm [OPTIONS] ASM_PATH
 
 
-For usage help, type  `pyc-xasm --help`.
+For usage help, type:  ``pyc-xasm --help``.
 
 
 To convert a python bytecode from one bytecode to another, run:
@@ -165,7 +167,7 @@ To convert a python bytecode from one bytecode to another, run:
    pyc-convert [OPTIONS] INPUT_PYC [OUTPUT_PYC]
 
 
-For usage help, type  `pyc-convert --help`.
+For usage help, type:  ``pyc-convert --help``.
 
 
 See Also
@@ -178,6 +180,8 @@ See Also
 
 
 .. _uncompyle6: https://github.com/rocky/python-uncompyle6
+.. _how-to-use: https://github.com/rocky/python-xasm/blob/master/HOW-TO-USE.rst
+.. _xdis: https://github.com/rocky/xdis
 .. |Latest Version| image:: https://badge.fury.io/py/xasm.svg
 		 :target: https://badge.fury.io/py/xasm
 .. |Pypi Installs| image:: https://pepy.tech/badge/xasm

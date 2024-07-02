@@ -38,7 +38,7 @@ with ``.pyasm``.
 
 Lines that start with '##" are comments.
 
-Examples:
+Examples::
 
     ## This line is a comment
     ## Method Name:       GameSheet
