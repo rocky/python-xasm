@@ -11,7 +11,7 @@ skeletal. Then use ``pydisasm --xasm`` to convert to the Python source
 code assembler format. From this then modify the results and run
 ``pyc-xasm``.
 
-In normal python disassembly code (and in the bytecode file), the main
+In normal Python disassembly code (and in the bytecode file), the main
 function appears first; it contains constants which contain code to
 other functions and so on. In Python disassembly these are linearized
 so that from top down you have a topological sort of the dependencies.
@@ -32,21 +32,37 @@ preferable right now.
 Format of assembly file
 =======================
 
-Again, easiest to consult the ``pydisasm --xasm`` output ``.pyasm``-file that is 
-produced. Even easier, just to look in the test directory_ for files that end 
+Again, easiest to consult the ``pydisasm --xasm`` output ``.pyasm``-file that is
+produced. Even easier, just to look in the test directory_ for files that end
 with ``.pyasm``.
 
-In general, lines that start with "#" in column one are comments or code or function 
-objects other than bytecode instructions.
+Lines that start with '##" are comments.
 
-Necessary fields that are in Python code object and function objects
-are here. These include stuff like the Python "magic" number which
-determines which Python bytecode opcodes to use and which Python
-interpreter can be used to run the resulting program.
+Examples:
+
+    ## This line is a comment
+    ## Method Name:       GameSheet
+
+Lines that start with ``#``" in column one are used to indicate a code
+or function object that is not a bytecode instructions. However this
+is only true if the rest of the line matches one of the code of
+function objects mentioned below. If instead the the rest of a line
+does not match a function or code object, it line too will be
+treated tacitly as a comment.
 
 Module-level info
 ------------------
 
+
+The only necessary mdoule-level inforamtion that is needed is the
+Python "magic" number which determines which Python bytecode opcodes
+to use and which Python interpreter can be used to run the resulting
+program.
+
+Optional information includes:
+
+* Timestamp of code
+* Source code size module 2**32 or a SIP hash
 
 Here is an example of the module-level information:
 
@@ -54,16 +70,27 @@ Here is an example of the module-level information:
 
    # Python bytecode 2.2 (60717)
    # Timestamp in code: 1499156389 (2017-07-04 04:19:49)
+   # Source code size mod 2**32: 577 bytes
 
-The bytecode is necessary. However the timestamp is not. In Python 3
-there is also a size modulo 2**32 that is recorded.
+Again, the bytecode numberf is necessary. However the timestamp is not. In Python 3
+there is also a size modulo 2**32 that is recorded, and in later Python this can be a
+SIP hash.
 
 ::
 
-   # Source code size mod 2**32: 577 bytes
 
 Method-level info
 ------------------
+
+Method-level information starts with ``#`` in column one. Here is some
+method-level information:
+
+* The method name of the code object (``Method Name``)
+* Number of local variables used in module or fuction (``Number of locals``)
+* A filename where the file (``Filename``)
+* Maximum Stack Size needed to run code (``Stack Size``)
+* Code flags which indicate properties of the code (``Flags``)
+* Fine number for the first line of the code (``First Line``)
 
 Here is an example:
 
@@ -73,9 +100,10 @@ Here is an example:
    # Filename: exec
    # Argument count: 2
    # Kw-only arguments: 0
-   # Number of locals: 2 # Stack size: 3
+   # Number of locals: 2
+   # Stack size: 3
    # Flags: 0x00000043 (NOFREE | NEWLOCALS | OPTIMIZED)
-   # First Line: 11 
+   # First Line: 11
    # Constants:
    # 0: ' GCD. We assume positive numbers'
    # 1: 0
@@ -105,14 +133,14 @@ the last sentence means is that
 
    LOAD_CONST 3
 
-would be invalid if the size of the constant array is less than 4, or `constant[3]` wasn't defined by adding it to the `Constants` section. However when you put a value in parenthesis, that indicate a value rather than an index into a list. 
+would be invalid if the size of the constant array is less than 4, or `constant[3]` wasn't defined by adding it to the `Constants` section. However when you put a value in parenthesis, that indicate a value rather than an index into a list.
 So you could instead write:
 
 ::
 
    LOAD_CONST (1)
 
-which in this case does the same thing since `1 = constant[3]`. If the value 1 does not appear anywhere in the constants list, the assembler would append the value 1 to the end of the list of the constants list. When writing the final bytecode file an appropriate constant index will be inserted into that instruction. 
+which in this case does the same thing since `1 = constant[3]`. If the value 1 does not appear anywhere in the constants list, the assembler would append the value 1 to the end of the list of the constants list. When writing the final bytecode file an appropriate constant index will be inserted into that instruction.
 
 Line Numbers and Labels
 -----------------------
@@ -187,7 +215,7 @@ parenthesis. For example:
 ::
 
     LOAD_CONST (3)    # loads number 3
-    LOAD_CONST 3      # load Constants[3] 
+    LOAD_CONST 3      # load Constants[3]
     JUMP_ABSOLUTE 10  # Jumps to offset 10
     JUMP_ABSOLUTE L10 # Jumps to label L10
     LOAD_CONSTANT (('load_entry_point',)) # Same as: tuple('load_entry_point')

@@ -142,7 +142,7 @@ def transform_33_32(inst, new_inst, i, n, offset, instructions, new_asm):
 
 
 def transform_asm(asm, conversion_type, src_version, dest_version):
-    new_asm = Assembler(dest_version)
+    new_asm = Assembler(dest_version, is_pypy=False)
     for field in "code size".split():
         setattr(new_asm, field, copy(getattr(asm, field)))
 
@@ -177,10 +177,10 @@ def transform_asm(asm, conversion_type, src_version, dest_version):
             i += 1
             pass
 
-    co = create_code(new_asm, new_asm.label[-1], new_asm.backpatch[-1])
+    co, is_valid = create_code(new_asm, new_asm.label[-1], new_asm.backpatch[-1])
     new_asm.code_list.append(co)
     new_asm.code_list.reverse()
-    new_asm.finished = "finished"
+    new_asm.status = "finished" if is_valid else "invalid"
     return new_asm
 
 

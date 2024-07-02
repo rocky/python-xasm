@@ -62,12 +62,12 @@ def get_opname_operand(opc, fields):
         return opname, None
 
 
-class Assembler(object):
+class Assembler:
     def __init__(self, python_version, is_pypy):
         self.opc = get_opcode(python_version, is_pypy)
         self.code_list = []
         self.codes = []  # FIXME use a better name
-        self.status = "unfinished"
+        self.status: str = "unfinished"
         self.size = 0  # Size of source code. Only relevant in version 3 and above
         self.python_version = python_version
         self.timestamp = None
@@ -144,6 +144,9 @@ def asm_file(path):
     while i < len(lines):
         line = lines[i]
         i += 1
+        if line.startswith("##"):
+            # comment line
+            continue
         if line.startswith(".READ"):
             match = re.match("^.READ (.+)$", line)
             if match:
@@ -197,7 +200,9 @@ def asm_file(path):
                     asm.timestamp = int(time_str)
             elif line.startswith("# Method Name: "):
                 if method_name:
-                    co = create_code(asm, label, backpatch_inst)
+                    co, is_valid = create_code(asm, label, backpatch_inst)
+                    if not is_valid:
+                        return
                     asm.update_lists(co, label, backpatch_inst)
                     label = {}
                     backpatch_inst = set([])
@@ -336,7 +341,7 @@ def asm_file(path):
 
             if match:
                 line_no = int(match.group(1))
-                linetable_field = "co_linotab" if python_version_pair < (3, 10) else "co_linetable"
+                linetable_field = "co_lnotab" if python_version_pair < (3, 10) else "co_linetable"
                 assert asm is not None
                 linetable = getattr(asm.code, linetable_field)
                 linetable[offset] = line_no
@@ -348,27 +353,31 @@ def asm_file(path):
             if num_fields == 1 and line_no is not None:
                 continue
 
-            if num_fields > 1:
-                if fields[0] == ">>":
-                    fields = fields[1:]
-                    num_fields -= 1
-                if match_lineno(fields[0]) and is_int(fields[1]):
-                    line_no = int(fields[0][:-1])
-                    opname, operand = get_opname_operand(asm.opc, fields[2:])
-                elif match_lineno(fields[0]):
-                    line_no = int(fields[0][:-1])
-                    fields = fields[1:]
+            try:
+                if num_fields > 1:
                     if fields[0] == ">>":
                         fields = fields[1:]
-                        if is_int(fields[0]):
+                        num_fields -= 1
+                    if match_lineno(fields[0]) and is_int(fields[1]):
+                        line_no = int(fields[0][:-1])
+                        opname, operand = get_opname_operand(asm.opc, fields[2:])
+                    elif match_lineno(fields[0]):
+                        line_no = int(fields[0][:-1])
+                        fields = fields[1:]
+                        if fields[0] == ">>":
                             fields = fields[1:]
-                    opname, operand = get_opname_operand(asm.opc, fields)
-                elif is_int(fields[0]):
-                    opname, operand = get_opname_operand(asm.opc, fields[1:])
+                            if is_int(fields[0]):
+                                fields = fields[1:]
+                        opname, operand = get_opname_operand(asm.opc, fields)
+                    elif is_int(fields[0]):
+                        opname, operand = get_opname_operand(asm.opc, fields[1:])
+                    else:
+                        opname, operand = get_opname_operand(asm.opc, fields)
                 else:
-                    opname, operand = get_opname_operand(asm.opc, fields)
-            else:
-                opname, _ = get_opname_operand(asm.opc, fields)
+                    opname, _ = get_opname_operand(asm.opc, fields)
+            except Exception as e:
+                print(f"Line {i}: {e}")
+                raise
 
             if opname in asm.opc.opname:
                 inst = Instruction()
@@ -688,13 +697,13 @@ def create_code(asm: Assembler, label, backpatch):
     is_code_ok(asm)
 
     # Stamp might be added here
-    # if asm.python_version[:2] == PYTHON_VERSION_TRIPLE[:2]:
-    #     code = asm.code.to_native()
-    # else:
-    code = asm.code.freeze()
+    if asm.python_version[:2] == PYTHON_VERSION_TRIPLE[:2]:
+        code = asm.code.to_native()
+    else:
+        code = asm.code.freeze()
 
     # asm.print_instructions()
 
     # print (*args)
     # co = self.Code(*args)
-    return code
+    return code, is_valid
