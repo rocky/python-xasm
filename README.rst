@@ -31,7 +31,7 @@ The code requires Python 2.7 or later.
 Assembly files
 --------------
 
-See how-to-use_ for more deatil. Some general some principles:
+See how-to-use_ for more detail. Some general some principles:
 
 * Preferred extension for Python assembly is ``.pyasm``
 * assembly is designed to work with the output of ``pydisasm -F xasm``
@@ -144,7 +144,7 @@ command from `xdis`:
 
     pydisasm --format xasm /tmp/five.pyc
 
-In the example above though, I have shortend and simplified the result.
+In the example above though, I have shortened and simplified the result.
 
 
 Usage

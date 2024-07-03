@@ -54,7 +54,7 @@ Module-level info
 ------------------
 
 
-The only necessary mdoule-level inforamtion that is needed is the
+The only necessary mdoule-level inforamation that is needed is the
 Python "magic" number which determines which Python bytecode opcodes
 to use and which Python interpreter can be used to run the resulting
 program.
@@ -72,7 +72,7 @@ Here is an example of the module-level information:
    # Timestamp in code: 1499156389 (2017-07-04 04:19:49)
    # Source code size mod 2**32: 577 bytes
 
-Again, the bytecode numberf is necessary. However the timestamp is not. In Python 3
+Again, the bytecode number is necessary. However the timestamp is not. In Python 3
 there is also a size modulo 2**32 that is recorded, and in later Python this can be a
 SIP hash.
 
@@ -86,7 +86,7 @@ Method-level information starts with ``#`` in column one. Here is some
 method-level information:
 
 * The method name of the code object (``Method Name``)
-* Number of local variables used in module or fuction (``Number of locals``)
+* Number of local variables used in module or function (``Number of locals``)
 * A filename where the file (``Filename``)
 * Maximum Stack Size needed to run code (``Stack Size``)
 * Code flags which indicate properties of the code (``Flags``)
