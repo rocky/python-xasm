@@ -401,7 +401,7 @@ def asm_file(path):
     if asm is not None:
         # print(linetable)
 
-        co = create_code(asm, label, backpatch_inst)
+        co, is_valid = create_code(asm, label, backpatch_inst)
         asm.update_lists(co, label, backpatch_inst)
         asm.code_list.reverse()
         asm.status = "finished"
@@ -577,7 +577,7 @@ def append_operand(
     bytecode.append(arg_value)
 
 
-def create_code(asm: Assembler, label, backpatch):
+def create_code(asm: Assembler, label, backpatch) -> tuple:
     """
     Turn ``asm`` assembler text into a code object and
     return that.
@@ -645,6 +645,7 @@ def create_code(asm: Assembler, label, backpatch):
                     else:
                         err(f"Can't handle compare operand {inst.arg}", inst, i)
                         is_valid = False
+                        break
 
                     pass
                 elif inst.opcode in asm.opc.CONST_OPS:
@@ -664,6 +665,7 @@ def create_code(asm: Assembler, label, backpatch):
                     # from trepan.api import debug; debug()
                     err(f"Can't handle operand {inst.arg}", inst, i)
                     is_valid = False
+                    break
             else:
                 # from trepan.api import debug; debug()
                 err(
@@ -684,6 +686,9 @@ def create_code(asm: Assembler, label, backpatch):
             # instructions with no operand, or one-byte instructions, are padded
             # to two bytes in 3.6 and later.
             bytecode.append(0)
+
+    if not is_valid:
+        return None, False
 
     if asm.opc.version_tuple >= (3, 0):
         co_code = bytearray()
