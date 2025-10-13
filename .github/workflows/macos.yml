@@ -1,4 +1,4 @@
-name: xasm (osx)
+name: xasm (macos)
 
 on:
   push:
@@ -12,17 +12,17 @@ jobs:
     strategy:
       matrix:
         os: [macOS]
-        python-version: ['3.10']
+        python-version: ['3.11', '3.12', '3.13']
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
         # We can comment out after next xdis release
-        python -m pip install -e git+https://github.com/rocky/python-xdis#egg=xdis
+        # python -m pip install -e git+https://github.com/rocky/python-xdis#egg=xdis
         pip install -e .
         pip install -r requirements-dev.txt
     - name: Test xasm
