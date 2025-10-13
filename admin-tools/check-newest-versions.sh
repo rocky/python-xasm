@@ -1,12 +1,12 @@
 #!/bin/bash
 function finish {
-    if [[ -n ${python_control_flow_owd} ]] && [[ -d $python_control_flow_owd ]]; then
-	cd $python_control_flow_owd
+    if [[ -n ${xasm_owd} ]] && [[ -d $xasm_owd ]]; then
+	cd $xasm_owd
     fi
 }
 
 # FIXME put some of the below in a common routine
-python_control_flow_owd=$(pwd)
+xasm_owd=$(pwd)
 # trap finish EXIT
 
 cd $(dirname ${BASH_SOURCE[0]})
