@@ -1,20 +1,20 @@
 #!/bin/bash
 # The name Python's import uses.
 # It is reflected in the directory structure.
-PACKAGE_MODULE="python_control_flow"
+PACKAGE_MODULE="xasm"
 
 # The name that PyPi sees this as.
 # It is set in setup.py's name.
-PACKAGE_NAME="python-control-flow"
+PACKAGE_NAME="xasm"
 
 # FIXME put some of the below in a common routine
 function finish {
-  if [[ -n "$make_dist_python_control_flow_owd" ]] then
-     cd $make_dist_python_control_flow_newest_owd
+  if [[ -n "$make_dist_xasm_owd" ]] then
+     cd $make_dist_xasm_newest_owd
   fi
 }
 
-make_dist_python_control_flow_newest_owd=$(pwd)
+make_dist_xasm_newest_owd=$(pwd)
 cd $(dirname ${BASH_SOURCE[0]})
 trap finish EXIT
 

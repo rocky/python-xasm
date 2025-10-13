@@ -5,13 +5,13 @@ xasm
 
 *NOTE: this is in beta*
 
-A Cross-Python bytecode Assembler
+A cross-version Python bytecode assembler
 
 
 Introduction
 ------------
 
-The Python `xasm` module has routines for assembly, and has a command to
+The Python ``xasm`` module has routines for assembly, and has a command to
 assemble bytecode for several different versions of Python.
 
 Here are some potential uses:
@@ -23,10 +23,10 @@ Here are some potential uses:
 * Foil decompilers like uncompyle6_ so that they can’t disassemble bytecode (at least for now)
 
 This support the same kinds of bytecode that xdis_ supports. This is
-pretty much all released bytecode, although we tend to lag behind the
+pretty much all released bytecode before Python 3.11. We tend to lag behind the
 latest Python releases.
 
-The code requires Python 2.7 or later.
+The code requires Python 3.6 or later.
 
 Assembly files
 --------------
@@ -47,15 +47,28 @@ See how-to-use_ for more detail. Some general some principles:
 Installation
 ------------
 
-The standard Python routine:
+*If you are using Python 3.11 or later*, you can install from PyPI using the name ``xasm``::
 
-::
+    pip install xasm
 
-    pip install -e .
-    pip install -r requirements-dev.txt
-
-A GNU makefile is also provided so :code:`make install` (possibly as root or
+A GNU makefile is also provided so ``make install`` (possibly as root or
 sudo) will do the steps above.
+
+
+*If you are using Python before 3.11*, do not install using PyPI, but instead install using a file in the [GitHub Releases section](https://github.com/rocky/python-xasm/releases). Older Python used to use `easy_install <https://python101.pythonlibrary.org/chapter29_pip.html#using-easy-install>`_. But this is no longer supported in PyPi or newer Python versions. And vice versa, *poetry* nor *pip*, (the newer ways) are not supported on older Pythons.
+
+If the Python version you are running xasm is between Python 3.6 through 3.11, use a tarball called xasm_36-*x.y.z*.tar.gz.
+
+If the Python version you are running xasm is 3.11 or later, use a file called xasm-*x.y.z*.tar.gz.
+
+Similarly, a tarball with or without the underscore *xx*,  e.g., xasm_36-*x.y.z*.tar.gz. works only from Python 3.11 or greater.
+
+Rationale for using Git Branches
+++++++++++++++++++++++++++++++++
+
+It is currently impossible (if not impractical) to have one Python source code of this complexity and with this many features that can run both Python 3.6 and Python 3.13+. The languages have drifted so much, and packaging is vastly different.
+
+A GNU makefile is also provided so :code:`make install` (possibly as root or sudo) will do the steps above.
 
 
 Testing
@@ -137,8 +150,8 @@ Here is an assembly for the above:
                 RETURN_VALUE
 
 
-The above can be created automatically from Python source code using the `pydisasm`
-command from `xdis`:
+The above can be created automatically from Python source code using the ``pydisasm``
+command from ``xdis``:
 
 ::
 
