@@ -11,8 +11,8 @@ check: test
 
 #: Run tests
 test:
-	py.test pytest
-	py.test test/test_all.py
+	pytest pytest
+	pytest test/test_all.py
 
 clean:
 	cd test && make clean
