@@ -7,7 +7,7 @@ xasm_fulldir=$(readlink -f $mydir)
 cd $xasm_fulldir
 . ./checkout_common.sh
 
-pyenv_file="pyenv-newest-versions"
+pyenv_file="pyenv-3.6-3.10-versions"
 if ! source $pyenv_file ; then
     echo "Having trouble reading ${pyenv_file} version $(pwd)"
     exit 1
@@ -21,11 +21,12 @@ fi
 
 cd ../dist/
 
-install_check_command="xasm --help"
-install_file="pyc-xasm-${__version__}.tar.gz"
-for pyversion in $PYVERSIONS; do
-    echo "*** Installing ${install_file} for Python ${pyversion} ***"
-    pyenv local $pyversion
+install_file="xasm_36-${__version__}.tar.gz"
+install_check_command="pyc-xasm --help"
+for version in $PYVERSIONS; do
+    echo "*** Installing ${install_file} for Python ${version} ***"
+    echo $version
+    pyenv local $version
     pip install $install_file
     $install_check_command
     echo "----"
