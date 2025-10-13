@@ -21,7 +21,7 @@ fi
 
 cd ../dist/
 
-install_check_command="xasm --version"
+install_check_command="xasm --help"
 install_file="pyc-xasm-${__version__}.tar.gz"
 for pyversion in $PYVERSIONS; do
     echo "*** Installing ${install_file} for Python ${pyversion} ***"
