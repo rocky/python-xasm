@@ -1,5 +1,5 @@
 #!/bin/bash
-PYTHON_VERSION=3.13
+PYTHON_VERSION=3.6
 
 xasm_owd=$(pwd)
 bs=${BASH_SOURCE[0]}
@@ -10,7 +10,7 @@ fi
 
 mydir=$(dirname $bs)
 xasm_fulldir=$(readlink -f $mydir)
-. ${xasm_fulldir}/checkout_common.sh
+. $mydir/checkout_common.sh
 
-(cd ${xasm_fulldir}/../.. && setup_version python-xdis master)
-checkout_finish master
+(cd $xasm_fulldir/../.. && setup_version python-xdis python-3.6)
+checkout_finish python-3.6-to-3.10
