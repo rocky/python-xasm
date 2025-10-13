@@ -1,5 +1,5 @@
 click~=8.0.3
-pip~>23.3
+pip
 wheel~=0.38.1
 cryptography~>44.0.1
 lxml~>4.9.1
