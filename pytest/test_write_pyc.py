@@ -36,7 +36,7 @@ def test_roundtrip3():
     print("Wrote Python %s bytecode file %s; %d bytes" % (version, fp.name, size))
     old_fp = open(orig_path, "rb")
     new_fp = open(new_path, "rb")
-    if PYTHON_VERSION_TRIPLE < (3, 7):
+    if PYTHON_VERSION_TRIPLE < (3, 6):
         compare_size = 590
         assert old_fp.read(compare_size) == new_fp.read(compare_size)
     else:

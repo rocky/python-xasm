@@ -37,7 +37,7 @@ def is_int(s) -> bool:
         return False
 
 
-def match_lineno(s: str) -> Optional[re.Match]:
+def match_lineno(s: str):
     return re.match(r"^\d+:", s)
 
 
