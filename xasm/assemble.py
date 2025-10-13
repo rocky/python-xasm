@@ -216,7 +216,9 @@ def asm_file(path):
                     python_bytecode_version, length=2
                 )
                 asm.code_init(python_version_pair)
-                asm.code.co_name = line[len("# Method Name: ") :].strip()
+                asm.code.co_qual_name = asm.code.co_name = line[
+                    len("# Method Name: ") :
+                ].strip()
                 method_name = asm.code.co_name
             elif line.startswith("# SipHash: "):
                 siphash = line[len("# ShipHash: ") :].strip().split()[0]
@@ -341,7 +343,9 @@ def asm_file(path):
 
             if match:
                 line_no = int(match.group(1))
-                linetable_field = "co_lnotab" if python_version_pair < (3, 10) else "co_linetable"
+                linetable_field = (
+                    "co_lnotab" if python_version_pair < (3, 10) else "co_linetable"
+                )
                 assert asm is not None
                 linetable = getattr(asm.code, linetable_field)
                 linetable[offset] = line_no
@@ -437,7 +441,9 @@ def update_code_tuple_field(field_name, code, lines, i):
         match = re.match(r"^#\s+(\d+): (.+)$", line)
         if match:
             index = int(match.group(1))
-            assert index == count, f'In field" "{field_name}", line {i}, number {index} is expected to have value {count}.'
+            assert (
+                index == count
+            ), f'In field" "{field_name}", line {i}, number {index} is expected to have value {count}.'
             field_values = getattr(code, field_name)
             field_values.append(match.group(2))
             count += 1
@@ -593,7 +599,6 @@ def create_code(asm: Assembler, label, backpatch) -> tuple:
     is_valid = True
 
     for i, inst in enumerate(asm.code.instructions):
-
         # Strip out extended arg instructions.
         # Operands in the input can be arbitary numbers.
         # In this loop we will figure out whether
@@ -609,10 +614,13 @@ def create_code(asm: Assembler, label, backpatch) -> tuple:
         if offset in offset2label:
             if is_int(offset2label[offset]):
                 inst.line_no = int(offset2label[offset])
-                if inst.line_no in asm.code.co_lnotab.values() and asm.python_version < (3, 10):
+                if (
+                    inst.line_no in asm.code.co_lnotab.values()
+                    and asm.python_version < (3, 10)
+                ):
                     print(
                         f"Line {i}: this is not the first we encounter source-code line {inst.line_no}."
-                        )
+                    )
                 asm.code.co_lnotab[offset] = inst.line_no
 
         inst.offset = offset
