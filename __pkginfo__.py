@@ -41,7 +41,7 @@ install_requires = ["xdis >= 6.1.0"]
 license = "GPL-2.0"
 mailing_list = "python-debugger@googlegroups.com"
 modname = "xasm"
-py_modules = None
+py_modules = []
 setup_requires = ["pytest-runner", "xdis >= 6.1.0"]
 # scripts            = ['bin/pydisasm']
 short_desc = "Python cross-version byte-code assembler"
@@ -66,4 +66,7 @@ def read(*rnames):
 
 # Get info from files; set: long_description and VERSION
 long_description = read("README.rst") + "\n"
+
+# The below exec() overwrites __version
+__version__ = "??"
 exec(read("xasm/version.py"))

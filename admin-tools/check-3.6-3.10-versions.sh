@@ -10,7 +10,7 @@ xasm_owd=$(pwd)
 # trap finish EXIT
 
 cd $(dirname ${BASH_SOURCE[0]})
-if ! source ./pyenv-3.8-3.10-versions ; then
+if ! source ./pyenv-3.6-3.10-versions ; then
     exit $?
 fi
 
