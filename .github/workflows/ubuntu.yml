@@ -1,27 +1,32 @@
-name: xdis (ubuntu)
+name: xdis (Ubuntu)
 
 on:
   push:
-    branches: [ master ]
+    branches: [ python-3.6-to-3.10 ]
   pull_request:
-    branches: [ master ]
+    branches: [ python-3.6-to-3.10 ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.8', '3.9', '3.10']
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        # We can comment out after next xdis release
-        python -m pip install -e git+https://github.com/rocky/python-xdis#egg=xdis
+        # Install the latest xdis release tarball from GitHub Releases (asset named xdis_36-*.tar.gz)
+        XDIS_URL=$(curl -s https://api.github.com/repos/rocky/python-xdis/releases/latest \
+          | python -c "import sys,json; j=json.load(sys.stdin); assets=j.get('assets',[]); print(next((a.get('browser_download_url') for a in assets if a.get('name','').startswith('xdis_36-') and a.get('name','').endswith('.tar.gz')), ''))")
+        if [ -z "$XDIS_URL" ]; then
+          echo "ERROR: no xdis_36-*.tar.gz asset found on the latest release"; exit 1
+        fi
+        python -m pip install "$XDIS_URL"
         pip install -e .
         pip install -r requirements-dev.txt
     - name: Test xasm
