@@ -1,10 +1,10 @@
 #!/usr/bin/bash
-PACKAGE_MODULE=python_control_flow
-python_control_flow_owd=$(pwd)
+PACKAGE_MODULE=xasm
+xasm_owd=$(pwd)
 bs=${BASH_SOURCE[0]}
 mydir=$(dirname $bs)
-python_control_flow_fulldir=$(readlink -f $mydir)
-cd $python_control_flow_fulldir
+xasm_fulldir=$(readlink -f $mydir)
+cd $xasm_fulldir
 . ./checkout_common.sh
 
 pyenv_file="pyenv-newest-versions"
@@ -21,8 +21,8 @@ fi
 
 cd ../dist/
 
-install_check_command="python-cfg --version"
-install_file="python_control_flow-${__version__}.tar.gz"
+install_check_command="xasm --version"
+install_file="xasm-${__version__}.tar.gz"
 for pyversion in $PYVERSIONS; do
     echo "*** Installing ${install_file} for Python ${pyversion} ***"
     pyenv local $pyversion
