@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import ast
 import re
-from typing import List, Optional, Union
+from typing import Any, List, Optional
 
 import xdis
 from xdis import get_opcode, load_module
@@ -29,7 +29,7 @@ class Instruction:  # (Mbytecode.Instruction):
     pass
 
 
-def is_int(s: Union[int, str, None]) -> bool:
+def is_int(s: Any) -> bool:
     try:
         int(s)
         return True
