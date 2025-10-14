@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import ast
 import re
-from typing import List, Optional
+from typing import List, Optional, Union
 
 import xdis
 from xdis import get_opcode, load_module
@@ -29,7 +29,7 @@ class Instruction:  # (Mbytecode.Instruction):
     pass
 
 
-def is_int(s: int | str | None) -> bool:
+def is_int(s: Union[int, str, None]) -> bool:
     try:
         int(s)
         return True
@@ -130,7 +130,7 @@ class Assembler:
         self.status = "errored"
 
 
-def asm_file(path) -> Assembler | None:
+def asm_file(path) -> Optional[Assembler]:
     offset = 0
     methods = {}
     method_name = None
