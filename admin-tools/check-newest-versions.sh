@@ -14,7 +14,9 @@ if ! source ./pyenv-newest-versions ; then
     exit $?
 fi
 
-. ./setup-master.sh
+if ! source ./setup-master.sh ; then
+    exit $?
+fi
 
 cd ..
 for version in $PYVERSIONS; do
