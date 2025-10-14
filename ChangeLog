@@ -1,8 +1,262 @@
+2025-10-13  rocky <rb@dusytfeet.com>
+
+	* xasm/version.py: Get ready for release 1.2.1
+
+2025-10-13  rocky <rb@dusytfeet.com>
+
+	* README.rst, admin-tools/install-all-3.6-3.10.sh,
+	admin-tools/install-all-newest.sh,
+	admin-tools/make-dist-3.6-3.10.sh: Better package testing
+
+2025-10-13  rocky <rb@dusytfeet.com>
+
+	* admin-tools/install-all-3.8-3.10.sh,
+	admin-tools/install-all-newest.sh,
+	admin-tools/make-dist-3.8-3.10.sh,
+	admin-tools/pyenv-3.6-3.10-versions: Packaging, yet again
+
+2025-10-13  rocky <rb@dusytfeet.com>
+
+	* Makefile, admin-tools/merge-for-3.6.sh: Ever changing "standards"
+
+2025-10-13  rocky <rb@dusytfeet.com>
+
+	* admin-tools/check-newest-versions.sh: Correct admin scripts
+
+2025-10-13  rocky <rb@dusytfeet.com>
+
+	* README.rst, admin-tools/make-dist-newest.sh, pyproject.toml,
+	setup.py: Packaging
+
+2025-10-13  rocky <rb@dusytfeet.com>
+
+	* admin-tools/check-3.6-3.10-versions.sh,
+	admin-tools/check-newest-versions.sh,
+	admin-tools/checkout_common.sh,
+	admin-tools/install-all-3.8-3.10.sh,
+	admin-tools/install-all-newest.sh,
+	admin-tools/make-dist-3.8-3.10.sh, admin-tools/make-dist-newest.sh,
+	admin-tools/merge-for-3.6.sh, admin-tools/pyenv-3.6-3.10-versions,
+	admin-tools/pyenv-newest-versions, admin-tools/setup-master.sh,
+	admin-tools/setup-python-3.6.sh, admin-tools/test-versions.sh: Admin
+	crap
+
+2025-10-13  rocky <rb@dusytfeet.com>
+
+	* .github/workflows/{osx.yml => macos.yml},
+	.github/workflows/ubuntu.yml, .pre-commit-config.yaml,
+	requirements.txt, xasm/assemble.py: Misc fixes
+
+2025-06-21  rocky <rb@dusytfeet.com>
+
+	* xasm/assemble.py: Correct bug respecing create_code API Fixes #24
+
+2025-02-18  rocky <rb@dusytfeet.com>
+
+	* requirements.txt: Make dependabot happy
+
+2024-12-24  rocky <rb@dusytfeet.com>
+
+	* .pre-commit-config.yaml, requirements.txt: Make dependabot happy
+
+2024-09-10  rocky <rb@dusytfeet.com>
+
+	* requirements.txt: Silenced dependabot
+
+2024-07-03  rocky <rb@dusytfeet.com>
+
+	* .github/ISSUE_TEMPLATE/bug-report.md,
+	.github/ISSUE_TEMPLATE/config.yml,
+	.github/ISSUE_TEMPLATE/feature-request.md, HOW-TO-USE.rst,
+	README.rst: Correct spelling typos
+
+2024-07-02  rocky <rb@dusytfeet.com>
+
+	* HOW-TO-USE.rst, README.rst: Update README.rst
+
+2024-07-02  rocky <rb@dusytfeet.com>
+
+	* HOW-TO-USE.rst, xasm/assemble.py, xasm/pyc_convert.py: More
+	explicit comments and ...  add ## comments, and document better module and method information
+
+2024-06-23  rocky <rb@dusytfeet.com>
+
+	* xasm/assemble.py, xasm/pyc_convert.py: bug fixes...  * decode_linotab() -> decode_lineno_tab_old to make it clear that
+	  this routine works for version before 3.10 * last instruction can be RERAISE or RASE_VARARGS in addition to   RETURN_VALUE * Avoid using asm.code.to_native() for now, since there are bugs
+
+2024-06-23  R. Bernstein <rocky@users.noreply.github.com>
+
+	* HOW-TO-USE.rst: Update HOW-TO-USE.rst Spell check and update information
+
+2024-06-23  R. Bernstein <rocky@users.noreply.github.com>
+
+	* HOW-TO-USE.rst: Update HOW-TO-USE.rst
+
+2024-06-23  R. Bernstein <rocky@users.noreply.github.com>
+
+	* HOW-TO-USE.rst: Update HOW-TO-USE.rst
+
+2024-06-23  R. Bernstein <rocky@users.noreply.github.com>
+
+	* HOW-TO-USE.rst: Update HOW-TO-USE.rst
+
+2024-06-15  rocky <rb@dusytfeet.com>
+
+	* xasm/assemble.py: Misc tweaks and bug fixes...  * Handle numeric labels better * Adjust field name co_linetable for 3.10+ * Warn if duplicate line number seen and < 3.10
+
+2024-06-04  rocky <rb@dusytfeet.com>
+
+	* .github/workflows/osx.yml, .github/workflows/ubuntu.yml,
+	.github/workflows/windows.yml: CI - need latest xdis for testing
+
+2024-06-04  rocky <rb@dusytfeet.com>
+
+	* pytest/test_assemble.py, xasm/assemble.py: Go over EXTENDED_ARG
+	creation in bytecode
+
+2024-06-03  rocky <rb@dusytfeet.com>
+
+	* xasm/assemble.py: remove unused import
+
+2024-06-03  rocky <rb@dusytfeet.com>
+
+	* xasm/assemble.py, xasm/xasm_cli.py: Compute EXTENDED_ARG better;
+	fix a typo
+
+2024-06-03  rocky <rb@dusytfeet.com>
+
+	* xasm/assemble.py: Improve offset label handling and ..  ignore EXTENDED_ARG
+
+2024-06-03  rocky <rb@dusytfeet.com>
+
+	* xasm/assemble.py: Fix two misfeatures...  1. If Python bytecode is not set, complain and exit 2. Detect and handle line numbers on instructions
+
+2024-05-26  rocky <rb@dusytfeet.com>
+
+	* xasm/assemble.py: Check that operand values are in range
+
+2024-05-26  rocky <rb@dusytfeet.com>
+
+	* xasm/write_pyc.py, xasm/xasm_cli.py: Track and report errors in
+	return code better
+
+2024-05-26  rocky <rb@dusytfeet.com>
+
+	* .editorconfig: Typo
+
+2024-05-26  rocky <rb@dusytfeet.com>
+
+	* xasm/assemble.py: Tweak missing return value error
+
+2024-05-26  rocky <rb@dusytfeet.com>
+
+	* pytest/test_write_pyc.py: Skip a pytest on windows CI
+
+2024-05-26  rocky <rb@dusytfeet.com>
+
+	* .github/workflows/windows.yml, __pkginfo__.py, requirements.txt,
+	setup.py: Another attempt to get CI actions working
+
+2024-05-26  rocky <rb@dusytfeet.com>
+
+	* .github/workflows/osx.yml, .github/workflows/ubuntu.yml,
+	.github/workflows/windows.yml: Try Workflows actions
+
+2024-05-26  rocky <rb@dusytfeet.com>
+
+	* test/TODO.md: Add a TODO
+
+2024-05-26  rocky <rb@dusytfeet.com>
+
+	* test/tasm-3.10-bad.pyasm, test/tasm-3.10.pyasm, xasm/assemble.py:
+	Add a check for last instruction being a "return"
+
+2024-05-22  rocky <rb@dusytfeet.com>
+
+	* xasm/assemble.py: Offset in 3.10+ need to be divided by two
+
+2024-05-20  rocky <rb@dusytfeet.com>
+
+	* xasm/xasm_cli.py: Tweak asm file path
+
+2024-02-20  rocky <rb@dusytfeet.com>
+
+	* requirements.txt: Keep dependabot happy
+
+2024-01-10  rocky <rb@dusytfeet.com>
+
+	* requirements.txt: Bump cryptography to silence Depedabot
+
+2024-01-10  rocky <rb@dusytfeet.com>
+
+	* .pre-commit-config.yaml, xasm/assemble.py, xasm/pyc_convert.py,
+	xasm/xasm_cli.py: convert % to f-strings
+
+2024-01-09  rocky <rb@dusytfeet.com>
+
+	* pytest/test_write_pyc.py, requirements.txt: Update requirements as
+	recommended by dependabot Also comment out a test where xdis marshal is broken.
+
+2023-12-17  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #21 from rocky/lint Some lint found
+
+2023-10-23  rocky <rb@dustyfeet.com>
+
+	* .gitignore, __pkginfo__.py, requirements.txt, xasm/.gitignore,
+	xasm/assemble.py, xasm/pyc_convert.py, xasm/xasm_cli.py: Misc lint
+
+2023-09-18  rocky <rb@dusytfeet.com>
+
+	* xasm/assemble.py: version -> version_tuple fixes
+
+2023-09-18  rocky <rb@dusytfeet.com>
+
+	* .gitignore, admin-tools/pyenv-newest-versions,
+	admin-tools/setup-master.sh, test/.gitignore: Bump testing versions
+
+2022-12-02  rocky <rb@dustyfeet.com>
+
+	* xasm/assemble.py: Pycharm lint
+
+2022-12-02  rocky <rb@dusytfeet.com>
+
+	* xasm/assemble.py: Add a more detailed assert message...  about the header.
+
+2022-12-02  rocky <rb@dusytfeet.com>
+
+	* xasm/version.py: Bump version to development version
+
+2022-10-17  rocky <rb@dusytfeet.com>
+
+	* xasm/assemble.py, xasm/write_pyc.py: Remove debug statement.  Fixes #17 Also, add msg when we can't dump a code object
+
+2022-08-22  rocky <rb@dusytfeet.com>
+
+	* xasm/assemble.py, xasm/write_pyc.py: Fix a couple of small bugs
+
+2022-06-16  rocky <rb@dusytfeet.com>
+
+	* xasm/assemble.py: Detect native code objects in constants
+
+2022-04-02  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #15 from
+	Svenskithesource/Svenskithesource-patch-2 Fix empty append call
+
+2022-03-05  R. Bernstein <rocky@users.noreply.github.com>
+
+	* : Merge pull request #13 from Svenskithesource/patch-1 Typo
+
+2021-12-04  rocky <rb@dusytfeet.com>
+
+	* xasm/assemble.py: wrong variable python_version -> version Fixes #11
+
 2021-11-07  rocky <rb@dusytfeet.com>
 
 	* ChangeLog, NEWS.md, admin-tools/check-versions.sh,
-	admin-tools/pyenv-versions, xasm/version.py: Get ready for release
-	1.2.0
+	admin-tools/make-dist.sh, admin-tools/pyenv-versions, setup.cfg,
+	xasm/version.py: Get ready for release 1.2.0
 
 2021-11-07  rocky <rocky@dusytfeet.com>
 
@@ -10,7 +264,7 @@
 
 2021-11-07  rocky <rocky@dusytfeet.com>
 
-	* admin-tools/pyenv-versions, admin-tools/setup-master.sh: 
+	* admin-tools/pyenv-versions, admin-tools/setup-master.sh:
 	Administrivia
 
 2021-11-05  rocky <rocky@dusytfeet.com>
@@ -62,7 +316,7 @@
 
 	* ChangeLog, NEWS.md, __pkginfo__.py,
 	admin-tools/how-to-make-a-release.md, admin-tools/pyenv-versions,
-	setup.py, xasm/__init__.py, xasm/pyc_convert.py, xasm/version.py: 
+	setup.py, xasm/__init__.py, xasm/pyc_convert.py, xasm/version.py:
 	Get ready for release 1.1.1
 
 2020-07-02  rocky <rocky@gnu.org>
@@ -129,7 +383,7 @@
 	* Makefile, __pkginfo__.py, admin-tools/how-to-make-a-release.md,
 	admin-tools/pyenv-versions, pytest/.gitignore,
 	pytest/test_write_pyc.py, test/test_all.py, xasm/.gitignore,
-	xasm/assemble.py, xasm/misc.py, xasm/write_pyc.py, xasm/xasm_cli.py: 
+	xasm/assemble.py, xasm/misc.py, xasm/write_pyc.py, xasm/xasm_cli.py:
 	Revise for new xdis. Add Better write_pyc() fn
 
 2019-11-06  rocky <rb@dustyfeet.com>
@@ -463,7 +717,7 @@
 2017-07-04  rocky <rb@dustyfeet.com>
 
 	* test/gcd-2.7.pyasm, xasm/assemble.py: More proper label handling All non-int labels are absolute Labels as an operand don't and shouldn't have the trailing ':'.
-	pydisasm doen't add that Start moving toward xdis enhanced ability to work with Python code
+	pydisasm doesn't add that. Start moving toward xdis's enhanced ability to work with Python code
 	more interchangeably between Python 2 and 3.
 
 2017-07-03  rocky <rb@dustyfeet.com>
@@ -547,4 +801,3 @@
 2017-06-26  rocky <rb@dustyfeet.com>
 
 	* Assembler first step
-

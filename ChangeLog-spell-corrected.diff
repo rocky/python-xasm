@@ -1,0 +1,52 @@
+--- ChangeLog	2025-10-13 20:32:16.800140934 -0400
++++ ChangeLog-spell-corrected	2025-10-13 20:31:50.631953303 -0400
+@@ -168,7 +168,7 @@
+ 
+ 2024-05-26  rocky <rb@dusytfeet.com>
+ 
+-	* test/tasm-3.10-bad.pyasm, test/tasm-3.10.pyasm, xasm/assemble.py: 
++	* test/tasm-3.10-bad.pyasm, test/tasm-3.10.pyasm, xasm/assemble.py:
+ 	Add a check for last instruction being a "return"
+ 
+ 2024-05-22  rocky <rb@dusytfeet.com>
+@@ -264,7 +264,7 @@
+ 
+ 2021-11-07  rocky <rocky@dusytfeet.com>
+ 
+-	* admin-tools/pyenv-versions, admin-tools/setup-master.sh: 
++	* admin-tools/pyenv-versions, admin-tools/setup-master.sh:
+ 	Administrivia
+ 
+ 2021-11-05  rocky <rocky@dusytfeet.com>
+@@ -316,7 +316,7 @@
+ 
+ 	* ChangeLog, NEWS.md, __pkginfo__.py,
+ 	admin-tools/how-to-make-a-release.md, admin-tools/pyenv-versions,
+-	setup.py, xasm/__init__.py, xasm/pyc_convert.py, xasm/version.py: 
++	setup.py, xasm/__init__.py, xasm/pyc_convert.py, xasm/version.py:
+ 	Get ready for release 1.1.1
+ 
+ 2020-07-02  rocky <rocky@gnu.org>
+@@ -383,7 +383,7 @@
+ 	* Makefile, __pkginfo__.py, admin-tools/how-to-make-a-release.md,
+ 	admin-tools/pyenv-versions, pytest/.gitignore,
+ 	pytest/test_write_pyc.py, test/test_all.py, xasm/.gitignore,
+-	xasm/assemble.py, xasm/misc.py, xasm/write_pyc.py, xasm/xasm_cli.py: 
++	xasm/assemble.py, xasm/misc.py, xasm/write_pyc.py, xasm/xasm_cli.py:
+ 	Revise for new xdis. Add Better write_pyc() fn
+ 
+ 2019-11-06  rocky <rb@dustyfeet.com>
+@@ -717,7 +717,7 @@
+ 2017-07-04  rocky <rb@dustyfeet.com>
+ 
+ 	* test/gcd-2.7.pyasm, xasm/assemble.py: More proper label handling All non-int labels are absolute Labels as an operand don't and shouldn't have the trailing ':'.
+-	pydisasm doen't add that Start moving toward xdis enhanced ability to work with Python code
++	pydisasm doesn't add that. Start moving toward xdis's enhanced ability to work with Python code
+ 	more interchangeably between Python 2 and 3.
+ 
+ 2017-07-03  rocky <rb@dustyfeet.com>
+@@ -801,4 +801,3 @@
+ 2017-06-26  rocky <rb@dustyfeet.com>
+ 
+ 	* Assembler first step
+-

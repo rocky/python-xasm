@@ -6,6 +6,7 @@
 /.mypy_cache
 /.pytest_cache
 /.python-version
+/ChangeLog-spell-corrected
 /README.html
 /build
 /dist

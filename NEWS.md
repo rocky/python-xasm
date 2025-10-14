@@ -1,3 +1,21 @@
+1.2.1 2025-10-13
+----------------
+
+* Repackage for Python 3.11 and poetry. I can't describe what thrill it gives me to have to do this every few years.
+* Correct bug respecting `create_code` API Fixes #24
+* More explicit comments. Add some `##` comments. Document module and method information better.
+* `decode_linotab()` is now `decode_lineno_tab_old` to make it clear that this routine works for version before 3.10.
+* Avoid using `asm.code.to_native()` for now, since there are bugs.
+* Handle numeric labels better.
+* Adjust field name `co_linetable` for bytecode after 3.10.
+* Warn if duplicate line numbers seen and the assembler is before bytecode for 3.10
+* Improve `EXTENDED_ARG` handling and creation.
+* If Python bytecode is not set, complain and exit.
+* Detect and handle line numbers on instructions
+* Add a check for last instruction being either a `RETURN_VALUE`, or `RERAISE`, or `RAISE_VARARGS`
+* Offsets in bytecode for 3.10 need to be divided by two
+* Lint code a little
+
 1.2.0 2021-11-07
 ----------------
 
