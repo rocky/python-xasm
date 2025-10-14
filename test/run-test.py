@@ -1,12 +1,19 @@
 #!/usr/bin/env python
-import click, os, py_compile, sys
+import os
+import py_compile
+import sys
+
+import click
+
 
 @click.command()
-@click.option('--compile/--no-compile', default=None)
-@click.option('--disasm/--no-disasm', default=True)
-@click.option('--asm/--no-asm', default=None)
-@click.argument('files', nargs=-1, type=click.Path(exists=True, readable=True), required=True)
-def main(compile, disasm, asm, files):
+@click.option("--compile/--no-compile", default=None)
+@click.option("--disasm/--no-disasm", default=True)
+@click.option("--asm/--no-asm", default=None)
+@click.argument(
+    "files", nargs=-1, type=click.Path(exists=True, readable=True), required=True
+)
+def main(compile: list[str], disasm, asm, files) -> None:
     """
     Byte-compile, get assembly listing, assemble, and run a Python program
     """
@@ -18,17 +25,16 @@ def main(compile, disasm, asm, files):
     PY_VERSION = sys.version_info[0] + (sys.version_info[1] / 10.0)
 
     for path in files:
-
         if compile is None:
-            do_compile = path.endswith('.py')
+            do_compile = path.endswith(".py")
         else:
             do_compile = compile and disasm
 
         if do_compile:
             if asm is None:
                 asm = True
-            if path.endswith('.py'):
-                basename = path[:-len('.py')]
+            if path.endswith(".py"):
+                basename = path[: -len(".py")]
             else:
                 basename = path
 
@@ -40,8 +46,8 @@ def main(compile, disasm, asm, files):
         else:
             bytecode = path
 
-        have_disasm_path = path.endswith('.pyc') or path.endswith('.pyo')
-        have_asm_path = path.endswith('.pyasm')
+        have_disasm_path = path.endswith(".pyc") or path.endswith(".pyo")
+        have_asm_path = path.endswith(".pyasm")
         if disasm is None:
             do_disasm = have_disasm_path
         else:
@@ -53,7 +59,7 @@ def main(compile, disasm, asm, files):
             if have_disasm_path:
                 produced_bytecode = path
                 bytecode = path
-                basename = path[:-len('.pyo')]
+                basename = path[: -len(".pyo")]
                 asm_file = "%s.pyasm" % basename
             else:
                 asm_file = "%s.pyasm" % ver_prefix
@@ -63,7 +69,7 @@ def main(compile, disasm, asm, files):
             os.system(cmd)
 
         if have_asm_path:
-            basename = path[:-len('.pyasm')]
+            basename = path[: -len(".pyasm")]
             ver_prefix = basename
             asm_file = path
             produced_bytecode = "%s.pyc" % ver_prefix
@@ -81,5 +87,6 @@ def main(compile, disasm, asm, files):
             print(cmd)
             os.system(cmd)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main(sys.argv[1:])

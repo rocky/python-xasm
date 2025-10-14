@@ -13,13 +13,18 @@ from xdis import disassemble_file, load_module, magic2int, write_bytecode_file
 from xdis.magics import magics
 from xdis.opcodes import opcode_27, opcode_33
 
-from xasm.assemble import (Assembler, Instruction, asm_file, create_code,
-                           decode_lineno_tab_old)
+from xasm.assemble import (
+    Assembler,
+    Instruction,
+    asm_file,
+    create_code,
+    decode_lineno_tab_old,
+)
 from xasm.version import __version__
 from xasm.write_pyc import write_pycfile
 
 
-def add_credit(asm, src_version, dest_version):
+def add_credit(asm, src_version, dest_version) -> None:
     stamp = "Converted from Python %s to %s by %s version %s" % (
         src_version,
         dest_version,
@@ -30,7 +35,7 @@ def add_credit(asm, src_version, dest_version):
     return
 
 
-def copy_magic_into_pyc(input_pyc, output_pyc, src_version, dest_version):
+def copy_magic_into_pyc(input_pyc, output_pyc, src_version, dest_version) -> None:
     """Bytecodes are the same except the magic number, so just change
     that"""
     (version, timestamp, magic_int, co, is_pypy, source_size) = load_module(input_pyc)
@@ -43,7 +48,7 @@ def copy_magic_into_pyc(input_pyc, output_pyc, src_version, dest_version):
     return
 
 
-def xlate26_27(inst):
+def xlate26_27(inst) -> None:
     """Between 2.6 and 2.7 opcode values changed
     Adjust for the differences by using the opcode name
     """
@@ -141,7 +146,9 @@ def transform_33_32(inst, new_inst, i, n, offset, instructions, new_asm):
     return 0
 
 
-def transform_asm(asm, conversion_type, src_version, dest_version):
+def transform_asm(
+    asm: Assembler | None, conversion_type, src_version, dest_version
+) -> Assembler:
     new_asm = Assembler(dest_version, is_pypy=False)
     for field in "code size".split():
         setattr(new_asm, field, copy(getattr(asm, field)))
@@ -159,7 +166,9 @@ def transform_asm(asm, conversion_type, src_version, dest_version):
         new_asm.backpatch.append(copy(asm.backpatch[j]))
         new_asm.label.append(copy(asm.label[j]))
         new_asm.codes.append(copy(code))
-        new_asm.code.co_lnotab = decode_lineno_tab_old(code.co_lnotab, code.co_firstlineno)
+        new_asm.code.co_lnotab = decode_lineno_tab_old(
+            code.co_lnotab, code.co_firstlineno
+        )
         instructions = asm.codes[j].instructions
         new_asm.code.instructions = []
         i, offset, n = 0, 0, len(instructions)
@@ -211,7 +220,7 @@ UPWARD_COMPATIBLE = tuple("20-21 21-22 23-24 24-23".split())
 @click.argument(
     "output_pyc", type=click.Path(writable=True), required=False, nargs=1, default=None
 )
-def main(conversion_type, input_pyc, output_pyc):
+def main(conversion_type, input_pyc, output_pyc) -> None:
     """Convert Python bytecode from one version to another.
 
     INPUT_PYC contains the input bytecode path name

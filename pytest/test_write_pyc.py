@@ -9,7 +9,7 @@ import pytest
 from xasm.write_pyc import write_pycfile
 
 
-def get_srcdir():
+def get_srcdir() -> str:
     filename = osp.normcase(os.path.dirname(__file__))
     return osp.realpath(filename)
 
@@ -23,7 +23,7 @@ os.chdir(src_dir)
     reason="test skipped because Python 2.x has problems creating Python 3.x files",
 )
 @pytest.mark.skipif(sys.platform in ("win32",), reason="Test does not work on Windows?")
-def test_roundtrip3():
+def test_roundtrip3() -> None:
     fp = NamedTemporaryFile(mode="wb+", suffix=".pyc", prefix="test_pyc-", delete=False)
     orig_path = "testdata/test_pyc.pyc"
     version, timestamp, magic_int, co, is_pypy, source_size, sip_hash = load_module(
