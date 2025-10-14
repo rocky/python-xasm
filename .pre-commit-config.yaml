@@ -9,11 +9,11 @@ repos:
       stages: [pre-commit]
     - id: end-of-file-fixer
       stages: [pre-commit]
--   repo: https://github.com/pycqa/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-        stages: [pre-commit]
+# -   repo: https://github.com/pycqa/isort
+#     rev: 5.13.2
+#     hooks:
+#       - id: isort
+#         stages: [pre-commit]
 -   repo: https://github.com/psf/black
     rev: 23.12.1
     hooks:

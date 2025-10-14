@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
+from typing import List
 
 import click
 import xdis
@@ -13,7 +14,7 @@ from xasm.write_pyc import write_pycfile
 @click.command()
 @click.option("--pyc-file", default=None)
 @click.argument("asm-path", type=click.Path(exists=True, readable=True), required=True)
-def main(pyc_file, asm_path):
+def main(pyc_file: List[str], asm_path):
     """
     Create Python bytecode from a Python assembly file.
 

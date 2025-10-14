@@ -2,15 +2,20 @@
 Test xasm.assemble code
 """
 
-from xdis.opcodes import (opcode_15, opcode_27, opcode_35, opcode_36,
-                          opcode_36pypy, opcode_312)
+from xdis.opcodes import (
+    opcode_15,
+    opcode_27,
+    opcode_35,
+    opcode_36,
+    opcode_36pypy,
+    opcode_312,
+)
 
 from xasm.assemble import append_operand
 
 
-def test_append_operand():
-
-    def check_one(expected_bytecode_len: int, operand_value):
+def test_append_operand() -> None:
+    def check_one(expected_bytecode_len: int, operand_value: int) -> None:
         bytecode = []
         append_operand(
             bytecode,

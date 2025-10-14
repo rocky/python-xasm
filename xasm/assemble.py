@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import ast
 import re
-from typing import Optional
+from typing import List, Optional
 
 import xdis
 from xdis import get_opcode, load_module
@@ -21,7 +21,7 @@ class Instruction:  # (Mbytecode.Instruction):
             s = "%4d: " % self.line_no
         else:
             s = " " * 6
-        s += "%-15s" % self.opname
+        s += f"{self.opname:15}"
         if self.arg is not None:
             s += f"\t{self.arg}"
         return s
@@ -29,7 +29,7 @@ class Instruction:  # (Mbytecode.Instruction):
     pass
 
 
-def is_int(s) -> bool:
+def is_int(s: int | str | None) -> bool:
     try:
         int(s)
         return True
@@ -41,7 +41,7 @@ def match_lineno(s: str) -> Optional[re.Match]:
     return re.match(r"^\d+:", s)
 
 
-def get_opname_operand(opc, fields):
+def get_opname_operand(opc, fields: List[str]):
     assert len(fields) > 0
     opname = fields[0]
     if opc.opmap[opname] < opc.HAVE_ARGUMENT:
@@ -63,7 +63,7 @@ def get_opname_operand(opc, fields):
 
 
 class Assembler:
-    def __init__(self, python_version, is_pypy):
+    def __init__(self, python_version, is_pypy) -> None:
         self.opc = get_opcode(python_version, is_pypy)
         self.code_list = []
         self.codes = []  # FIXME use a better name
@@ -76,7 +76,7 @@ class Assembler:
         self.code = None
         self.siphash = None
 
-    def code_init(self, python_version=None):
+    def code_init(self, python_version=None) -> None:
         if self.python_version is None and python_version:
             self.python_version = python_version
 
@@ -102,19 +102,19 @@ class Assembler:
 
         self.code.instructions = []
 
-    def update_lists(self, co, label, backpatch):
+    def update_lists(self, co, label, backpatch) -> None:
         self.code_list.append(co)
         self.codes.append(self.code)
         self.label.append(label)
         self.backpatch.append(backpatch)
 
-    def print_instructions(self):
+    def print_instructions(self) -> None:
         for inst in self.code.instructions:
             if inst.line_no:
                 print()
             print(inst)
 
-    def warn(self, mess: str):
+    def warn(self, mess: str) -> None:
         """
         Print an error message and record that we warned, unless we have already errored.
         """
@@ -122,7 +122,7 @@ class Assembler:
         if self.status != "errored":
             self.status = "warning"
 
-    def err(self, mess: str):
+    def err(self, mess: str) -> None:
         """
         Print an error message and record that we errored.
         """
@@ -130,7 +130,7 @@ class Assembler:
         self.status = "errored"
 
 
-def asm_file(path):
+def asm_file(path) -> Assembler | None:
     offset = 0
     methods = {}
     method_name = None
@@ -413,7 +413,7 @@ def asm_file(path):
     return asm
 
 
-def member(fields, match_value):
+def member(fields, match_value) -> int:
     for i, v in enumerate(fields):
         if v == match_value and type(v) == type(match_value):
             return i
@@ -421,7 +421,7 @@ def member(fields, match_value):
     return -1
 
 
-def update_code_field(field_name, value, inst, opc):
+def update_code_field(field_name: str, value, inst, opc) -> None:
     field_values = getattr(opc, field_name)
     # Can't use "in" because True == 1 and False == 0
     # if value in l:
@@ -433,7 +433,7 @@ def update_code_field(field_name, value, inst, opc):
         field_values.append(value)
 
 
-def update_code_tuple_field(field_name, code, lines, i):
+def update_code_tuple_field(field_name: str, code, lines: List[str], i: int):
     count = 0
     while i < len(lines):
         line = lines[i]
@@ -454,12 +454,12 @@ def update_code_tuple_field(field_name, code, lines, i):
     return i
 
 
-def err(msg, inst, i):
+def err(msg: str, inst, i: int):
     msg += ". Instruction %d:\n%s" % (i, inst)
     raise RuntimeError(msg)
 
 
-def warn(mess: str):
+def warn(mess: str) -> None:
     """
     Print an error message and record that we warned.
     """
@@ -562,7 +562,7 @@ def is_code_ok(asm: Assembler) -> bool:
 
 def append_operand(
     bytecode: list, arg_value, extended_arg_shift, arg_max_value, extended_arg_op
-):
+) -> None:
     """
     Write instruction operand adding EXTENDED_ARG instructions
     when necessary.
