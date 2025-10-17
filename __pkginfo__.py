@@ -37,12 +37,12 @@ classifiers = [
 author = "Rocky Bernstein"
 author_email = "rb@dustyfeet.com"
 ftp_url = None
-install_requires = ["xdis >= 6.1.0"]
+install_requires = ["xdis >= 6.1.8"]
 license = "GPL-2.0"
 mailing_list = "python-debugger@googlegroups.com"
 modname = "xasm"
 py_modules = []
-setup_requires = ["pytest-runner", "xdis >= 6.1.0"]
+setup_requires = ["pytest-runner"]
 # scripts            = ['bin/pydisasm']
 short_desc = "Python cross-version byte-code assembler"
 tests_require = ["pytest"]
