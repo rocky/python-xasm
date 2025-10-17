@@ -29,14 +29,14 @@ fi
 cd ..
 
 source ${PACKAGE_MODULE}/version.py
-if [[ ! -n $__version__ ]]; then
+if [[ ! $__version__ ]] ; then
     echo "Something is wrong: __version__ should have been set."
     exit 1
 fi
 
 for pyversion in $PYVERSIONS; do
     case ${pyversion:0:4} in
-	"graal" )
+	"graa" )
 	    echo "$pyversion - Graal does not get special packaging"
 	    continue
 	    ;;
