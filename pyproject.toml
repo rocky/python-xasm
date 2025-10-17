@@ -14,7 +14,7 @@ name = "xasm"
 description = "Cross-version Python bytecode assembler"
 dependencies = [
     "click",
-    "xdis >= 6.1.1, < 6.3.0",
+    "xdis >= 6.1.8, < 6.3.0",
 ]
 readme = "README.rst"
 license = "GPL-2.0"

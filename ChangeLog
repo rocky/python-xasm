@@ -1,6 +1,45 @@
+2025-10-17  rocky <rb@dusytfeet.com>
+
+	* pyproject.toml, xasm/version.py: Get ready for release 1.2.2
+
+2025-10-17  rocky <rb@dusytfeet.com>
+
+	* admin-tools/make-dist-3.6-3.10.sh,
+	admin-tools/make-dist-newest.sh,
+	admin-tools/pyenv-3.6-3.10-versions: More 3.6-3.10 versions
+
+2025-10-17  rocky <rb@dusytfeet.com>
+
+	* README.rst, admin-tools/install-all-3.6-3.10.sh,
+	admin-tools/install-all-newest.sh, admin-tools/make-dist-newest.sh,
+	admin-tools/pyenv-newest-versions, pyproject.toml,
+	xasm/assemble.py, xasm/write_pyc.py, xasm/xasm_cli.py: Pass PyPy
+	status to write pyc. Correct pyc-xasm entry. And more.
+
+2025-10-14  rocky <rb@dusytfeet.com>
+
+	* admin-tools/check-newest-versions.sh,
+	admin-tools/check-versions.sh, admin-tools/checkout_common.sh,
+	admin-tools/make-dist.sh: Administrivia
+
+2025-10-14  rocky <rb@dusytfeet.com>
+
+	* admin-tools/checkout_common.sh: Administriva - cd'd to wrong
+	directory
+
 2025-10-13  rocky <rb@dusytfeet.com>
 
-	* xasm/version.py: Get ready for release 1.2.1
+	* .github/workflows/ubuntu.yml, .github/workflows/windows.yml,
+	xasm/version.py: Bump version and adjust CI
+
+2025-10-13  rocky <rb@dusytfeet.com>
+
+	* .gitignore, .pre-commit-config.yaml, ChangeLog,
+	ChangeLog-spell-corrected.diff, Makefile, NEWS.md, __pkginfo__.py,
+	pytest/test_assemble.py, pytest/test_write_pyc.py,
+	test/columnize.py, test/fn.py, test/gcd.py, test/run-test.py,
+	test/test_all.py, xasm/assemble.py, xasm/pyc_convert.py,
+	xasm/version.py, xasm/xasm_cli.py: Get ready for release 1.2.1
 
 2025-10-13  rocky <rb@dusytfeet.com>
 
