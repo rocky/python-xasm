@@ -1,5 +1,6 @@
 import time
 from struct import pack
+from typing import Optional
 
 import xdis
 from xdis import magic2int
@@ -8,8 +9,13 @@ from xdis.marsh import dumps
 from xdis.version_info import PYTHON3, version_tuple_to_str
 
 
-def write_pycfile(fp, code_list, timestamp=None, version_triple=xdis.PYTHON_VERSION_TRIPLE) -> int:
-
+def write_pycfile(
+    fp,
+    code_list,
+    timestamp=None,
+    version_triple=xdis.PYTHON_VERSION_TRIPLE,
+    is_pypy: Optional[bool] = None,
+) -> int:
     rc = 0
     version_str = version_tuple_to_str(version_triple, end=2)
     magic_bytes = magics[version_str]
@@ -36,7 +42,7 @@ def write_pycfile(fp, code_list, timestamp=None, version_triple=xdis.PYTHON_VERS
 
     for co in code_list:
         try:
-            co_obj = dumps(co, python_version=version_triple)
+            co_obj = dumps(co, python_version=version_triple, is_pypy=is_pypy)
             if PYTHON3 and version_triple < (3, 0):
                 co_obj = str.encode(co_obj)
                 pass

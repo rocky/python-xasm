@@ -44,7 +44,9 @@ def main(pyc_file: List[str], asm_path):
         file_mode = "w"
 
     with open(pyc_file, file_mode) as fp:
-        rc = write_pycfile(fp, asm.code_list, asm.timestamp, asm.python_version)
+        rc = write_pycfile(
+            fp, asm.code_list, asm.timestamp, asm.python_version, asm.is_pypy
+        )
         size = fp.tell()
     print(
         f"""Wrote Python {version_tuple_to_str(asm.python_version)} bytecode file "{pyc_file}"; {size} bytes."""
