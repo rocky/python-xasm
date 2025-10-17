@@ -1,3 +1,9 @@
+1.2.2 2025-10-13
+----------------
+
+* Pass PyPy status to write_pyc.
+* Correct packaging pyc-xasm command-line entry.
+
 1.2.1 2025-10-13
 ----------------
 
