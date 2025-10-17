@@ -54,7 +54,6 @@ Installation
 A GNU makefile is also provided so ``make install`` (possibly as root or
 sudo) will do the steps above.
 
-
 *If you are using Python before 3.11*, do not install using PyPI, but instead install using a file in the `GitHub Releases section <https://github.com/rocky/python-xasm/releases>`_. Older Python used to use `easy_install <https://python101.pythonlibrary.org/chapter29_pip.html#using-easy-install>`_. But this is no longer supported in PyPi or newer Python versions. And vice versa, *poetry* nor *pip*, (the newer ways) are not supported on older Pythons.
 
 If the Python version you are running xasm is between Python 3.6 through 3.11, use a tarball called xasm_36-*x.y.z*.tar.gz.

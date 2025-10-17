@@ -47,7 +47,7 @@ dev = [
 ]
 
 [project.scripts]
-python-cfg = "xasm.__main__:main"
+pyc-xasm = "xasm.xasm_cli:main"
 
 [tool.setuptools]
 packages = [
