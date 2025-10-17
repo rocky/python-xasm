@@ -21,7 +21,7 @@ jobs:
     - name: Install dependencies
       run: |
         # We can comment out after next xdis release
-        # python -m pip install -e git+https://github.com/rocky/python-xdis#egg=xdis
+        python -m pip install -e git+https://github.com/rocky/python-xdis#egg=xdis
         pip install -e .
         pip install -r requirements-dev.txt
     - name: Test xasm
