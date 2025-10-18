@@ -18,6 +18,8 @@ def write_pycfile(
 ) -> int:
     rc = 0
     version_str = version_tuple_to_str(version_triple, end=2)
+    if is_pypy:
+        version_str += "pypy"
     magic_bytes = magics[version_str]
     magic_int = magic2int(magic_bytes)
     fp.write(magic_bytes)
