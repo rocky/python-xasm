@@ -71,7 +71,6 @@ class Assembler:
         self.size = 0  # Size of source code. Only relevant in version 3 and above
         self.is_pypy = is_pypy
         self.python_version = python_version
-        self.is_pypy = is_pypy
         self.timestamp = None
         self.backpatch = []  # list of backpatch dicts, one for each function
         self.label = []  # list of label dists, one for each function
