@@ -170,11 +170,11 @@ def asm_file(path) -> Optional[Assembler]:
                 # FIXME: extract all code options below the top-level and asm.code_list
 
         elif line.startswith("#"):
-            match = re.match("^# (Pypy )?Python bytecode ", line)
+            match = re.match("^# (PyPy )?Python bytecode ", line)
             if match:
                 if match.group(1):
+                    is_pypy = True
                     pypy_str = match.group(1)
-                    is_pypy = len(pypy_str)
                 else:
                     is_pypy = False
                     pypy_str = ""
@@ -197,7 +197,7 @@ def asm_file(path) -> Optional[Assembler]:
             elif line.startswith("# Timestamp in code: "):
                 text = line[len("# Timestamp in code: ") :].strip()
                 time_str = text.split()[0]
-                if is_int(time_str):
+                if is_int(time_str) and hasattr(asm, "timestamp"):
                     asm.timestamp = int(time_str)
             elif line.startswith("# Method Name: "):
                 if method_name:
@@ -248,7 +248,9 @@ def asm_file(path) -> Optional[Assembler]:
             elif line.startswith("# Number of locals: "):
                 l_str = line[len("# Number of locals: ") :].strip()
                 asm.code.co_nlocals = int(l_str)
-            elif line.startswith("# Source code size mod 2**32: "):
+            elif line.startswith("# Source code size mod 2**32: ") and hasattr(
+                asm, "size"
+            ):
                 l_str = line[
                     len("# Source code size mod 2**32: ") : -len(" bytes")
                 ].strip()

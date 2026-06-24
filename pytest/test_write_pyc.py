@@ -26,14 +26,22 @@ os.chdir(src_dir)
 def test_roundtrip3() -> None:
     fp = NamedTemporaryFile(mode="wb+", suffix=".pyc", prefix="test_pyc-", delete=False)
     orig_path = "testdata/test_pyc.pyc"
-    version, timestamp, magic_int, co, is_pypy, source_size, sip_hash = load_module(
-        orig_path
-    )
-    write_pycfile(fp, [co], timestamp, version)
+    (
+        version_tuple,
+        timestamp,
+        _magic_int,
+        co_module,
+        is_pypy,
+        source_size,
+        sip_hash,
+        _file_offsets,
+    ) = load_module(orig_path)
+
+    write_pycfile(fp, [co_module], timestamp, version_tuple)
     new_path = fp.name
     size = fp.tell()
     fp.close()
-    print("Wrote Python %s bytecode file %s; %d bytes" % (version, fp.name, size))
+    print("Wrote Python %s bytecode file %s; %d bytes" % (version_tuple, fp.name, size))
     old_fp = open(orig_path, "rb")
     new_fp = open(new_path, "rb")
     if PYTHON_VERSION_TRIPLE < (3, 6):
